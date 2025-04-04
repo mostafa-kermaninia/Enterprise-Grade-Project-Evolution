@@ -18,37 +18,49 @@ jobs:
       uses: classroom-resources/autograding-io-grader@v1
       with:
         test-name: Value
-        setup-command: cd src/main/grammar && java -jar ../../../utilities/antlr-4.13.1-complete.jar
-          SimpleLang.g4 && javac -cp ../../../utilities/antlr-4.13.1-complete.jar
-          SimpleLang*.java
-        command: cd src/main/grammar && java -cp ../../../utilities/antlr-4.13.1-complete.jar:.
-          org.antlr.v4.gui.TestRig SimpleLang simplelang
-        input: |-
-          void main()
-          {
-              int a = -1;
-              int b=2,c=3;
-              int *d = &a;
-
-              char e = 'a';
-              char f[] = "abc";
-
-              float g = 1.0;
-              double h = 2.45;
-
-              int a3[] = {1, 2, 3, 4, 5};
-              int a4[][] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-              int (*pa2)[] = {1, 2, 3, 4, 5};
-
-              const long long int **const*const x[5];
-          }
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/value.c
+        input: ''
         expected-output: '1'
         comparison-method: contains
         timeout: 10
         max-score: 1
+    - name: sample1
+      id: sample1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: sample1
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          samples/sample1.slc
+        input: ''
+        expected-output: |-
+          New Scope: first_func
+          Declared variable: apple
+          Used variable: apple
+          Used variable: apple
+          New Scope: second_func
+          Declared variable: banana
+          Used variable: banana
+          Used variable: three
+          Used variable: banana
+          New Scope: Main
+          Declared variable: test
+          Used variable: test
+          Declared variable: tmp
+          Used variable: tmp
+          Called function: second_func
+          Called function: first_func
+          1
+        comparison-method: contains
+        timeout: 10
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
         VALUE_RESULTS: "${{steps.value.outputs.result}}"
+        SAMPLE1_RESULTS: "${{steps.sample1.outputs.result}}"
       with:
-        runners: value
+        runners: value,sample1
