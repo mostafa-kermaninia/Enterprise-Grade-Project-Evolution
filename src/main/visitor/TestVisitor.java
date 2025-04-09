@@ -5,6 +5,10 @@ import main.ast.nodes.Stmt.*;
 import main.ast.nodes.declaration.FuncDec;
 import main.ast.nodes.declaration.Main;
 import main.ast.nodes.expr.*;
+import main.ast.nodes.expr.primitives.BoolVal;
+import main.ast.nodes.expr.primitives.DoubleVal;
+import main.ast.nodes.expr.primitives.IntVal;
+import main.ast.nodes.expr.primitives.StringVal;
 
 
 /*GOALs:
@@ -78,6 +82,10 @@ public class TestVisitor extends Visitor<Void>{
     public Void visit(IntVal int_Val) {
         return null;
     }
+    public Void visit(StringVal string_val){return null;}
+    public Void visit(BoolVal bool_val){return null;}
+    public Void visit(DoubleVal double_vals){return null;}
+
     public Void visit(FuncCallExpr func_call_expr){
         System.out.println("Called function: " + func_call_expr.getName());
         return null;

@@ -1,10 +1,11 @@
-// Generated from F:/university/TA/plc/S04/miniProject-NameAnalysis/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
+// Generated from F:/university/TA/plc/S04/2_ast_simple_visitor/miniProject-AST/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
 package main.grammar;
 
     import main.ast.nodes.*;
     import main.ast.nodes.declaration.*;
     import main.ast.nodes.Stmt.*;
     import main.ast.nodes.expr.*;
+    import main.ast.nodes.expr.primitives.*;
     import main.ast.nodes.expr.operator.*;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -96,11 +97,4 @@ public class SimpleLangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitPrimary_expr(SimpleLangParser.Primary_exprContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitType(SimpleLangParser.TypeContext ctx) { return visitChildren(ctx); }
 }

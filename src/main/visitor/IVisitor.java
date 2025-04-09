@@ -10,7 +10,7 @@ import main.ast.nodes.declaration.FuncDec;
 import main.ast.nodes.declaration.Main;
 import main.ast.nodes.expr.BinaryExpr;
 import main.ast.nodes.expr.Identifier;
-import main.ast.nodes.expr.IntVal;
+import main.ast.nodes.expr.primitives.*;
 import main.ast.nodes.expr.UnaryExpr;
 import main.ast.nodes.expr.FuncCallExpr;
 
@@ -28,6 +28,9 @@ public interface IVisitor<T> {
     T visit(BinaryExpr binaryExpr);
     T visit(Identifier identifier);
     T visit(IntVal int_Val);
+    T visit(StringVal string_val);
+    T visit(BoolVal int_Val);
+    T visit(DoubleVal double_val);
     T visit(FuncCallExpr func_call_expr);
     T visit(Return returnStmt);
 }

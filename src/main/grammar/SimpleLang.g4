@@ -5,6 +5,7 @@ grammar SimpleLang;
     import main.ast.nodes.declaration.*;
     import main.ast.nodes.Stmt.*;
     import main.ast.nodes.expr.*;
+    import main.ast.nodes.expr.primitives.*;
     import main.ast.nodes.expr.operator.*;
 }
 
@@ -27,12 +28,11 @@ main  returns [Main mainRet]:
     (s = stmt { $mainRet.addStmt($s.stmtRet); })*
      RBRACE;
 
-
 stmt returns [Stmt stmtRet]:
     a = assign { $stmtRet = $a.assignRet; }
     | i = if_stmt { $stmtRet = $i.ifStmtRet; }
     | v = var_dec { $stmtRet = $v.varDecRet; }
-    | f = func_call { $stmtRet = new FuncCallStmt($f.func_call_ret); } SEMI
+    | f = func_call { $stmtRet = new FuncCallStmt($f.func_call_ret); $stmtRet.setLine($f.func_call_ret.getLine());} SEMI
     | r = return_stmt { $stmtRet = $r.returnRet; }
     ;
 
@@ -45,11 +45,11 @@ return_stmt returns [Return returnRet]:
 
 
 var_dec returns [VarDec varDecRet]:
-    t=type id=ID SEMI
+    t=TYPE id=ID SEMI
      {
         $varDecRet = new VarDec($id.text);
         $varDecRet.setLine($id.line);
-        $varDecRet.setTypeName($t.typeRet);
+        $varDecRet.setTypeName($t.text);
      };
 
 
@@ -98,23 +98,30 @@ func_call returns [FuncCallExpr func_call_ret]:
     };
 
 primary_expr returns [Expr primary_expr_ret]:
-    id=ID {$primary_expr_ret = new Identifier($id.text); }
-    | i=INT_VAL { $primary_expr_ret = new IntVal($i.int);};
-
-type returns [String typeRet]:
-    i = INT {$typeRet=($i.text);};
+    id=ID {$primary_expr_ret = new Identifier($id.text); $primary_expr_ret.setLine($id.line);}
+    | i=INT_VAL     { $primary_expr_ret = new IntVal($i.int); $primary_expr_ret.setLine($i.line);}
+    | b=BOOL_VAL      { $primary_expr_ret = new BoolVal($b.text); $primary_expr_ret.setLine($b.line);}
+    | s=STR_VAL       { $primary_expr_ret = new StringVal($s.text); $primary_expr_ret.setLine($s.line);}
+    | d=DOUBLE_VAL   { $primary_expr_ret = new DoubleVal($d.text); $primary_expr_ret.setLine($d.line);}
+    ;
 
 
 // Lexer rules
 
 // 1- General structure
 MAIN : 'main';
-INT : 'int';
+TYPE : 'int' | 'string' | 'double' | 'bool';
 IF : 'if';
 ELSE : 'else';
 RETURN : 'return';
 
-// 2- Symbols
+//2- premitive values
+INT_VAL : [0] | [1-9][0-9]*;
+STR_VAL : '"' ( ~["\\] | '\\' . )* '"' ;
+BOOL_VAL: 'true' | 'false';
+DOUBLE_VAL: ([0] | [1-9][0-9]*)'.'[0-9]+;
+
+// 3- Symbols
 LBRACE : '{';
 RBRACE : '}';
 SEMI : ';';
@@ -123,11 +130,11 @@ PLUS : '+';
 LPAR : '(';
 RPAR : ')';
 
-// 3- Identifiers
+// 4- Identifiers
 ID : [a-zA-Z_][a-zA-Z0-9_]*;
-INT_VAL : [0-9]+;
 
-// 4- Whitespace and comments
+
+// 5- Whitespace and comments
 WHITE_SPACE : [ \t\r\n]+ -> skip;
 LINE_COMMENT : '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT : '/*' .*? '*/' -> skip;

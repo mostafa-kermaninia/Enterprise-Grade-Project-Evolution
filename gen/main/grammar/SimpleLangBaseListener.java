@@ -1,10 +1,11 @@
-// Generated from F:/university/TA/plc/S04/miniProject-NameAnalysis/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
+// Generated from F:/university/TA/plc/S04/2_ast_simple_visitor/miniProject-AST/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
 package main.grammar;
 
     import main.ast.nodes.*;
     import main.ast.nodes.declaration.*;
     import main.ast.nodes.Stmt.*;
     import main.ast.nodes.expr.*;
+    import main.ast.nodes.expr.primitives.*;
     import main.ast.nodes.expr.operator.*;
 
 
@@ -151,18 +152,6 @@ public class SimpleLangBaseListener implements SimpleLangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPrimary_expr(SimpleLangParser.Primary_exprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterType(SimpleLangParser.TypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitType(SimpleLangParser.TypeContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

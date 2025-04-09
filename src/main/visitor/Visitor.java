@@ -4,6 +4,10 @@ import main.ast.nodes.Program;
 import main.ast.nodes.Stmt.*;
 import main.ast.nodes.declaration.*;
 import main.ast.nodes.expr.*;
+import main.ast.nodes.expr.primitives.BoolVal;
+import main.ast.nodes.expr.primitives.DoubleVal;
+import main.ast.nodes.expr.primitives.IntVal;
+import main.ast.nodes.expr.primitives.StringVal;
 
 /*GOALs:
 *   1. print out scope changes each time a new scope starts
@@ -52,10 +56,14 @@ public abstract class Visitor<T> implements IVisitor<T> {
     public T visit(IntVal int_Val) {
         return null;
     }
+    public T visit(StringVal string_val){return null;}
+    public T visit(BoolVal bool_val){return null;}
+    public T visit(DoubleVal double_vals){return null;}
     public T visit(FuncCallExpr func_call_expr){
         return null;
     }
     public T visit(Return the_return){
         return null;
     }
+
 }
