@@ -57,10 +57,123 @@ jobs:
           1
         comparison-method: contains
         timeout: 10
+    - name: Nested Statement
+      id: nested-statement
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Nested Statement
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/nested_statement.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Expression Advanced
+      id: expression-advanced
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Expression Advanced
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/expression_advanced.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Global Scope
+      id: global-scope
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Global Scope
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/global_scope.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Identifier
+      id: identifier
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Identifier
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/identifier.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Nested Statement
+      id: nested-statement
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Nested Statement
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/nested_statement.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Space
+      id: space
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Space
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/space.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Statement
+      id: statement
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Statement
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/statement.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
+    - name: Type
+      id: type
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Type
+        setup-command: ''
+        command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
+          -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
+          tests/type.c
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 10
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
         VALUE_RESULTS: "${{steps.value.outputs.result}}"
         SAMPLE1_RESULTS: "${{steps.sample1.outputs.result}}"
+        NESTED-STATEMENT_RESULTS: "${{steps.nested-statement.outputs.result}}"
+        EXPRESSION-ADVANCED_RESULTS: "${{steps.expression-advanced.outputs.result}}"
+        GLOBAL-SCOPE_RESULTS: "${{steps.global-scope.outputs.result}}"
+        IDENTIFIER_RESULTS: "${{steps.identifier.outputs.result}}"
+        SPACE_RESULTS: "${{steps.space.outputs.result}}"
+        STATEMENT_RESULTS: "${{steps.statement.outputs.result}}"
+        TYPE_RESULTS: "${{steps.type.outputs.result}}"
       with:
-        runners: value,sample1
+        runners: value,sample1,nested-statement,expression-advanced,global-scope,identifier,nested-statement,space,statement,type
