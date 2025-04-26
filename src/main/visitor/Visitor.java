@@ -3,11 +3,11 @@ package main.visitor;
 import main.ast.nodes.Program;
 import main.ast.nodes.Stmt.*;
 import main.ast.nodes.declaration.*;
-import main.ast.nodes.expr.*;
-import main.ast.nodes.expr.primitives.BoolVal;
-import main.ast.nodes.expr.primitives.DoubleVal;
-import main.ast.nodes.expr.primitives.IntVal;
-import main.ast.nodes.expr.primitives.StringVal;
+import main.ast.nodes.expression.*;
+import main.ast.nodes.expression.primitives.BoolVal;
+import main.ast.nodes.expression.primitives.DoubleVal;
+import main.ast.nodes.expression.primitives.IntVal;
+import main.ast.nodes.expression.primitives.StringVal;
 
 /*GOALs:
 *   1. print out scope changes each time a new scope starts

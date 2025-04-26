@@ -8,11 +8,11 @@ import main.ast.nodes.Stmt.VarDec;
 import main.ast.nodes.Stmt.Return;
 import main.ast.nodes.declaration.FuncDec;
 import main.ast.nodes.declaration.Main;
-import main.ast.nodes.expr.BinaryExpr;
-import main.ast.nodes.expr.Identifier;
-import main.ast.nodes.expr.primitives.*;
-import main.ast.nodes.expr.UnaryExpr;
-import main.ast.nodes.expr.FuncCallExpr;
+import main.ast.nodes.expression.BinaryExpr;
+import main.ast.nodes.expression.Identifier;
+import main.ast.nodes.expression.primitives.*;
+import main.ast.nodes.expression.UnaryExpr;
+import main.ast.nodes.expression.FuncCallExpr;
 
 
 public interface IVisitor<T> {

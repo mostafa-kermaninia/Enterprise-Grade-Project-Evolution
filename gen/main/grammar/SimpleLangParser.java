@@ -1,21 +1,18 @@
-// Generated from F:/university/TA/plc/S04/2_ast_simple_visitor/miniProject-AST/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
+// Generated from C:/Users/mosta/github-classroom/PLC-UT/phase-1-ce-mostafa-kermaninia/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
 package main.grammar;
 
     import main.ast.nodes.*;
     import main.ast.nodes.declaration.*;
     import main.ast.nodes.Stmt.*;
-    import main.ast.nodes.expr.*;
-    import main.ast.nodes.expr.primitives.*;
-    import main.ast.nodes.expr.operator.*;
+    import main.ast.nodes.expression.*;
+    import main.ast.nodes.expression.primitives.*;
+    import main.ast.nodes.expression.operator.*;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
+	import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class SimpleLangParser extends Parser {
