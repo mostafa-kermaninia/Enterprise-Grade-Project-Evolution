@@ -213,7 +213,7 @@ jobs:
           Line 5: Expr =
           Line 6: Expr /=
           Line 8: Expr reversedNum
-          Line 11: Stmt function main = 8
+          Line 11: Stmt function main = 7
           Line 15: Expr printf
           Line 16: Expr scanf
           Line 19: Expr <
@@ -229,6 +229,7 @@ jobs:
           Line 32: Expr 0
         comparison-method: contains
         timeout: 10
+        max-score: 1
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
