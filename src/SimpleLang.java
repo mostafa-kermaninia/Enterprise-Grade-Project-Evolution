@@ -30,7 +30,7 @@ public class SimpleLang {
         TestVisitor my_evaluator = new TestVisitor();
 
 //        evaluation part
-        my_evaluator.count(program);
+        my_evaluator.counter(program);
 
 
     }

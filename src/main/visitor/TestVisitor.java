@@ -13,7 +13,7 @@ public class TestVisitor {
 
     private final Set<Expr> alreadyEvaluated = new HashSet<>();
 
-    public void count(Node node) {
+    public void counter(Node node) {
         if (node == null) return;
 
         if (node instanceof FunctionDefinition) {
@@ -26,14 +26,14 @@ public class TestVisitor {
             evaluateExpressionNode((Expr) node);
         } else {
             // Traverse child nodes
-            node.get_child().forEach(this::count);
+            node.get_child().forEach(this::counter);
         }
     }
 
     private void evaluateFunction(FunctionDefinition func) {
         int count = countStatements(func.getBody());
         System.out.println("Line " + func.getLine() + ": Stmt function " + func.getFunctionName() + " = " + count);
-        count(func.getBody());
+        counter(func.getBody());
     }
 
     private void evaluateIterationStatement(IterationStatement iterationStmt) {
@@ -47,7 +47,7 @@ public class TestVisitor {
         String iterationType = getIterationStatementType(iterationStmt);
         System.out.println("Line " + iterationStmt.getLine() + ": Stmt " + iterationType + " = " + count);
 
-        count(iterationStmt.getBody());
+        counter(iterationStmt.getBody());
     }
 
     private void evaluateSelectionStatement(SelectionStatement sel) {
@@ -62,9 +62,9 @@ public class TestVisitor {
     private void evaluateBody(Node body, String bodyType) {
         if (body != null) {
             int count = countStatements(body);
-//            System.out.println("Line " + body.getLine() + ": Stmt selection (" + bodyType + ") = " + count);
-            System.out.println("Line " + body.getLine() + ": Stmt selection" + " = " + count);
-            count(body);
+            System.out.println("Line " + body.getLine() + ": Stmt selection (" + bodyType + ") = " + count);
+//            System.out.println("Line " + body.getLine() + ": Stmt selection" + " = " + count);
+            counter(body);
         }
     }
 
