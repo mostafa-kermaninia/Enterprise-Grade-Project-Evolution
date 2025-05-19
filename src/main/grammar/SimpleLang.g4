@@ -10,6 +10,7 @@ grammar SimpleLang;
 }
 
 
+
 program returns [Program programRet]
     : {$programRet = new Program();} (id = translationUnit {$programRet.setTranslationUnit($id.translationUnitRet);})? EOF ;
 
