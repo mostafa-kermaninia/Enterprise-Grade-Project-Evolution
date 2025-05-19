@@ -23,6 +23,7 @@ public class SimpleLang {
         System.out.println();
 
 
+        
         NameAnalyzer my_name_analyzer = new NameAnalyzer();
         my_name_analyzer.visit(program);
 
