@@ -1,11 +1,13 @@
 // Generated from C:/Users/mosta/github-classroom/PLC-UT/phase-2-ce-mostafa-kermaninia/src/main/grammar/SimpleLang.g4 by ANTLR 4.13.2
 package main.grammar;
 
-    import main.ast.nodes.*;
-    import main.ast.nodes.Stmt.*;
-    import main.ast.nodes.expr.*;
-    import main.ast.nodes.ExternalDeclaration.*;
-    import main.ast.nodes.For.*;
+    import main.ast.baseNodes_DIR.*;
+    import main.ast.CPY_DIR.*;
+    import main.ast.declaration_DIR.*;
+    import main.ast.expression_DIR.*;
+    import main.ast.literal_DIR.*;
+    import main.ast.statement_DIR.*;
+
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

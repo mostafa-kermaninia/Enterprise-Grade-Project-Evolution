@@ -1,6 +1,6 @@
 package main.symbolTable.item;
 
-import main.ast.nodes.ExternalDeclaration.FunctionDefinition;
+import main.ast.declaration_DIR.FunctionDefinition;
 
 public class FuncDecSymbolTableItem extends SymbolTableItem {
     public static final String START_KEY = "FuncDec_";

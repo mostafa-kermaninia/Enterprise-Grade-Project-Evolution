@@ -1,15 +1,19 @@
 package main.visitor;
 
-import main.ast.nodes.*;
-import main.ast.nodes.Stmt.*;
-import main.ast.nodes.expr.*;
-import main.ast.nodes.ExternalDeclaration.*;
-import main.ast.nodes.For.*;
+import main.ast.literal_DIR.*;
+import main.ast.baseNodes_DIR.Program;
+import main.ast.baseNodes_DIR.TranslationUnit;
+import main.ast.declaration_DIR.Declaration;
+import main.ast.declaration_DIR.ExternalDeclaration;
+import main.ast.declaration_DIR.FunctionDefinition;
+import main.ast.declaration_DIR.ForDec;
+import main.ast.expression_DIR.ForExpr;
+import main.ast.statement_DIR.*;
+import main.ast.expression_DIR.*;
 import main.symbolTable.*;
 import main.symbolTable.exceptions.ItemAlreadyExistsException;
 import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.FuncDecSymbolTableItem;
-import main.symbolTable.item.SymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 
 
