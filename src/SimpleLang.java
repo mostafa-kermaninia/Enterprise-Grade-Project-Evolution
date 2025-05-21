@@ -14,8 +14,8 @@ public class SimpleLang {
     public static void main(String[] args) throws IOException {
 
 //        PART 1 : convert to C
-//        CPYtoC CPYtoC = new CPYtoC(args[0]);
-        CPYtoC CPYtoC = new CPYtoC("C:\\Users\\mosta\\github-classroom\\PLC-UT\\phase-2-ce-mostafa-kermaninia\\tests\\NameAnalysis\\1-Variable Undefined.cpy");
+        CPYtoC CPYtoC = new CPYtoC(args[0]);
+//        CPYtoC CPYtoC = new CPYtoC("C:\\Users\\mosta\\github-classroom\\PLC-UT\\phase-2-ce-mostafa-kermaninia\\tests\\NameAnalysis\\1-Variable Undefined.cpy");
 
 //        System.out.print(CPYtoC.finalC);
 
