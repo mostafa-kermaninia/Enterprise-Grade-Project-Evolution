@@ -18,17 +18,8 @@ import main.symbolTable.item.VarDecSymbolTableItem;
 
 
 
-/*GOALs:
- *   1. print out scope changes each time a new scope starts
- *   2. print the identifier if it is initialized
- *   3. print the identifier if it is used
- *   4. print out the name of the function when it is defined
- *   5. print out the name of the function when it is used
- *
- * */
-
-
 public class NameAnalyzer extends Visitor<Void>{
+    public SymbolTable symbolTableMain;
     public boolean noError = true;
     @Override
     public Void visit(Program program) {
@@ -37,6 +28,7 @@ public class NameAnalyzer extends Visitor<Void>{
 
         program.setSymbolTable(SymbolTable.top);
         program.getTranslationUnit().accept(this);
+        symbolTableMain = SymbolTable.top;
         return null;
     }
 
@@ -56,6 +48,13 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(FunctionDefinition functionDefinition) {
+        ParameterList plist = functionDefinition.getDeclarator().getDirectDec().getParameterList();
+        if (plist == null)
+            functionDefinition.setNumArgs(0);
+        else
+            functionDefinition.setNumArgs(plist.getParameterDecs().size());
+
+
         FuncDecSymbolTableItem func_dec_item = new FuncDecSymbolTableItem(functionDefinition);
         try {
             SymbolTable.top.put(func_dec_item);
@@ -78,15 +77,7 @@ public class NameAnalyzer extends Visitor<Void>{
             functionDefinition.getDecList().accept(this);
         functionDefinition.getCompoundStmt().accept(this);
 
-        ParameterList plist = functionDefinition.getDeclarator().getDirectDec().getParameterList();
-        if (plist == null) {
-            functionDefinition.setNumArgs(0);
-            System.out.println("Parameter list: " + func_dec_item.getKey());
-        }
-        else {
-            functionDefinition.setNumArgs(plist.getParameterDecs().size());
-            System.out.println("Parameter list: " + func_dec_item.getKey());
-        }
+//        System.out.println();
         SymbolTable.pop();
         return null;
     }
@@ -118,6 +109,9 @@ public class NameAnalyzer extends Visitor<Void>{
     public Void visit(DeclarationSpecifiers declarationSpecifiers) {
         for (DeclarationSpecifier declarationSpecifier : declarationSpecifiers.getDeclarationSpecifiers())
             declarationSpecifier.accept(this);
+        if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef"))
+            declarationSpecifiers.getDeclarationSpecifiers().get(declarationSpecifiers.getDeclarationSpecifiers().size()
+                    - 1 ).getTypeSpecifier().setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
         return null;
     }
 
@@ -144,6 +138,22 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(InitDeclarator initDeclarator) {
+        DirectDec directDec = initDeclarator.getDeclarator().getDirectDec();
+        while (directDec.getIdentifier().isEmpty())
+            directDec = directDec.getDirectDec();
+        if (!directDec.getIdentifier().isEmpty()){
+            TypeSpecifier typeSpecifier = new TypeSpecifier(directDec.getIdentifier());
+            typeSpecifier.setLine(directDec.getLine());
+            directDec.setTypeSpecifier(typeSpecifier);
+            VarDecSymbolTableItem var_dec_item = new VarDecSymbolTableItem(typeSpecifier);
+            try {
+                SymbolTable.top.put(var_dec_item);
+            } catch (ItemAlreadyExistsException e) {
+                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line " + typeSpecifier.getLine());
+                noError = false;
+            }
+        }
+
         initDeclarator.getDeclarator().accept(this);
         if (initDeclarator.getInitializer() != null)
             initDeclarator.getInitializer().accept(this);
@@ -163,6 +173,16 @@ public class NameAnalyzer extends Visitor<Void>{
 
 
     public Void visit(TypeSpecifier typeSpecifier) {
+        try {
+            TypeSpecifier typeSpecifier2 = ((VarDecSymbolTableItem) SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + typeSpecifier.getType())).getVarDec();
+            if (typeSpecifier2.isTypeDef()) {
+                typeSpecifier.setType(typeSpecifier2.getTypeDefName());
+                typeSpecifier.setNotVarDec();
+            }
+        } catch(ItemNotFoundException e){
+
+        }
+
         if (typeSpecifier.isVar_dec()) {
             VarDecSymbolTableItem var_dec_item = new VarDecSymbolTableItem(typeSpecifier);
             try {
@@ -330,12 +350,13 @@ public class NameAnalyzer extends Visitor<Void>{
         iterStmt.setSymbolTable(symbolTable);
         SymbolTable.push(symbolTable);
 
+        if (iterStmt.getForCondition() != null)
+            iterStmt.getForCondition().accept(this);
         if (iterStmt.getExpr() != null)
             iterStmt.getExpr().accept(this);
         if (iterStmt.getStmt() != null)
             iterStmt.getStmt().accept(this);
-        if (iterStmt.getForCondition() != null)
-            iterStmt.getForCondition().accept(this);
+
 
         SymbolTable.pop();
         return null;
@@ -377,10 +398,10 @@ public class NameAnalyzer extends Visitor<Void>{
 
         else {
             try {
-                System.out.println("babaa " + FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
                 SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY  + funcCall.getNumArgs() + funcName );
             } catch (ItemNotFoundException e) {
-                System.out.println("Function \"" + funcName + "\" not declared in line : " + line);
+                System.out.println(FuncDecSymbolTableItem.START_KEY  + funcCall.getNumArgs() + funcName );
+                System.out.println("Line:" + line + "-> " + funcName + " not declared");
                 noError = false;
             }
         }
@@ -433,7 +454,7 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(Identifier identifier) {
-        if (!identifier.isFunc()){
+        if (!identifier.isFunc() && !identifier.getIdentifier().startsWith("\"")){
             try {
                 SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + identifier.getIdentifier());
             } catch (ItemNotFoundException e) {

@@ -3,15 +3,17 @@ package main.ast.statement_DIR;
 import main.ast.expression_DIR.IdentifierList;
 import main.ast.baseNodes_DIR.Node;
 import main.ast.expression_DIR.Expr;
+import main.ast.literal_DIR.TypeSpecifier;
 import main.visitor.IVisitor;
 
-public class DirectDec extends Node {
-    private String identifier;
+public class DirectDec extends Node{
+    private String identifier = "";
     private Declarator declarator;
     private DirectDec directDec;
     private Expr expr;
     private ParameterList parameterList;
     private IdentifierList identifierList;
+    private TypeSpecifier typeSpecifier;
 
     public DirectDec() {
         declarator = null;
@@ -19,6 +21,7 @@ public class DirectDec extends Node {
         expr = null;
         parameterList = null;
         identifierList = null;
+        typeSpecifier = null;
     }
 
     @Override
@@ -43,4 +46,7 @@ public class DirectDec extends Node {
 
     public IdentifierList getIdentifierList() { return identifierList; }
     public void setIdentifierList(IdentifierList identifierList) { this.identifierList = identifierList; }
+
+    public TypeSpecifier getTypeSpecifier() { return typeSpecifier; }
+    public void setTypeSpecifier(TypeSpecifier typeSpecifier) { this.typeSpecifier = typeSpecifier; }
 }
