@@ -15,7 +15,7 @@ public class NameAnalyzer extends Visitor<Void> {
     private final ScopedErrorCollector errorReporter = new ScopedErrorCollector();
 
     public SymbolTable getRootTable() { return rootTable; }
-    public boolean hasNoErrors() { return !errorReporter.hasErrors(); }
+    public boolean SuccessfullyDone() { return !errorReporter.hasErrors(); }
 
     // Entrypoint
     @Override

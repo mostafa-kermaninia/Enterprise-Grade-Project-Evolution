@@ -1,5 +1,6 @@
 import main.ast.baseNodes_DIR.Program;
 import main.ast.CPY_DIR.CPYtoC;
+import main.optimization.*;
 import main.grammar.SimpleLangLexer;
 import main.grammar.SimpleLangParser;
 import main.visitor.NameAnalyzer;
@@ -35,9 +36,16 @@ public class SimpleLang {
         NameAnalyzer nameAnalyzer = new NameAnalyzer();
         nameAnalyzer.visit(program);
 
-//        if (nameAnalyzer.noError) {
-//            TestVisitor my_visitor = new TestVisitor();
-//            my_visitor.visit(program);
-//        }
+        boolean needChange = true;
+        if (nameAnalyzer.SuccessfullyDone()) {
+            while(needChange) {
+                Optimizer my_opt_main = new Optimizer(nameAnalyzer.getRootTable());
+//                my_opt_main.visit(program);
+                nameAnalyzer.visit(program);
+                needChange = my_opt_main.changed;
+            }
+            TestVisitor my_visitor = new TestVisitor();
+            my_visitor.visit(program);
+        }
     }
 }
