@@ -39,10 +39,9 @@ public class SimpleLang {
         boolean needChange = true;
         if (nameAnalyzer.SuccessfullyDone()) {
             while(needChange) {
-                Optimizer my_opt_main = new Optimizer(nameAnalyzer.getRootTable());
-//                my_opt_main.visit(program);
-                nameAnalyzer.visit(program);
-                needChange = my_opt_main.changed;
+                Optimizer OptimizedCode = new Optimizer(nameAnalyzer.getRootTable());
+                OptimizedCode.visit(program);
+                needChange = OptimizedCode.changed;
             }
             TestVisitor my_visitor = new TestVisitor();
             my_visitor.visit(program);
