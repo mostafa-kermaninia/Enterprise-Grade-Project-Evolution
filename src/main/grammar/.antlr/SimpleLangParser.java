@@ -1608,7 +1608,7 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class DeclarationSpecifiersContext extends ParserRuleContext {
 		public DeclarationSpecifiers declarationSpecifiersRet;
-		public DeclarationSpecifierContext d;
+		public DeclarationSpecifierContext specifierItem;
 		public List<DeclarationSpecifierContext> declarationSpecifier() {
 			return getRuleContexts(DeclarationSpecifierContext.class);
 		}
@@ -1628,7 +1628,7 @@ public class SimpleLangParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			((DeclarationSpecifiersContext)_localctx).declarationSpecifiersRet =  new DeclarationSpecifiers();
+			 ((DeclarationSpecifiersContext)_localctx).declarationSpecifiersRet =  new DeclarationSpecifiers(); 
 			setState(394); 
 			_errHandler.sync(this);
 			_alt = 1;
@@ -1638,8 +1638,8 @@ public class SimpleLangParser extends Parser {
 					{
 					{
 					setState(391);
-					((DeclarationSpecifiersContext)_localctx).d = declarationSpecifier();
-					_localctx.declarationSpecifiersRet.addDeclarationSpecifier(((DeclarationSpecifiersContext)_localctx).d.declarationSpecifierRet);
+					((DeclarationSpecifiersContext)_localctx).specifierItem = declarationSpecifier();
+					 _localctx.declarationSpecifiersRet.addDeclarationSpecifier(((DeclarationSpecifiersContext)_localctx).specifierItem.declarationSpecifierRet); 
 								
 					}
 					}
@@ -1667,8 +1667,9 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class DeclarationSpecifierContext extends ParserRuleContext {
 		public DeclarationSpecifier declarationSpecifierRet;
-		public Token t;
-		public TypeSpecifierContext ts;
+		public Token typedefToken;
+		public TypeSpecifierContext typeSpecNode;
+		public Token constToken;
 		public TerminalNode Typedef() { return getToken(SimpleLangParser.Typedef, 0); }
 		public TypeSpecifierContext typeSpecifier() {
 			return getRuleContext(TypeSpecifierContext.class,0);
@@ -1690,10 +1691,10 @@ public class SimpleLangParser extends Parser {
 			case Typedef:
 				enterOuterAlt(_localctx, 1);
 				{
-				((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier();
+				 ((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier(); 
 				setState(399);
-				((DeclarationSpecifierContext)_localctx).t = match(Typedef);
-				_localctx.declarationSpecifierRet.setType((((DeclarationSpecifierContext)_localctx).t!=null?((DeclarationSpecifierContext)_localctx).t.getText():null));
+				((DeclarationSpecifierContext)_localctx).typedefToken = match(Typedef);
+				 _localctx.declarationSpecifierRet.setType((((DeclarationSpecifierContext)_localctx).typedefToken!=null?((DeclarationSpecifierContext)_localctx).typedefToken.getText():null)); 
 						
 				}
 				break;
@@ -1710,20 +1711,20 @@ public class SimpleLangParser extends Parser {
 			case Identifier:
 				enterOuterAlt(_localctx, 2);
 				{
-				((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier();
+				 ((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier(); 
 				setState(402);
-				((DeclarationSpecifierContext)_localctx).ts = typeSpecifier();
-				_localctx.declarationSpecifierRet.setTypeSpecifier(((DeclarationSpecifierContext)_localctx).ts.typeSpecifierRet);
+				((DeclarationSpecifierContext)_localctx).typeSpecNode = typeSpecifier();
+				 _localctx.declarationSpecifierRet.setTypeSpecifier(((DeclarationSpecifierContext)_localctx).typeSpecNode.typeSpecifierRet); 
 						
 				}
 				break;
 			case Const:
 				enterOuterAlt(_localctx, 3);
 				{
-				((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier();
+				 ((DeclarationSpecifierContext)_localctx).declarationSpecifierRet =  new DeclarationSpecifier(); 
 				setState(406);
-				((DeclarationSpecifierContext)_localctx).t = match(Const);
-				_localctx.declarationSpecifierRet.setType((((DeclarationSpecifierContext)_localctx).t!=null?((DeclarationSpecifierContext)_localctx).t.getText():null));
+				((DeclarationSpecifierContext)_localctx).constToken = match(Const);
+				 _localctx.declarationSpecifierRet.setType((((DeclarationSpecifierContext)_localctx).constToken!=null?((DeclarationSpecifierContext)_localctx).constToken.getText():null)); 
 						
 				}
 				break;
@@ -1745,8 +1746,8 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class InitDeclaratorListContext extends ParserRuleContext {
 		public InitDeclaratorList initDeclaratorListRet;
-		public InitDeclaratorContext i;
-		public InitDeclaratorContext i1;
+		public InitDeclaratorContext firstInitDeclarator;
+		public InitDeclaratorContext nextInitDeclarator;
 		public List<InitDeclaratorContext> initDeclarator() {
 			return getRuleContexts(InitDeclaratorContext.class);
 		}
@@ -1771,8 +1772,9 @@ public class SimpleLangParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(410);
-			((InitDeclaratorListContext)_localctx).i = initDeclarator();
-			((InitDeclaratorListContext)_localctx).initDeclaratorListRet =  new InitDeclaratorList(((InitDeclaratorListContext)_localctx).i.initDeclaratorRet);
+			((InitDeclaratorListContext)_localctx).firstInitDeclarator = initDeclarator();
+			 ((InitDeclaratorListContext)_localctx).initDeclaratorListRet =  new InitDeclaratorList(((InitDeclaratorListContext)_localctx).firstInitDeclarator.initDeclaratorRet); 
+					
 			setState(418);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -1782,8 +1784,9 @@ public class SimpleLangParser extends Parser {
 				setState(412);
 				match(Comma);
 				setState(413);
-				((InitDeclaratorListContext)_localctx).i1 = initDeclarator();
-				_localctx.initDeclaratorListRet.addInitDeclarator(((InitDeclaratorListContext)_localctx).i1.initDeclaratorRet);
+				((InitDeclaratorListContext)_localctx).nextInitDeclarator = initDeclarator();
+				 _localctx.initDeclaratorListRet.addInitDeclarator(((InitDeclaratorListContext)_localctx).nextInitDeclarator.initDeclaratorRet); 
+							
 				}
 				}
 				setState(420);
@@ -1806,8 +1809,8 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class InitDeclaratorContext extends ParserRuleContext {
 		public InitDeclarator initDeclaratorRet;
-		public DeclaratorContext d;
-		public InitializerContext i;
+		public DeclaratorContext declaratorNode;
+		public InitializerContext initializerNode;
 		public DeclaratorContext declarator() {
 			return getRuleContext(DeclaratorContext.class,0);
 		}
@@ -1829,8 +1832,9 @@ public class SimpleLangParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(421);
-			((InitDeclaratorContext)_localctx).d = declarator();
-			((InitDeclaratorContext)_localctx).initDeclaratorRet =  new InitDeclarator(((InitDeclaratorContext)_localctx).d.declaratorRet);
+			((InitDeclaratorContext)_localctx).declaratorNode = declarator();
+			 ((InitDeclaratorContext)_localctx).initDeclaratorRet =  new InitDeclarator(((InitDeclaratorContext)_localctx).declaratorNode.declaratorRet); 
+					
 			setState(427);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -1839,8 +1843,9 @@ public class SimpleLangParser extends Parser {
 				setState(423);
 				match(Assign);
 				setState(424);
-				((InitDeclaratorContext)_localctx).i = initializer();
-				_localctx.initDeclaratorRet.setInitializer(((InitDeclaratorContext)_localctx).i.initializerRet);
+				((InitDeclaratorContext)_localctx).initializerNode = initializer();
+				 _localctx.initDeclaratorRet.setInitializer(((InitDeclaratorContext)_localctx).initializerNode.initializerRet); 
+							
 				}
 			}
 
@@ -1860,7 +1865,8 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class TypeSpecifierContext extends ParserRuleContext {
 		public TypeSpecifier typeSpecifierRet;
-		public Token t;
+		public Token typeKeyword;
+		public Token typedefNameToken;
 		public TerminalNode Void() { return getToken(SimpleLangParser.Void, 0); }
 		public TerminalNode Char() { return getToken(SimpleLangParser.Char, 0); }
 		public TerminalNode Short() { return getToken(SimpleLangParser.Short, 0); }
@@ -1889,88 +1895,88 @@ public class SimpleLangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(429);
-				((TypeSpecifierContext)_localctx).t = match(Void);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Void);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Char:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(431);
-				((TypeSpecifierContext)_localctx).t = match(Char);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Char);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Short:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(433);
-				((TypeSpecifierContext)_localctx).t = match(Short);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Short);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Int:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(435);
-				((TypeSpecifierContext)_localctx).t = match(Int);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Int);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Long:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(437);
-				((TypeSpecifierContext)_localctx).t = match(Long);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Long);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Float:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(439);
-				((TypeSpecifierContext)_localctx).t = match(Float);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Float);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Double:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(441);
-				((TypeSpecifierContext)_localctx).t = match(Double);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Double);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Signed:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(443);
-				((TypeSpecifierContext)_localctx).t = match(Signed);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Signed);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Unsigned:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(445);
-				((TypeSpecifierContext)_localctx).t = match(Unsigned);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Unsigned);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Bool:
 				enterOuterAlt(_localctx, 10);
 				{
 				setState(447);
-				((TypeSpecifierContext)_localctx).t = match(Bool);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null));
+				((TypeSpecifierContext)_localctx).typeKeyword = match(Bool);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typeKeyword!=null?((TypeSpecifierContext)_localctx).typeKeyword.getText():null)); 
 				}
 				break;
 			case Identifier:
 				enterOuterAlt(_localctx, 11);
 				{
 				setState(449);
-				((TypeSpecifierContext)_localctx).t = match(Identifier);
-				((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getText():null), true); _localctx.typeSpecifierRet.setLine((((TypeSpecifierContext)_localctx).t!=null?((TypeSpecifierContext)_localctx).t.getLine():0));
+				((TypeSpecifierContext)_localctx).typedefNameToken = match(Identifier);
+				 ((TypeSpecifierContext)_localctx).typeSpecifierRet =  new TypeSpecifier((((TypeSpecifierContext)_localctx).typedefNameToken!=null?((TypeSpecifierContext)_localctx).typedefNameToken.getText():null), true); _localctx.typeSpecifierRet.setLine((((TypeSpecifierContext)_localctx).typedefNameToken!=null?((TypeSpecifierContext)_localctx).typedefNameToken.getLine():0)); 
 						
 				}
 				break;
@@ -1992,8 +1998,8 @@ public class SimpleLangParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class SpecifierQualifierListContext extends ParserRuleContext {
 		public SpecifierQualifierList specifierQualifierListRet;
-		public TypeSpecifierContext t;
-		public SpecifierQualifierListContext s;
+		public TypeSpecifierContext typeSpecNode;
+		public SpecifierQualifierListContext recursiveSpecQualList;
 		public TerminalNode Const() { return getToken(SimpleLangParser.Const, 0); }
 		public TypeSpecifierContext typeSpecifier() {
 			return getRuleContext(TypeSpecifierContext.class,0);
@@ -2014,7 +2020,7 @@ public class SimpleLangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			((SpecifierQualifierListContext)_localctx).specifierQualifierListRet =  new SpecifierQualifierList();
+			 ((SpecifierQualifierListContext)_localctx).specifierQualifierListRet =  new SpecifierQualifierList(); 
 			setState(458);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
@@ -2031,8 +2037,9 @@ public class SimpleLangParser extends Parser {
 			case Identifier:
 				{
 				setState(454);
-				((SpecifierQualifierListContext)_localctx).t = typeSpecifier();
-				_localctx.specifierQualifierListRet.setTypeSpecifier(((SpecifierQualifierListContext)_localctx).t.typeSpecifierRet);
+				((SpecifierQualifierListContext)_localctx).typeSpecNode = typeSpecifier();
+				 _localctx.specifierQualifierListRet.setTypeSpecifier(((SpecifierQualifierListContext)_localctx).typeSpecNode.typeSpecifierRet); 
+							
 				}
 				break;
 			case Const:
@@ -2050,8 +2057,8 @@ public class SimpleLangParser extends Parser {
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 5822796L) != 0) || _la==Identifier) {
 				{
 				setState(460);
-				((SpecifierQualifierListContext)_localctx).s = specifierQualifierList();
-				_localctx.specifierQualifierListRet.setSpecifierQualifierList(((SpecifierQualifierListContext)_localctx).s.specifierQualifierListRet);
+				((SpecifierQualifierListContext)_localctx).recursiveSpecQualList = specifierQualifierList();
+				 _localctx.specifierQualifierListRet.setSpecifierQualifierList(((SpecifierQualifierListContext)_localctx).recursiveSpecQualList.specifierQualifierListRet); 
 							
 				}
 			}

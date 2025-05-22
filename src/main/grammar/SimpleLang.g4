@@ -52,7 +52,7 @@ functionDefinition
 		};
 
 // A list of declarations, typically used for K&R style function parameter declarations.
-declتarationList
+declarationList
 	returns[DecList decListRet]:
 	{$decListRet = new DecList();} (
 		decl = declaration {$decListRet.addDeclaration($decl.declarationRet);}
@@ -232,57 +232,68 @@ declaration
 // A sequence of declaration specifiers (e.g., type specifiers, typedef, const).
 declarationSpecifiers
 	returns[DeclarationSpecifiers declarationSpecifiersRet]:
-	{$declarationSpecifiersRet = new DeclarationSpecifiers();} (
-		d = declarationSpecifier {$declarationSpecifiersRet.addDeclarationSpecifier($d.declarationSpecifierRet);
+	{ $declarationSpecifiersRet = new DeclarationSpecifiers(); } (
+		specifierItem = declarationSpecifier { $declarationSpecifiersRet.addDeclarationSpecifier($specifierItem.declarationSpecifierRet); 
 			}
 	)+;
 
+// Rule for a single declaration specifier: either typedef, a base type specifier, or const.
 declarationSpecifier
 	returns[DeclarationSpecifier declarationSpecifierRet]:
-	{$declarationSpecifierRet = new DeclarationSpecifier();} t = Typedef {$declarationSpecifierRet.setType($t.text);
+	{ $declarationSpecifierRet = new DeclarationSpecifier(); } typedefToken = Typedef { $declarationSpecifierRet.setType($typedefToken.text); 
 		}
-	| {$declarationSpecifierRet = new DeclarationSpecifier();} ts = typeSpecifier {$declarationSpecifierRet.setTypeSpecifier($ts.typeSpecifierRet);
+	| { $declarationSpecifierRet = new DeclarationSpecifier(); } typeSpecNode = typeSpecifier { $declarationSpecifierRet.setTypeSpecifier($typeSpecNode.typeSpecifierRet); 
 		}
-	| {$declarationSpecifierRet = new DeclarationSpecifier();} t = Const {$declarationSpecifierRet.setType($t.text);
+	| { $declarationSpecifierRet = new DeclarationSpecifier(); } constToken = Const { $declarationSpecifierRet.setType($constToken.text); 
 		};
 
+// Rule for a comma-separated list of one or more declarators, each potentially with an initializer.
 initDeclaratorList
 	returns[InitDeclaratorList initDeclaratorListRet]:
-	i = initDeclarator {$initDeclaratorListRet = new InitDeclaratorList($i.initDeclaratorRet);} (
-		Comma i1 = initDeclarator {$initDeclaratorListRet.addInitDeclarator($i1.initDeclaratorRet);}
+	firstInitDeclarator = initDeclarator { $initDeclaratorListRet = new InitDeclaratorList($firstInitDeclarator.initDeclaratorRet); 
+		} (
+		Comma nextInitDeclarator = initDeclarator { $initDeclaratorListRet.addInitDeclarator($nextInitDeclarator.initDeclaratorRet); 
+			}
 	)*;
 
+// Rule for a declarator, optionally followed by an '=' and an initializer.
 initDeclarator
 	returns[InitDeclarator initDeclaratorRet]:
-	d = declarator {$initDeclaratorRet = new InitDeclarator($d.declaratorRet);} (
-		Assign i = initializer {$initDeclaratorRet.setInitializer($i.initializerRet);}
-	)?;
-
-typeSpecifier
-	returns[TypeSpecifier typeSpecifierRet]:
-	t = Void {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Char {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Short {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Int {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Long {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Float {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Double {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Signed {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Unsigned {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Bool {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Identifier {$typeSpecifierRet = new TypeSpecifier($t.text, true); $typeSpecifierRet.setLine($t.line);
-		};
-
-specifierQualifierList
-	returns[SpecifierQualifierList specifierQualifierListRet]:
-	{$specifierQualifierListRet = new SpecifierQualifierList();} (
-		t = typeSpecifier {$specifierQualifierListRet.setTypeSpecifier($t.typeSpecifierRet);}
-		| Const
-	) (
-		s = specifierQualifierList {$specifierQualifierListRet.setSpecifierQualifierList($s.specifierQualifierListRet);
+	declaratorNode = declarator { $initDeclaratorRet = new InitDeclarator($declaratorNode.declaratorRet); 
+		} (
+		Assign initializerNode = initializer { $initDeclaratorRet.setInitializer($initializerNode.initializerRet); 
 			}
 	)?;
 
+// Rule for basic type specifiers (e.g., int, char, void) or a typedef name (Identifier).
+typeSpecifier
+	returns[TypeSpecifier typeSpecifierRet]:
+	typeKeyword = Void { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Char { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Short { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Int { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Long { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Float { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Double { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Signed { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Unsigned { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Bool { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typedefNameToken = Identifier // User-defined type name (from typedef)
+	{ $typeSpecifierRet = new TypeSpecifier($typedefNameToken.text, true); $typeSpecifierRet.setLine($typedefNameToken.line); 
+		};
+
+// Rule for a list of type specifiers (e.g., 'int') and type qualifiers (e.g., 'const').
+specifierQualifierList
+	returns[SpecifierQualifierList specifierQualifierListRet]:
+	{ $specifierQualifierListRet = new SpecifierQualifierList(); } (
+		typeSpecNode = typeSpecifier { $specifierQualifierListRet.setTypeSpecifier($typeSpecNode.typeSpecifierRet); 
+			}
+		| Const // Type qualifier
+	) (
+		recursiveSpecQualList = specifierQualifierList { $specifierQualifierListRet.setSpecifierQualifierList($recursiveSpecQualList.specifierQualifierListRet); 
+			}
+	)?;
+    
 declarator
 	returns[Declarator declaratorRet]:
 	{$declaratorRet = new Declarator();} (
