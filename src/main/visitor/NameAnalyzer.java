@@ -6,478 +6,266 @@ import main.ast.declaration_DIR.*;
 import main.ast.expression_DIR.*;
 import main.ast.literal_DIR.*;
 import main.ast.statement_DIR.*;
-import main.symbolTable.*;
-import main.symbolTable.exceptions.ItemAlreadyExistsException;
-import main.symbolTable.exceptions.ItemNotFoundException;
-import main.symbolTable.item.FuncDecSymbolTableItem;
-import main.symbolTable.item.VarDecSymbolTableItem;
+import main.symbolTable.SymbolTable;
+import main.visitor.Visitor;
 
+/**
+ * Splits the previous NameAnalyzer functionality into two parts:
+ * 1) NameAnalyzer.java: The entry point and delegator for visits.
+ * 2) NameAnalyzerVisitorUtils.java: Holds the original visit methods, referencing the parent NameAnalyzer’s fields.
+ */
 public class NameAnalyzer extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean noError = true;
 
+    private final NameAnalyzerVisitorUtils visitorUtils;
+
+    public NameAnalyzer() {
+        this.visitorUtils = new NameAnalyzerVisitorUtils(this);
+    }
+
     @Override
     public Void visit(Program program) {
-        SymbolTable.top = new SymbolTable();
-        SymbolTable.root = SymbolTable.top;
-
-        program.setSymbolTable(SymbolTable.top);
-        program.getTranslationUnit().accept(this);
-        symbolTableMain = SymbolTable.top;
-        return null;
+        return visitorUtils.visitProgram(program);
     }
 
+    @Override
     public Void visit(TranslationUnit translationUnit) {
-        for (ExternalDeclaration externalDeclaration : translationUnit.getExternalDeclaration()) {
-            externalDeclaration.accept(this);
-        }
-        return null;
+        return visitorUtils.visitTranslationUnit(translationUnit);
     }
 
+    @Override
     public Void visit(ExternalDeclaration externalDeclaration) {
-        if (externalDeclaration.getDeclaration() != null)
-            externalDeclaration.getDeclaration().accept(this);
-        else
-            externalDeclaration.getFunctionDefinition().accept(this);
-        return null;
+        return visitorUtils.visitExternalDeclaration(externalDeclaration);
     }
 
+    @Override
     public Void visit(FunctionDefinition functionDefinition) {
-        ParameterList plist = functionDefinition.getDeclarator().getDirectDec().getParameterList();
-        if (plist == null)
-            functionDefinition.setNumArgs(0);
-        else
-            functionDefinition.setNumArgs(plist.getParameterDecs().size());
-
-        FuncDecSymbolTableItem func_dec_item = new FuncDecSymbolTableItem(functionDefinition);
-        try {
-            SymbolTable.top.put(func_dec_item);
-        } catch (ItemAlreadyExistsException e) {
-            System.out.println("Redefinition of function \"" +
-                    functionDefinition.getDeclarator().getDirectDec().getDirectDec().getIdentifier()
-                    + "\" in line " + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
-            noError = false;
-        }
-
-        SymbolTable func_dec_symbol_table = new SymbolTable(SymbolTable.top);
-        functionDefinition.setSymbolTable(func_dec_symbol_table);
-        SymbolTable.push(func_dec_symbol_table);
-
-        if (functionDefinition.getDecSpecifiers() != null)
-            functionDefinition.getDecSpecifiers().accept(this);
-        functionDefinition.getDeclarator().accept(this);
-        if (functionDefinition.getDecList() != null)
-            functionDefinition.getDecList().accept(this);
-        functionDefinition.getCompoundStatement().accept(this);
-
-        SymbolTable.pop();
-        return null;
+        return visitorUtils.visitFunctionDefinition(functionDefinition);
     }
 
+    @Override
     public Void visit(CastExpression castExpression) {
-        if (castExpression.getCastExpression() != null)
-            castExpression.getCastExpression().accept(this);
-        if (castExpression.getExpression() != null)
-            castExpression.getExpression().accept(this);
-        if (castExpression.getTypeName() != null)
-            castExpression.getTypeName().accept(this);
-        return null;
+        return visitorUtils.visitCastExpression(castExpression);
     }
 
+    @Override
     public Void visit(Declaration declaration) {
-        declaration.getDeclarationSpecifiers().accept(this);
-        if (declaration.getInitDeclaratorList() != null)
-            declaration.getInitDeclaratorList().accept(this);
-        return null;
+        return visitorUtils.visitDeclaration(declaration);
     }
 
+    @Override
     public Void visit(DecList decList) {
-        for (Declaration declaration : decList.getDeclarations())
-            declaration.accept(this);
-        return null;
+        return visitorUtils.visitDecList(decList);
     }
 
+    @Override
     public Void visit(DeclarationSpecifiers declarationSpecifiers) {
-        for (DeclarationSpecifier declarationSpecifier : declarationSpecifiers.getDeclarationSpecifiers())
-            declarationSpecifier.accept(this);
-        if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null
-                && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef"))
-            declarationSpecifiers.getDeclarationSpecifiers().get(declarationSpecifiers.getDeclarationSpecifiers().size()
-                    - 1).getTypeSpecifier()
-                    .setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
-        return null;
+        return visitorUtils.visitDeclarationSpecifiers(declarationSpecifiers);
     }
 
+    @Override
     public Void visit(ForDec forDec) {
-        forDec.getDeclarationSpecifiers().accept(this);
-        if (forDec.getInitDecList() != null)
-            forDec.getInitDecList().accept(this);
-
-        return null;
+        return visitorUtils.visitForDec(forDec);
     }
 
+    @Override
     public Void visit(DeclarationSpecifier declarationSpecifier) {
-        if (declarationSpecifier.getTypeSpecifier() != null)
-            declarationSpecifier.getTypeSpecifier().accept(this);
-        return null;
+        return visitorUtils.visitDeclarationSpecifier(declarationSpecifier);
     }
 
+    @Override
     public Void visit(InitDeclaratorList initDeclaratorList) {
-        for (InitDeclarator initDeclarator : initDeclaratorList.getInitDeclarators())
-            initDeclarator.accept(this);
-
-        return null;
+        return visitorUtils.visitInitDeclaratorList(initDeclaratorList);
     }
 
+    @Override
     public Void visit(InitDeclarator initDeclarator) {
-        DirectDec directDec = initDeclarator.getDeclarator().getDirectDec();
-        while (directDec.getIdentifier().isEmpty())
-            directDec = directDec.getDirectDec();
-        if (!directDec.getIdentifier().isEmpty()) {
-            TypeSpecifier typeSpecifier = new TypeSpecifier(directDec.getIdentifier());
-            typeSpecifier.setLine(directDec.getLine());
-            directDec.setTypeSpecifier(typeSpecifier);
-            VarDecSymbolTableItem var_dec_item = new VarDecSymbolTableItem(typeSpecifier);
-            try {
-                SymbolTable.top.put(var_dec_item);
-            } catch (ItemAlreadyExistsException e) {
-                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
-                        + typeSpecifier.getLine());
-                noError = false;
-            }
-        }
-
-        initDeclarator.getDeclarator().accept(this);
-        if (initDeclarator.getInitializer() != null)
-            initDeclarator.getInitializer().accept(this);
-        return null;
+        return visitorUtils.visitInitDeclarator(initDeclarator);
     }
 
+    @Override
     public Void visit(ArgExpression argExpression) {
-        for (Expression expression : argExpression.getExpressions())
-            if (expression != null)
-                expression.accept(this);
-        return null;
+        return visitorUtils.visitArgExpression(argExpression);
     }
 
+    @Override
     public Void visit(UnaryOperator unaryOperator) {
-        return null;
+        return visitorUtils.visitUnaryOperator(unaryOperator);
     }
 
+    @Override
     public Void visit(TypeSpecifier typeSpecifier) {
-        try {
-            TypeSpecifier typeSpecifier2 = ((VarDecSymbolTableItem) SymbolTable.top
-                    .getItem(VarDecSymbolTableItem.START_KEY + typeSpecifier.getType())).getVarDec();
-            if (typeSpecifier2.isTypeDef()) {
-                typeSpecifier.setType(typeSpecifier2.getTypeDefName());
-                typeSpecifier.setNotVarDec();
-            }
-        } catch (ItemNotFoundException e) {
-
-        }
-
-        if (typeSpecifier.isVar_dec()) {
-            VarDecSymbolTableItem var_dec_item = new VarDecSymbolTableItem(typeSpecifier);
-            try {
-                SymbolTable.top.put(var_dec_item);
-            } catch (ItemAlreadyExistsException e) {
-                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
-                        + typeSpecifier.getLine());
-                noError = false;
-            }
-        }
-
-        return null;
+        return visitorUtils.visitTypeSpecifier(typeSpecifier);
     }
 
+    @Override
     public Void visit(AssignmentOp assignmentOp) {
-        return null;
+        return visitorUtils.visitAssignmentOp(assignmentOp);
     }
 
+    @Override
     public Void visit(Pointer pointer) {
-        return null;
+        return visitorUtils.visitPointer(pointer);
     }
 
+    @Override
     public Void visit(ParameterList parameterList) {
-        for (ParameterDec parameterDec : parameterList.getParameterDecs())
-            parameterDec.accept(this);
-        return null;
+        return visitorUtils.visitParameterList(parameterList);
     }
 
+    @Override
     public Void visit(Declarator declarator) {
-        declarator.getDirectDec().accept(this);
-        if (declarator.getPointer() != null)
-            declarator.getPointer().accept(this);
-        return null;
+        return visitorUtils.visitDeclarator(declarator);
     }
 
+    @Override
     public Void visit(DirectDec directDec) {
-        if (directDec.getDeclarator() != null)
-            directDec.getDeclarator().accept(this);
-        if (directDec.getDirectDec() != null)
-            directDec.getDirectDec().accept(this);
-        if (directDec.getIdentifierList() != null)
-            directDec.getIdentifierList().accept(this);
-        if (directDec.getExpression() != null)
-            directDec.getExpression().accept(this);
-        if (directDec.getParameterList() != null)
-            directDec.getParameterList().accept(this);
-        return null;
+        return visitorUtils.visitDirectDec(directDec);
     }
 
+    @Override
     public Void visit(SpecifierQualifierList specifierQualifierList) {
-        if (specifierQualifierList.getTypeSpecifier() != null)
-            specifierQualifierList.getTypeSpecifier().accept(this);
-        if (specifierQualifierList.getSpecifierQualifierList() != null)
-            specifierQualifierList.getSpecifierQualifierList().accept(this);
-        return null;
+        return visitorUtils.visitSpecifierQualifierList(specifierQualifierList);
     }
 
+    @Override
     public Void visit(ParameterDec parameterDec) {
-        parameterDec.getDeclarationSpecifier().accept(this);
-        if (parameterDec.getAbstractDec() != null)
-            parameterDec.getAbstractDec().accept(this);
-        if (parameterDec.getDeclarator() != null)
-            parameterDec.getDeclarator().accept(this);
-        return null;
+        return visitorUtils.visitParameterDec(parameterDec);
     }
 
+    @Override
     public Void visit(IdentifierList identifierList) {
-        return null;
+        return visitorUtils.visitIdentifierList(identifierList);
     }
 
+    @Override
     public Void visit(TypeName typeName) {
-        typeName.getSpecifierQualifierList().accept(this);
-        if (typeName.getAbstractDec() != null)
-            typeName.getAbstractDec().accept(this);
-        return null;
+        return visitorUtils.visitTypeName(typeName);
     }
 
+    @Override
     public Void visit(DirectAbsDec directAbsDec) {
-        if (directAbsDec.getExpression() != null)
-            directAbsDec.getExpression().accept(this);
-        if (directAbsDec.getAbstractDec() != null)
-            directAbsDec.getAbstractDec().accept(this);
-        if (directAbsDec.getParameterList() != null)
-            directAbsDec.getParameterList().accept(this);
-        if (directAbsDec.getDirectAbsDec() != null)
-            directAbsDec.getDirectAbsDec().accept(this);
-        return null;
+        return visitorUtils.visitDirectAbsDec(directAbsDec);
     }
 
+    @Override
     public Void visit(AbstractDec abstractDec) {
-        abstractDec.getPointer().accept(this);
-        if (abstractDec.getDirectAbsDec() != null)
-            abstractDec.getDirectAbsDec().accept(this);
-        return null;
+        return visitorUtils.visitAbstractDec(abstractDec);
     }
 
+    @Override
     public Void visit(Initializer initializer) {
-        if (initializer.getExpression() != null)
-            initializer.getExpression().accept(this);
-        else
-            initializer.getInitList().accept(this);
-        return null;
+        return visitorUtils.visitInitializer(initializer);
     }
 
+    @Override
     public Void visit(InitializerList initializerList) {
-        for (Initializer initializer : initializerList.getInitializers())
-            initializer.accept(this);
-        for (Designation designation : initializerList.getDesignations())
-            designation.accept(this);
-        return null;
+        return visitorUtils.visitInitializerList(initializerList);
     }
 
+    @Override
     public Void visit(Designation designation) {
-        for (Designator designator : designation.getDesignators())
-            designator.accept(this);
-        return null;
+        return visitorUtils.visitDesignation(designation);
     }
 
+    @Override
     public Void visit(Designator designator) {
-        if (designator.getExpression() != null)
-            designator.getExpression().accept(this);
-        return null;
+        return visitorUtils.visitDesignator(designator);
     }
 
+    @Override
     public Void visit(CompoundStatement compoundStatement) {
-        for (BlockItem blockItem : compoundStatement.getBlockItems()) {
-            blockItem.accept(this);
-        }
-        return null;
+        return visitorUtils.visitCompoundStatement(compoundStatement);
     }
 
+    @Override
     public Void visit(BlockItem blockItem) {
-        if (blockItem.getStatement() != null)
-            blockItem.getStatement().accept(this);
-        else
-            blockItem.getDeclaration().accept(this);
-        return null;
+        return visitorUtils.visitBlockItem(blockItem);
     }
 
+    @Override
     public Void visit(ExpressionStatement expressionStatement) {
-        if (expressionStatement.getExpression() != null)
-            expressionStatement.getExpression().accept(this);
-        return null;
+        return visitorUtils.visitExpressionStatement(expressionStatement);
     }
 
+    @Override
     public Void visit(SelectionStatement selectionStatement) {
-        SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
-        selectionStatement.setSymbolTable(symbolTable);
-        SymbolTable.push(symbolTable);
-
-        selectionStatement.getExpression().accept(this);
-        selectionStatement.getMainStatement().accept(this);
-        if (selectionStatement.getElseStatement() != null)
-            selectionStatement.getElseStatement().accept(this);
-
-        SymbolTable.pop();
-        return null;
+        return visitorUtils.visitSelectionStatement(selectionStatement);
     }
 
+    @Override
     public Void visit(IterStatement iterStatement) {
-        SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
-        iterStatement.setSymbolTable(symbolTable);
-        SymbolTable.push(symbolTable);
-
-        if (iterStatement.getForCondition() != null)
-            iterStatement.getForCondition().accept(this);
-        if (iterStatement.getExpression() != null)
-            iterStatement.getExpression().accept(this);
-        if (iterStatement.getStatement() != null)
-            iterStatement.getStatement().accept(this);
-
-        SymbolTable.pop();
-        return null;
+        return visitorUtils.visitIterStatement(iterStatement);
     }
 
+    @Override
     public Void visit(ForCondition forCondition) {
-        if (forCondition.getForDec() != null)
-            forCondition.getForDec().accept(this);
-        if (forCondition.getExpression() != null)
-            forCondition.getExpression().accept(this);
-        if (forCondition.getForExpression1() != null)
-            forCondition.getForExpression1().accept(this);
-        if (forCondition.getForExpression2() != null)
-            forCondition.getForExpression2().accept(this);
-        return null;
+        return visitorUtils.visitForCondition(forCondition);
     }
 
+    @Override
     public Void visit(ForExpression forExpression) {
-        for (Expression expression : forExpression.getExpressions()) {
-            if (expression != null)
-                expression.accept(this);
-        }
-        return null;
+        return visitorUtils.visitForExpression(forExpression);
     }
 
+    @Override
     public Void visit(JumpStatement jumpStatement) {
-        if (jumpStatement.getCondition() != null)
-            jumpStatement.getCondition().accept(this);
-        return null;
+        return visitorUtils.visitJumpStatement(jumpStatement);
     }
 
+    @Override
     public Void visit(FuncCall funcCall) {
-
-        String funcName = ((Identifier) funcCall.getExpression()).getIdentifier();
-        int line = ((Identifier) funcCall.getExpression()).getLine();
-        ((Identifier) funcCall.getExpression()).setFunc();
-
-        if (funcName.equals("scanf") || funcName.equals("printf")) {
-        }
-
-        else {
-            try {
-                SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
-            } catch (ItemNotFoundException e) {
-                System.out.println("Line:" + line + "-> " + funcName + " not declared");
-                noError = false;
-            }
-        }
-
-        funcCall.getExpression().accept(this);
-        if (funcCall.getArgExpression() != null) {
-            funcCall.getArgExpression().accept(this);
-        }
-
-        return null;
+        return visitorUtils.visitFuncCall(funcCall);
     }
 
+    @Override
     public Void visit(UnaryExpression unaryExpr) {
-        unaryExpr.getExpression().accept(this);
-        return null;
+        return visitorUtils.visitUnaryExpression(unaryExpr);
     }
 
+    @Override
     public Void visit(ExpressionCast expressionCast) {
-        expressionCast.getCastExpression().accept(this);
-        expressionCast.getTypeName().accept(this);
-        return null;
+        return visitorUtils.visitExpressionCast(expressionCast);
     }
 
+    @Override
     public Void visit(BinaryExpression binaryExpr) {
-        binaryExpr.getExpression1().accept(this);
-        binaryExpr.getExpression2().accept(this);
-        if (binaryExpr.getAssignmentOp() != null)
-            binaryExpr.getAssignmentOp().accept(this);
-        return null;
+        return visitorUtils.visitBinaryExpression(binaryExpr);
     }
 
+    @Override
     public Void visit(CondExpression condExpr) {
-        condExpr.getExpression1().accept(this);
-        condExpr.getExpression2().accept(this);
-        condExpr.getExpression3().accept(this);
-        return null;
+        return visitorUtils.visitCondExpression(condExpr);
     }
 
+    @Override
     public Void visit(CommaExpression commaExpression) {
-        for (Expression expression : commaExpression.getExpressions())
-            if (expression != null)
-                expression.accept(this);
-        return null;
+        return visitorUtils.visitCommaExpression(commaExpression);
     }
 
+    @Override
     public Void visit(ArrayIndexing arrayIndexing) {
-        arrayIndexing.getExpression1().accept(this);
-        arrayIndexing.getExpression2().accept(this);
-        return null;
+        return visitorUtils.visitArrayIndexing(arrayIndexing);
     }
 
+    @Override
     public Void visit(Identifier identifier) {
-        if (!identifier.isFunc() && !identifier.getIdentifier().startsWith("\"")) {
-            try {
-                SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + identifier.getIdentifier());
-            } catch (ItemNotFoundException e) {
-                System.out
-                        .println("Line:" + identifier.getLine() + "-> " + identifier.getIdentifier() + " not declared");
-                noError = false;
-            }
-        }
-
-        return null;
+        return visitorUtils.visitIdentifier(identifier);
     }
 
+    @Override
     public Void visit(Constant constant) {
-        return null;
+        return visitorUtils.visitConstant(constant);
     }
 
+    @Override
     public Void visit(TIExpression tiExpression) {
-        tiExpression.getInitializerList().accept(this);
-        tiExpression.getTypeName().accept(this);
-        return null;
+        return visitorUtils.visitTIExpression(tiExpression);
     }
 
+    @Override
     public Void visit(PrefixExpression prefixExpr) {
-        if (prefixExpr.getExpression() != null)
-            prefixExpr.getExpression().accept(this);
-        if (prefixExpr.getCastExpression() != null)
-            prefixExpr.getCastExpression().accept(this);
-        if (prefixExpr.getTypeName() != null)
-            prefixExpr.getTypeName().accept(this);
-        if (prefixExpr.getTIExpression() != null)
-            prefixExpr.getTIExpression().accept(this);
-        if (prefixExpr.getUnaryOp() != null)
-            prefixExpr.getUnaryOp().accept(this);
-        return null;
+        return visitorUtils.visitPrefixExpression(prefixExpr);
     }
-
 }
