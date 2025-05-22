@@ -117,7 +117,7 @@ public class NameAnalyzerVisitorUtils {
         if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null
                 && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef")) {
             declarationSpecifiers.getDeclarationSpecifiers()
-                    .getLast()
+                    .get(declarationSpecifiers.getDeclarationSpecifiers().size()-1)
                     .getTypeSpecifier()
                     .setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
         }
