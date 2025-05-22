@@ -54,7 +54,7 @@ jobs:
         setup-command: ''
         command: javac -cp utilities/antlr-4.13.1-complete.jar -d out $(find src gen
           -name "*.java") && java -cp out:utilities/antlr-4.13.1-complete.jar SimpleLang
-          "tests/Optimization/1-Unused Variables and Function Parameters.cpy" | sort
+          "tests/Optimization/1-UnusedVariablesandFunctionParameters.cpy" | sort
           -t':' -k1.6n -k2
         input: ''
         expected-output: |-

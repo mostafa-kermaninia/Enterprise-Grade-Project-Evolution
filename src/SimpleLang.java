@@ -40,7 +40,8 @@ public class SimpleLang {
         if (nameAnalyzer.SuccessfullyDone()) {
             while(needChange) {
                 Optimizer OptimizedCode = new Optimizer(nameAnalyzer.getRootTable());
-                OptimizedCode.visit(program);
+//                OptimizedCode.visit(program);
+                nameAnalyzer.visit(program);
                 needChange = OptimizedCode.changed;
             }
             TestVisitor visitor = new TestVisitor();
