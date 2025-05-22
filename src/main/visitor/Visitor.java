@@ -57,7 +57,7 @@ public abstract class Visitor<T> implements IVisitor<T> {
         return null;
     }
 
-    public T visit(AssignmentOp assignmentOp) {
+    public T visit(AssignmentOperation assignmentOperation) {
         return null;
     }
 

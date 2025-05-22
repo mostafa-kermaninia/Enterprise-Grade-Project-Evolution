@@ -3,7 +3,7 @@ import main.ast.CPY_DIR.CPYtoC;
 import main.grammar.SimpleLangLexer;
 import main.grammar.SimpleLangParser;
 import main.visitor.NameAnalyzer;
-import main.optimization.Optimizer;
+import main.optimization.Operationtimizer;
 import main.visitor.TestVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -26,10 +26,10 @@ public class SimpleLang {
 
         if (nameAnalyzer.noError) {
             while (true) {
-                Optimizer finalOptimizedCode = new Optimizer(nameAnalyzer.symbolTableMain);
-                finalOptimizedCode.visit(program);
+                Operationtimizer finalOperationtimizedCode = new Operationtimizer(nameAnalyzer.symbolTableMain);
+                finalOperationtimizedCode.visit(program);
                 nameAnalyzer.visit(program);
-                if (!finalOptimizedCode.changed) {
+                if (!finalOperationtimizedCode.changed) {
                     break;
                 }
             }

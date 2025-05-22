@@ -6,20 +6,20 @@ import main.ast.literal_DIR.UnaryOperator;
 import main.visitor.IVisitor;
 
 public class PrefixExpression extends Expression {
-    private ArrayList<String> Ops = new ArrayList<>();
+    private ArrayList<String> Operations = new ArrayList<>();
     private String identifier;
     private String constant;
     private Expression expression;
     private TIExpression tiExpression;
     private CastExpression castExpression;
-    private UnaryOperator unaryOp;
+    private UnaryOperator unaryOperation;
     private TypeName typeName;
 
     public PrefixExpression() {
         expression = null;
         tiExpression = null;
         castExpression = null;
-        unaryOp = null;
+        unaryOperation = null;
         typeName = null;
     }
 
@@ -28,12 +28,12 @@ public class PrefixExpression extends Expression {
         return visitor.visit(this);
     }
 
-    public void addOp(String op) {
-        Ops.add(op);
+    public void addOperation(String op) {
+        Operations.add(op);
     }
 
-    public ArrayList<String> getOps() {
-        return Ops;
+    public ArrayList<String> getOperations() {
+        return Operations;
     }
 
     public String getIdentifier() {
@@ -76,12 +76,12 @@ public class PrefixExpression extends Expression {
         this.castExpression = castExpression;
     }
 
-    public UnaryOperator getUnaryOp() {
-        return unaryOp;
+    public UnaryOperator getUnaryOperation() {
+        return unaryOperation;
     }
 
-    public void setUnaryOp(UnaryOperator unaryOp) {
-        this.unaryOp = unaryOp;
+    public void setUnaryOperation(UnaryOperator unaryOperation) {
+        this.unaryOperation = unaryOperation;
     }
 
     public TypeName getTypeName() {

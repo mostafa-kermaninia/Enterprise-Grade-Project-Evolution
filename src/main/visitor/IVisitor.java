@@ -33,7 +33,7 @@ public interface IVisitor<T> {
 
     T visit(InitDeclaratorList initDeclaratorList);
 
-    T visit(AssignmentOp assignmentOp);
+    T visit(AssignmentOperation assignmentOperation);
 
     T visit(UnaryOperator unaryOperator);
 

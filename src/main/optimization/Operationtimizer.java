@@ -13,11 +13,11 @@ import main.symbolTable.item.SymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 import main.visitor.Visitor;
 
-public class Optimizer extends Visitor<Void> {
+public class Operationtimizer extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean changed = false;
 
-    public Optimizer(SymbolTable symbolTableMain) {
+    public Operationtimizer(SymbolTable symbolTableMain) {
         this.symbolTableMain = symbolTableMain;
     }
 
@@ -153,7 +153,7 @@ public class Optimizer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(AssignmentOp assignmentOp) {
+    public Void visit(AssignmentOperation assignmentOperation) {
         return null;
     }
 
@@ -279,7 +279,8 @@ public class Optimizer extends Visitor<Void> {
                 ExpressionStatement expressionStatement = (ExpressionStatement) blockItem.getStatement();
                 if (expressionStatement.getExpression() != null
                         && ((expressionStatement.getExpression() instanceof BinaryExpression
-                                && ((BinaryExpression) expressionStatement.getExpression()).getAssignmentOp() == null)
+                                && ((BinaryExpression) expressionStatement.getExpression())
+                                        .getAssignmentOperation() == null)
                                 ||
                                 expressionStatement.getExpression() instanceof Constant
                                 || expressionStatement.getExpression() instanceof Identifier
@@ -415,8 +416,8 @@ public class Optimizer extends Visitor<Void> {
     public Void visit(BinaryExpression binaryExpression) {
         binaryExpression.getExpression1().accept(this);
         binaryExpression.getExpression2().accept(this);
-        if (binaryExpression.getAssignmentOp() != null)
-            binaryExpression.getAssignmentOp().accept(this);
+        if (binaryExpression.getAssignmentOperation() != null)
+            binaryExpression.getAssignmentOperation().accept(this);
         return null;
     }
 
@@ -463,8 +464,8 @@ public class Optimizer extends Visitor<Void> {
             prefixExpr.getTypeName().accept(this);
         if (prefixExpr.getTIExpression() != null)
             prefixExpr.getTIExpression().accept(this);
-        if (prefixExpr.getUnaryOp() != null)
-            prefixExpr.getUnaryOp().accept(this);
+        if (prefixExpr.getUnaryOperation() != null)
+            prefixExpr.getUnaryOperation().accept(this);
         return null;
     }
 }

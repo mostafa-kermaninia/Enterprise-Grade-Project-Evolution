@@ -190,7 +190,7 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(AssignmentOp assignmentOp) {
+    public Void visit(AssignmentOperation assignmentOperation) {
         return null;
     }
 
@@ -417,8 +417,8 @@ public class NameAnalyzer extends Visitor<Void> {
     public Void visit(BinaryExpression binaryExpr) {
         binaryExpr.getExpression1().accept(this);
         binaryExpr.getExpression2().accept(this);
-        if (binaryExpr.getAssignmentOp() != null)
-            binaryExpr.getAssignmentOp().accept(this);
+        if (binaryExpr.getAssignmentOperation() != null)
+            binaryExpr.getAssignmentOperation().accept(this);
         return null;
     }
 
@@ -475,8 +475,8 @@ public class NameAnalyzer extends Visitor<Void> {
             prefixExpr.getTypeName().accept(this);
         if (prefixExpr.getTIExpression() != null)
             prefixExpr.getTIExpression().accept(this);
-        if (prefixExpr.getUnaryOp() != null)
-            prefixExpr.getUnaryOp().accept(this);
+        if (prefixExpr.getUnaryOperation() != null)
+            prefixExpr.getUnaryOperation().accept(this);
         return null;
     }
 

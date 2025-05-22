@@ -3,10 +3,10 @@ package main.ast.literal_DIR;
 import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class UnaryOperator extends Node {
+public class AssignmentOperation extends Node {
     private String OperationType;
 
-    public UnaryOperator(String OperationType) {
+    public AssignmentOperation(String OperationType) {
         this.OperationType = OperationType;
     }
 

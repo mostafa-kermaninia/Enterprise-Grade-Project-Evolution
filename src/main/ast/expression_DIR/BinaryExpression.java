@@ -1,13 +1,13 @@
 package main.ast.expression_DIR;
 
-import main.ast.literal_DIR.AssignmentOp;
+import main.ast.literal_DIR.AssignmentOperation;
 import main.visitor.IVisitor;
 
 public class BinaryExpression extends Expression {
     private Expression expression1;
     private Expression expression2;
     private String operator;
-    private AssignmentOp assignmentOp;
+    private AssignmentOperation assignmentOperation;
 
     public BinaryExpression(Expression expression1, Expression expression2, String operator) {
         this.expression1 = expression1;
@@ -15,10 +15,10 @@ public class BinaryExpression extends Expression {
         this.operator = operator;
     }
 
-    public BinaryExpression(Expression expression1, Expression expression2, AssignmentOp assignmentOp) {
+    public BinaryExpression(Expression expression1, Expression expression2, AssignmentOperation assignmentOperation) {
         this.expression1 = expression1;
         this.expression2 = expression2;
-        this.assignmentOp = assignmentOp;
+        this.assignmentOperation = assignmentOperation;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class BinaryExpression extends Expression {
         return operator;
     }
 
-    public AssignmentOp getAssignmentOp() {
-        return assignmentOp;
+    public AssignmentOperation getAssignmentOperation() {
+        return assignmentOperation;
     }
 }
