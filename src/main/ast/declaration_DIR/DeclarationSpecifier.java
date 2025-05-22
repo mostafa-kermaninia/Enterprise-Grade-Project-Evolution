@@ -1,7 +1,7 @@
 package main.ast.declaration_DIR;
 
-import main.ast.literal_DIR.TypeSpecifier;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.literal_DIR.TypeSpecifier;
 import main.visitor.IVisitor;
 
 public class DeclarationSpecifier extends Node {
@@ -17,9 +17,19 @@ public class DeclarationSpecifier extends Node {
         return visitor.visit(this);
     }
 
-    public TypeSpecifier getTypeSpecifier() { return typeSpecifier; }
-    public void setTypeSpecifier(TypeSpecifier typeSpecifier) { this.typeSpecifier = typeSpecifier; }
+    public TypeSpecifier getTypeSpecifier() {
+        return typeSpecifier;
+    }
 
-    public String getType() { return typeName; }
-    public void setType(String typeName) { this.typeName = typeName; }
+    public void setTypeSpecifier(TypeSpecifier typeSpecifier) {
+        this.typeSpecifier = typeSpecifier;
+    }
+
+    public String getType() {
+        return typeName;
+    }
+
+    public void setType(String typeName) {
+        this.typeName = typeName;
+    }
 }

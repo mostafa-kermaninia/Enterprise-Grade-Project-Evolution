@@ -9,13 +9,11 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-
 import java.io.IOException;
 
 public class SimpleLang {
     public static void main(String[] args) throws IOException {
         CPYtoC finalCode = new CPYtoC(args[0]);
-//        System.out.print(convertor.converted);
         CharStream reader = CharStreams.fromString(finalCode.finalCcode);
         SimpleLangLexer simpleLangLexer = new SimpleLangLexer(reader);
         CommonTokenStream tokens = new CommonTokenStream(simpleLangLexer);
@@ -23,16 +21,17 @@ public class SimpleLang {
         Program program = flParser.program().programRet;
         System.out.println();
 
-
         NameAnalyzer nameAnalyzer = new NameAnalyzer();
         nameAnalyzer.visit(program);
 
         if (nameAnalyzer.noError) {
-            while(true) {
+            while (true) {
                 Optimizer finalOptimizedCode = new Optimizer(nameAnalyzer.symbolTableMain);
                 finalOptimizedCode.visit(program);
                 nameAnalyzer.visit(program);
-                if(!finalOptimizedCode.hasChanged()){break;}
+                if (!finalOptimizedCode.changed) {
+                    break;
+                }
             }
             TestVisitor my_visitor = new TestVisitor();
             my_visitor.visit(program);

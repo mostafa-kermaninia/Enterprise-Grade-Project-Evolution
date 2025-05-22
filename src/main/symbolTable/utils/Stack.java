@@ -2,19 +2,22 @@ package main.symbolTable.utils;
 
 import java.util.ArrayList;
 
-public class Stack <T>{
+public class Stack<T> {
     private int top;
     private ArrayList<T> elements;
-    public Stack(){
+
+    public Stack() {
         this.top = -1;
         elements = new ArrayList<>();
     }
-    public void push(T toBePushed){
+
+    public void push(T toBePushed) {
         this.elements.add(toBePushed);
         ++this.top;
     }
-    public T pop(){
-        if(this.top == -1){
+
+    public T pop() {
+        if (this.top == -1) {
             return null;
         }
         --this.top;

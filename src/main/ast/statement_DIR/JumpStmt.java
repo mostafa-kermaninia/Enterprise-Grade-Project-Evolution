@@ -6,13 +6,14 @@ import main.visitor.IVisitor;
 public class JumpStmt extends Stmt {
     private Expr returnExpr;
 
-    public JumpStmt() { returnExpr = null; }
+    public JumpStmt() {
+        returnExpr = null;
+    }
 
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);
     }
-
 
     public Expr getCondition() {
         return returnExpr;

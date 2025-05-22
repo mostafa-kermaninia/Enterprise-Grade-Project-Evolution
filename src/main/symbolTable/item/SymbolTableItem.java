@@ -5,6 +5,11 @@ public abstract class SymbolTableItem {
 
     private boolean isUsed = false;
 
-    public boolean isUsed() { return isUsed; }
-    public void setUsed() { this.isUsed = true; }
+    public boolean isUsed() {
+        return isUsed;
+    }
+
+    public void setUsed() {
+        this.isUsed = true;
+    }
 }

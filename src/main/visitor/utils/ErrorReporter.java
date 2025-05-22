@@ -1,6 +1,5 @@
 package main.visitor.utils;
 
-
 public interface ErrorReporter {
 
     void reportError(String message, int line);

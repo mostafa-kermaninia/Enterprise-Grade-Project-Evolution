@@ -17,8 +17,15 @@ public class Declaration extends Node {
         return visitor.visit(this);
     }
 
-    public InitDeclaratorList getInitDeclaratorList() { return initDeclaratorList; }
-    public void setInitDecList(InitDeclaratorList initDeclaratorList) { this.initDeclaratorList = initDeclaratorList; }
+    public InitDeclaratorList getInitDeclaratorList() {
+        return initDeclaratorList;
+    }
 
-    public DeclarationSpecifiers getDeclarationSpecifiers() { return declarationSpecifiers; }
+    public void setInitDecList(InitDeclaratorList initDeclaratorList) {
+        this.initDeclaratorList = initDeclaratorList;
+    }
+
+    public DeclarationSpecifiers getDeclarationSpecifiers() {
+        return declarationSpecifiers;
+    }
 }

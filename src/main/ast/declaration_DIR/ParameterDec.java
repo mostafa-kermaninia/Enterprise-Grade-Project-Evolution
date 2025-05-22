@@ -19,12 +19,24 @@ public class ParameterDec extends Node {
         return visitor.visit(this);
     }
 
-    public DeclarationSpecifiers getDeclarationSpecifier() {return declarationSpecifiers;}
+    public DeclarationSpecifiers getDeclarationSpecifier() {
+        return declarationSpecifiers;
+    }
 
-    public void setDeclarator(Declarator declarator) { this.declarator = declarator; }
-    public Declarator getDeclarator() { return declarator; }
+    public void setDeclarator(Declarator declarator) {
+        this.declarator = declarator;
+    }
 
-    public void setAbstractDec(AbstractDec abstractDec) { this.abstractDec = abstractDec; }
-    public AbstractDec getAbstractDec() { return abstractDec; }
+    public Declarator getDeclarator() {
+        return declarator;
+    }
+
+    public void setAbstractDec(AbstractDec abstractDec) {
+        this.abstractDec = abstractDec;
+    }
+
+    public AbstractDec getAbstractDec() {
+        return abstractDec;
+    }
 
 }

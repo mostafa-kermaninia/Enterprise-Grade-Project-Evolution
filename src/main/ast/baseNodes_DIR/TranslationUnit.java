@@ -1,4 +1,5 @@
 package main.ast.baseNodes_DIR;
+
 import main.ast.literal_DIR.ExternalDeclaration;
 import main.ast.literal_DIR.FunctionDefinition;
 
@@ -9,14 +10,18 @@ import java.util.ArrayList;
 public class TranslationUnit extends Node {
     private ArrayList<ExternalDeclaration> externalDeclaration;
 
-    public TranslationUnit() { this.externalDeclaration = new ArrayList<ExternalDeclaration>(); }
+    public TranslationUnit() {
+        this.externalDeclaration = new ArrayList<ExternalDeclaration>();
+    }
 
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);
     }
 
-    public ArrayList<ExternalDeclaration> getExternalDeclaration() { return externalDeclaration;}
+    public ArrayList<ExternalDeclaration> getExternalDeclaration() {
+        return externalDeclaration;
+    }
 
     public void addExternalDeclaration(ExternalDeclaration externalDeclaration) {
         this.externalDeclaration.add(externalDeclaration);
@@ -28,10 +33,11 @@ public class TranslationUnit extends Node {
             if (externalDeclaration.getFunctionDefinition() == null)
                 continue;
             if (externalDeclaration.getFunctionDefinition().equals(funcDec)) {
-                String funcName = externalDeclaration.getFunctionDefinition().getDeclarator().getDirectDec().getDirectDec().getIdentifier();
+                String funcName = externalDeclaration.getFunctionDefinition().getDeclarator().getDirectDec()
+                        .getDirectDec().getIdentifier();
                 if (funcName.equals("main"))
                     return false;
-                else  {
+                else {
                     this.externalDeclaration.remove(i);
                     return true;
                 }

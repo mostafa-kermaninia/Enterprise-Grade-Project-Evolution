@@ -18,10 +18,10 @@ public class ArgExpr extends Node {
         return visitor.visit(this);
     }
 
-
     public ArrayList<Expr> getExprs() {
         return exprs;
     }
+
     public void addExpr(Expr expr) {
         this.exprs.add(expr);
     }
@@ -32,5 +32,7 @@ public class ArgExpr extends Node {
         }
     }
 
-    public void removeLastExpr() { exprs.remove(exprs.size()-1); }
+    public void removeLastExpr() {
+        exprs.remove(exprs.size() - 1);
+    }
 }

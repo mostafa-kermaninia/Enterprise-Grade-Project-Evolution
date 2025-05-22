@@ -1,9 +1,8 @@
 package main.ast.expression_DIR;
 
+import java.util.ArrayList;
 import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
-
-import java.util.ArrayList;
 
 public class IdentifierList extends Node {
     private ArrayList<String> identifiers;
@@ -18,7 +17,11 @@ public class IdentifierList extends Node {
         return visitor.visit(this);
     }
 
+    public ArrayList<String> addIdentifier() {
+        return identifiers;
+    }
 
-    public ArrayList<String> addIdentifier() { return identifiers; }
-    public void addIdentifier(String identifier) { this.identifiers.add(identifier); }
+    public void addIdentifier(String identifier) {
+        this.identifiers.add(identifier);
+    }
 }

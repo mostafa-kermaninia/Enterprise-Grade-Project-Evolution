@@ -1,14 +1,14 @@
 package main.ast.declaration_DIR;
 
-import main.ast.literal_DIR.Pointer;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.literal_DIR.Pointer;
 import main.visitor.IVisitor;
 
 public class AbstractDec extends Node {
     private Pointer pointer;
     private DirectAbsDec directAbsDec;
 
-    public AbstractDec(){
+    public AbstractDec() {
         directAbsDec = null;
     }
 
@@ -17,13 +17,19 @@ public class AbstractDec extends Node {
         return visitor.visit(this);
     }
 
-
     public Pointer getPointer() {
         return pointer;
     }
-    public void setPointer(Pointer pointer) {this.pointer = pointer;}
 
+    public void setPointer(Pointer pointer) {
+        this.pointer = pointer;
+    }
 
-    public DirectAbsDec getDirectAbsDec() { return directAbsDec; }
-    public void setDirectAbsDec(DirectAbsDec directAbsDec) { this.directAbsDec = directAbsDec; }
+    public DirectAbsDec getDirectAbsDec() {
+        return directAbsDec;
+    }
+
+    public void setDirectAbsDec(DirectAbsDec directAbsDec) {
+        this.directAbsDec = directAbsDec;
+    }
 }

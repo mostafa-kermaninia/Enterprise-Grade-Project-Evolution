@@ -1,22 +1,21 @@
 package main.visitor;
 
-import main.ast.declaration_DIR.*;
-import main.ast.literal_DIR.*;
-import main.ast.expression_DIR.*;
-import main.ast.statement_DIR.*;
 import main.ast.baseNodes_DIR.Program;
 import main.ast.baseNodes_DIR.TranslationUnit;
+import main.ast.declaration_DIR.*;
+import main.ast.expression_DIR.*;
+import main.ast.literal_DIR.*;
+import main.ast.statement_DIR.*;
 import main.symbolTable.*;
 import main.symbolTable.exceptions.ItemAlreadyExistsException;
 import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.FuncDecSymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 
-
-
-public class NameAnalyzer extends Visitor<Void>{
+public class NameAnalyzer extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean noError = true;
+
     @Override
     public Void visit(Program program) {
         SymbolTable.top = new SymbolTable();
@@ -29,7 +28,7 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(TranslationUnit translationUnit) {
-        for (ExternalDeclaration externalDeclaration : translationUnit.getExternalDeclaration()){
+        for (ExternalDeclaration externalDeclaration : translationUnit.getExternalDeclaration()) {
             externalDeclaration.accept(this);
         }
         return null;
@@ -50,17 +49,15 @@ public class NameAnalyzer extends Visitor<Void>{
         else
             functionDefinition.setNumArgs(plist.getParameterDecs().size());
 
-
         FuncDecSymbolTableItem func_dec_item = new FuncDecSymbolTableItem(functionDefinition);
         try {
             SymbolTable.top.put(func_dec_item);
         } catch (ItemAlreadyExistsException e) {
             System.out.println("Redefinition of function \"" +
                     functionDefinition.getDeclarator().getDirectDec().getDirectDec().getIdentifier()
-                    +"\" in line " + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
+                    + "\" in line " + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
             noError = false;
         }
-
 
         SymbolTable func_dec_symbol_table = new SymbolTable(SymbolTable.top);
         functionDefinition.setSymbolTable(func_dec_symbol_table);
@@ -87,7 +84,6 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(Declaration declaration) {
         declaration.getDeclarationSpecifiers().accept(this);
         if (declaration.getInitDeclaratorList() != null)
@@ -104,9 +100,11 @@ public class NameAnalyzer extends Visitor<Void>{
     public Void visit(DeclarationSpecifiers declarationSpecifiers) {
         for (DeclarationSpecifier declarationSpecifier : declarationSpecifiers.getDeclarationSpecifiers())
             declarationSpecifier.accept(this);
-        if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef"))
+        if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null
+                && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef"))
             declarationSpecifiers.getDeclarationSpecifiers().get(declarationSpecifiers.getDeclarationSpecifiers().size()
-                    - 1 ).getTypeSpecifier().setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
+                    - 1).getTypeSpecifier()
+                    .setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
         return null;
     }
 
@@ -117,7 +115,6 @@ public class NameAnalyzer extends Visitor<Void>{
 
         return null;
     }
-
 
     public Void visit(DeclarationSpecifier declarationSpecifier) {
         if (declarationSpecifier.getTypeSpecifier() != null)
@@ -136,7 +133,7 @@ public class NameAnalyzer extends Visitor<Void>{
         DirectDec directDec = initDeclarator.getDeclarator().getDirectDec();
         while (directDec.getIdentifier().isEmpty())
             directDec = directDec.getDirectDec();
-        if (!directDec.getIdentifier().isEmpty()){
+        if (!directDec.getIdentifier().isEmpty()) {
             TypeSpecifier typeSpecifier = new TypeSpecifier(directDec.getIdentifier());
             typeSpecifier.setLine(directDec.getLine());
             directDec.setTypeSpecifier(typeSpecifier);
@@ -144,7 +141,8 @@ public class NameAnalyzer extends Visitor<Void>{
             try {
                 SymbolTable.top.put(var_dec_item);
             } catch (ItemAlreadyExistsException e) {
-                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line " + typeSpecifier.getLine());
+                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
+                        + typeSpecifier.getLine());
                 noError = false;
             }
         }
@@ -166,15 +164,15 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(TypeSpecifier typeSpecifier) {
         try {
-            TypeSpecifier typeSpecifier2 = ((VarDecSymbolTableItem) SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + typeSpecifier.getType())).getVarDec();
+            TypeSpecifier typeSpecifier2 = ((VarDecSymbolTableItem) SymbolTable.top
+                    .getItem(VarDecSymbolTableItem.START_KEY + typeSpecifier.getType())).getVarDec();
             if (typeSpecifier2.isTypeDef()) {
                 typeSpecifier.setType(typeSpecifier2.getTypeDefName());
                 typeSpecifier.setNotVarDec();
             }
-        } catch(ItemNotFoundException e){
+        } catch (ItemNotFoundException e) {
 
         }
 
@@ -183,11 +181,11 @@ public class NameAnalyzer extends Visitor<Void>{
             try {
                 SymbolTable.top.put(var_dec_item);
             } catch (ItemAlreadyExistsException e) {
-                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line " + typeSpecifier.getLine());
+                System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
+                        + typeSpecifier.getLine());
                 noError = false;
             }
         }
-
 
         return null;
     }
@@ -205,7 +203,6 @@ public class NameAnalyzer extends Visitor<Void>{
             parameterDec.accept(this);
         return null;
     }
-
 
     public Void visit(Declarator declarator) {
         declarator.getDirectDec().accept(this);
@@ -256,7 +253,6 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(DirectAbsDec directAbsDec) {
         if (directAbsDec.getExpr() != null)
             directAbsDec.getExpr().accept(this);
@@ -305,7 +301,7 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(CompoundStmt compoundStmt) {
-        for (BlockItem blockItem : compoundStmt.getBlockItems()){
+        for (BlockItem blockItem : compoundStmt.getBlockItems()) {
             blockItem.accept(this);
         }
         return null;
@@ -339,7 +335,6 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(IterStmt iterStmt) {
         SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
         iterStmt.setSymbolTable(symbolTable);
@@ -351,7 +346,6 @@ public class NameAnalyzer extends Visitor<Void>{
             iterStmt.getExpr().accept(this);
         if (iterStmt.getStmt() != null)
             iterStmt.getStmt().accept(this);
-
 
         SymbolTable.pop();
         return null;
@@ -389,11 +383,12 @@ public class NameAnalyzer extends Visitor<Void>{
         int line = ((Identifier) funcCall.getExpr()).getLine();
         ((Identifier) funcCall.getExpr()).setFunc();
 
-        if (funcName.equals("scanf") || funcName.equals("printf")){}
+        if (funcName.equals("scanf") || funcName.equals("printf")) {
+        }
 
         else {
             try {
-                SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY  + funcCall.getNumArgs() + funcName );
+                SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
             } catch (ItemNotFoundException e) {
                 System.out.println("Line:" + line + "-> " + funcName + " not declared");
                 noError = false;
@@ -448,11 +443,12 @@ public class NameAnalyzer extends Visitor<Void>{
     }
 
     public Void visit(Identifier identifier) {
-        if (!identifier.isFunc() && !identifier.getIdentifier().startsWith("\"")){
+        if (!identifier.isFunc() && !identifier.getIdentifier().startsWith("\"")) {
             try {
                 SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + identifier.getIdentifier());
             } catch (ItemNotFoundException e) {
-                System.out.println("Line:" + identifier.getLine() + "-> " + identifier.getIdentifier() + " not declared");
+                System.out
+                        .println("Line:" + identifier.getLine() + "-> " + identifier.getIdentifier() + " not declared");
                 noError = false;
             }
         }
@@ -470,7 +466,6 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(PrefixExpr prefixExpr) {
         if (prefixExpr.getExpr() != null)
             prefixExpr.getExpr().accept(this);
@@ -485,7 +480,4 @@ public class NameAnalyzer extends Visitor<Void>{
         return null;
     }
 
-
 }
-
-

@@ -15,6 +15,8 @@ public class AssignmentOp extends Node {
         return visitor.visit(this);
     }
 
-    public String getOpType() { return OpType; }
+    public String getOpType() {
+        return OpType;
+    }
 
 }

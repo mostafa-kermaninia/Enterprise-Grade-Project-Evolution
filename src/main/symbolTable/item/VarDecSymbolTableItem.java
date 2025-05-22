@@ -2,7 +2,7 @@ package main.symbolTable.item;
 
 import main.ast.literal_DIR.TypeSpecifier;
 
-public class VarDecSymbolTableItem extends SymbolTableItem{
+public class VarDecSymbolTableItem extends SymbolTableItem {
     public static final String START_KEY = "VarDec_";
 
     public TypeSpecifier getVarDec() {

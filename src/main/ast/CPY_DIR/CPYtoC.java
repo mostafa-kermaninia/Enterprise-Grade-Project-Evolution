@@ -16,7 +16,6 @@ public class CPYtoC {
     public CPYtoC(String inputPath) throws IOException {
         String input = Files.readString(Paths.get(inputPath));
         finalCcode = convertSimpleLangToC(input);
-//        System.out.println(converted);
     }
 
     private static String convertSimpleLangToC(String input) {
@@ -136,7 +135,6 @@ public class CPYtoC {
                     indentLevel--;
                 }
                 indentation = "    ".repeat(indentLevel);
-
 
                 if (totalBraces > 0) {
                     result.append(indentation).append("}").append("\n");

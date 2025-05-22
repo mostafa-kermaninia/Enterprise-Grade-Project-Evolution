@@ -1,13 +1,12 @@
 package main.ast.expression_DIR;
 
+import java.util.ArrayList;
 import main.visitor.IVisitor;
 
-import java.util.ArrayList;
-
-public class CommaExpr extends Expr{
+public class CommaExpr extends Expr {
     private ArrayList<Expr> exprs;
 
-    public CommaExpr(Expr expr){
+    public CommaExpr(Expr expr) {
         exprs = new ArrayList<>();
         exprs.add(expr);
     }
@@ -17,8 +16,12 @@ public class CommaExpr extends Expr{
         return visitor.visit(this);
     }
 
+    public ArrayList<Expr> getExprs() {
+        return exprs;
+    }
 
-    public ArrayList<Expr> getExprs(){ return exprs; }
     @Override
-    public void addExpr(Expr expr){ exprs.add(expr); }
+    public void addExpr(Expr expr) {
+        exprs.add(expr);
+    }
 }

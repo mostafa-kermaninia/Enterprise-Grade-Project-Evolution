@@ -1,7 +1,7 @@
 package main.ast.declaration_DIR;
 
-import main.ast.statement_DIR.Initializer;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.statement_DIR.Initializer;
 import main.visitor.IVisitor;
 
 public class InitDeclarator extends Node {
@@ -18,9 +18,16 @@ public class InitDeclarator extends Node {
         return visitor.visit(this);
     }
 
-    public Declarator getDeclarator() { return declarator; }
+    public Declarator getDeclarator() {
+        return declarator;
+    }
 
-    public Initializer getInitializer() { return initializer; }
-    public void setInitializer(Initializer initializer) { this.initializer = initializer; }
+    public Initializer getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer(Initializer initializer) {
+        this.initializer = initializer;
+    }
 
 }

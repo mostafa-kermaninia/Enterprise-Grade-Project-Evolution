@@ -1,12 +1,12 @@
 package main.ast.literal_DIR;
 
+import main.ast.baseNodes_DIR.Node;
 import main.ast.declaration_DIR.DecList;
 import main.ast.declaration_DIR.DeclarationSpecifiers;
 import main.ast.declaration_DIR.Declarator;
-import main.ast.baseNodes_DIR.Node;
 import main.ast.statement_DIR.CompoundStmt;
-import main.visitor.IVisitor;
 import main.symbolTable.SymbolTable;
+import main.visitor.IVisitor;
 
 public class FunctionDefinition extends Node {
 
@@ -27,21 +27,51 @@ public class FunctionDefinition extends Node {
         return visitor.visit(this);
     }
 
-    public DeclarationSpecifiers getDecSpecifiers() { return declarationSpecifiers; }
-    public void setDecSpecifiers(DeclarationSpecifiers declarationSpecifiers) { this.declarationSpecifiers = declarationSpecifiers; }
+    public DeclarationSpecifiers getDecSpecifiers() {
+        return declarationSpecifiers;
+    }
 
-    public Declarator getDeclarator() { return declarator; }
-    public void setDeclarator(Declarator declarator) { this.declarator = declarator; }
+    public void setDecSpecifiers(DeclarationSpecifiers declarationSpecifiers) {
+        this.declarationSpecifiers = declarationSpecifiers;
+    }
 
-    public DecList getDecList() { return decList; }
-    public void setDecList(DecList decList) { this.decList = decList; }
+    public Declarator getDeclarator() {
+        return declarator;
+    }
 
-    public CompoundStmt getCompoundStmt() { return compoundStmt; }
-    public void setCompoundStmt(CompoundStmt compoundStmt) { this.compoundStmt = compoundStmt; }
+    public void setDeclarator(Declarator declarator) {
+        this.declarator = declarator;
+    }
 
-    public SymbolTable getSymbolTable() { return symbolTable; }
-    public void setSymbolTable(SymbolTable symbolTable) { this.symbolTable = symbolTable; }
+    public DecList getDecList() {
+        return decList;
+    }
 
-    public int getNumArgs() { return numArgs; }
-    public void setNumArgs(int numArgs) { this.numArgs = numArgs; }
+    public void setDecList(DecList decList) {
+        this.decList = decList;
+    }
+
+    public CompoundStmt getCompoundStmt() {
+        return compoundStmt;
+    }
+
+    public void setCompoundStmt(CompoundStmt compoundStmt) {
+        this.compoundStmt = compoundStmt;
+    }
+
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    public void setSymbolTable(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
+
+    public int getNumArgs() {
+        return numArgs;
+    }
+
+    public void setNumArgs(int numArgs) {
+        this.numArgs = numArgs;
+    }
 }

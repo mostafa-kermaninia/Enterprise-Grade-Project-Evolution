@@ -1,9 +1,8 @@
 package main.ast.declaration_DIR;
 
+import java.util.ArrayList;
 import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
-
-import java.util.ArrayList;
 
 public class InitDeclaratorList extends Node {
     private ArrayList<InitDeclarator> initDeclarators;
@@ -18,7 +17,12 @@ public class InitDeclaratorList extends Node {
         return visitor.visit(this);
     }
 
-    public ArrayList<InitDeclarator> getInitDeclarators() { return initDeclarators; }
-    public void addInitDeclarator(InitDeclarator initDeclarator) { this.initDeclarators.add(initDeclarator); }
+    public ArrayList<InitDeclarator> getInitDeclarators() {
+        return initDeclarators;
+    }
+
+    public void addInitDeclarator(InitDeclarator initDeclarator) {
+        this.initDeclarators.add(initDeclarator);
+    }
 
 }

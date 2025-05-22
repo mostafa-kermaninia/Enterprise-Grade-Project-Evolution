@@ -1,7 +1,7 @@
 package main.ast.expression_DIR;
 
-import main.ast.literal_DIR.TypeName;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.literal_DIR.TypeName;
 import main.visitor.IVisitor;
 
 public class CastExpr extends Node {
@@ -21,15 +21,35 @@ public class CastExpr extends Node {
         return visitor.visit(this);
     }
 
-    public Expr getExpr() { return expr; }
-    public void setExpr(Expr expr) { this.expr = expr; }
+    public Expr getExpr() {
+        return expr;
+    }
 
-    public TypeName getTypeName() { return typeName; }
-    public void setTypeName(TypeName typeName) { this.typeName = typeName; }
+    public void setExpr(Expr expr) {
+        this.expr = expr;
+    }
 
-    public String getNum() { return number; }
-    public void setNum(String number) { this.number = number; }
+    public TypeName getTypeName() {
+        return typeName;
+    }
 
-    public CastExpr getCastExpr() { return castExpr; }
-    public void setCastExpr(CastExpr castExpr) { this.castExpr = castExpr; }
+    public void setTypeName(TypeName typeName) {
+        this.typeName = typeName;
+    }
+
+    public String getNum() {
+        return number;
+    }
+
+    public void setNum(String number) {
+        this.number = number;
+    }
+
+    public CastExpr getCastExpr() {
+        return castExpr;
+    }
+
+    public void setCastExpr(CastExpr castExpr) {
+        this.castExpr = castExpr;
+    }
 }

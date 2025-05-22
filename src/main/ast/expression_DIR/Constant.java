@@ -5,7 +5,7 @@ import main.visitor.IVisitor;
 public class Constant extends Expr {
     private String constant;
 
-    public Constant(String constant){
+    public Constant(String constant) {
         this.constant = constant;
     }
 
@@ -14,5 +14,7 @@ public class Constant extends Expr {
         return visitor.visit(this);
     }
 
-    public String getConstant(){ return constant; }
+    public String getConstant() {
+        return constant;
+    }
 }
