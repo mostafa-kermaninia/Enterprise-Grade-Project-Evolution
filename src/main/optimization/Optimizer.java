@@ -70,7 +70,7 @@ public class Optimizer extends Visitor<Void> {
         functionDefinition.getDeclarator().accept(this);
         if (functionDefinition.getDecList() != null)
             functionDefinition.getDecList().accept(this);
-        functionDefinition.getCompoundStmt().accept(this);
+        functionDefinition.getCompoundStatement().accept(this);
 
         ParameterList plist = functionDefinition.getDeclarator().getDirectDec().getParameterList();
         if (plist == null)
@@ -267,24 +267,27 @@ public class Optimizer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(CompoundStmt compoundStmt) {
-        for (int i = 0; i < compoundStmt.getBlockItems().size(); i++) {
-            BlockItem blockItem = compoundStmt.getBlockItems().get(i);
+    public Void visit(CompoundStatement compoundStatement) {
+        for (int i = 0; i < compoundStatement.getBlockItems().size(); i++) {
+            BlockItem blockItem = compoundStatement.getBlockItems().get(i);
             blockItem.accept(this);
-            if ((blockItem.getStmt() != null && blockItem.getStmt() instanceof JumpStmt) ||
-                    (blockItem.getStmt() != null && blockItem.getStmt() instanceof SelectionStmt &&
-                            ((SelectionStmt) blockItem.getStmt()).allReturn()))
-                changed = changed | compoundStmt.removeNextBIs(blockItem);
-            if (blockItem.getStmt() != null && blockItem.getStmt() instanceof ExpressionStmt) {
-                ExpressionStmt expressionStmt = (ExpressionStmt) blockItem.getStmt();
-                if (expressionStmt.getExpression() != null && ((expressionStmt.getExpression() instanceof BinaryExpression
-                        && ((BinaryExpression) expressionStmt.getExpression()).getAssignmentOp() == null) ||
-                        expressionStmt.getExpression() instanceof Constant || expressionStmt.getExpression() instanceof Identifier
-                        ||
-                        expressionStmt.getExpression() instanceof ArrayIndexing
-                        || expressionStmt.getExpression() instanceof CondExpression ||
-                        expressionStmt.getExpression() instanceof CommaExpression)) {
-                    boolean temp = compoundStmt.removeBI(blockItem);
+            if ((blockItem.getStatement() != null && blockItem.getStatement() instanceof JumpStatement) ||
+                    (blockItem.getStatement() != null && blockItem.getStatement() instanceof SelectionStatement &&
+                            ((SelectionStatement) blockItem.getStatement()).allReturn()))
+                changed = changed | compoundStatement.removeNextBIs(blockItem);
+            if (blockItem.getStatement() != null && blockItem.getStatement() instanceof ExpressionStatement) {
+                ExpressionStatement expressionStatement = (ExpressionStatement) blockItem.getStatement();
+                if (expressionStatement.getExpression() != null
+                        && ((expressionStatement.getExpression() instanceof BinaryExpression
+                                && ((BinaryExpression) expressionStatement.getExpression()).getAssignmentOp() == null)
+                                ||
+                                expressionStatement.getExpression() instanceof Constant
+                                || expressionStatement.getExpression() instanceof Identifier
+                                ||
+                                expressionStatement.getExpression() instanceof ArrayIndexing
+                                || expressionStatement.getExpression() instanceof CondExpression ||
+                                expressionStatement.getExpression() instanceof CommaExpression)) {
+                    boolean temp = compoundStatement.removeBI(blockItem);
                     if (temp)
                         i--;
                     changed = changed | temp;
@@ -301,7 +304,7 @@ public class Optimizer extends Visitor<Void> {
                                         !blockItem.getDeclaration().getInitDeclaratorList().getInitDeclarators().get(0)
                                                 .getDeclarator().getDirectDec().getIdentifier()
                                                 .equals(((VarDecSymbolTableItem) si).getVarDec().getType()))) {
-                            boolean temp = compoundStmt.removeBI(blockItem);
+                            boolean temp = compoundStatement.removeBI(blockItem);
                             if (temp)
                                 i--;
                             changed = changed | temp;
@@ -312,37 +315,37 @@ public class Optimizer extends Visitor<Void> {
     }
 
     public Void visit(BlockItem blockItem) {
-        if (blockItem.getStmt() != null)
-            blockItem.getStmt().accept(this);
+        if (blockItem.getStatement() != null)
+            blockItem.getStatement().accept(this);
         else
             blockItem.getDeclaration().accept(this);
         return null;
     }
 
-    public Void visit(ExpressionStmt expressionStmt) {
-        if (expressionStmt.getExpression() != null)
-            expressionStmt.getExpression().accept(this);
+    public Void visit(ExpressionStatement expressionStatement) {
+        if (expressionStatement.getExpression() != null)
+            expressionStatement.getExpression().accept(this);
         return null;
     }
 
-    public Void visit(SelectionStmt selectionStmt) {
-        SymbolTable.push(selectionStmt.getSymbolTable());
-        selectionStmt.getExpression().accept(this);
-        selectionStmt.getMainStmt().accept(this);
-        if (selectionStmt.getElseStmt() != null)
-            selectionStmt.getElseStmt().accept(this);
+    public Void visit(SelectionStatement selectionStatement) {
+        SymbolTable.push(selectionStatement.getSymbolTable());
+        selectionStatement.getExpression().accept(this);
+        selectionStatement.getMainStatement().accept(this);
+        if (selectionStatement.getElseStatement() != null)
+            selectionStatement.getElseStatement().accept(this);
         SymbolTable.pop();
         return null;
     }
 
-    public Void visit(IterStmt iterStmt) {
-        SymbolTable.push(iterStmt.getSymbolTable());
-        if (iterStmt.getExpression() != null)
-            iterStmt.getExpression().accept(this);
-        if (iterStmt.getStmt() != null)
-            iterStmt.getStmt().accept(this);
-        if (iterStmt.getForCondition() != null)
-            iterStmt.getForCondition().accept(this);
+    public Void visit(IterStatement iterStatement) {
+        SymbolTable.push(iterStatement.getSymbolTable());
+        if (iterStatement.getExpression() != null)
+            iterStatement.getExpression().accept(this);
+        if (iterStatement.getStatement() != null)
+            iterStatement.getStatement().accept(this);
+        if (iterStatement.getForCondition() != null)
+            iterStatement.getForCondition().accept(this);
         SymbolTable.pop();
         return null;
     }
@@ -367,9 +370,9 @@ public class Optimizer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(JumpStmt jumpStmt) {
-        if (jumpStmt.getCondition() != null)
-            jumpStmt.getCondition().accept(this);
+    public Void visit(JumpStatement jumpStatement) {
+        if (jumpStatement.getCondition() != null)
+            jumpStatement.getCondition().accept(this);
         return null;
     }
 

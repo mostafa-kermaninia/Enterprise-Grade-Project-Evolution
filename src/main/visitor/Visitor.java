@@ -121,7 +121,7 @@ public abstract class Visitor<T> implements IVisitor<T> {
         return null;
     }
 
-    public T visit(CompoundStmt compoundStmt) {
+    public T visit(CompoundStatement compoundStatement) {
         return null;
     }
 
@@ -129,15 +129,15 @@ public abstract class Visitor<T> implements IVisitor<T> {
         return null;
     }
 
-    public T visit(ExpressionStmt expressionStmt) {
+    public T visit(ExpressionStatement expressionStatement) {
         return null;
     }
 
-    public T visit(SelectionStmt selectionStmt) {
+    public T visit(SelectionStatement selectionStatement) {
         return null;
     }
 
-    public T visit(IterStmt iterStmt) {
+    public T visit(IterStatement iterStatement) {
         return null;
     }
 
@@ -149,7 +149,7 @@ public abstract class Visitor<T> implements IVisitor<T> {
         return null;
     }
 
-    public T visit(JumpStmt jumpStmt) {
+    public T visit(JumpStatement jumpStatement) {
         return null;
     }
     // ta inja male mane

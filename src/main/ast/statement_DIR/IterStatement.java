@@ -5,15 +5,15 @@ import main.ast.literal_DIR.ForCondition;
 import main.symbolTable.SymbolTable;
 import main.visitor.IVisitor;
 
-public class IterStmt extends Stmt {
-    private Stmt stmt;
+public class IterStatement extends Statement {
+    private Statement statement;
     private Expression expression;
     private ForCondition forCondition;
     private String type;
     private SymbolTable symbolTable;
 
-    public IterStmt() {
-        stmt = null;
+    public IterStatement() {
+        statement = null;
         expression = null;
         forCondition = null;
     }
@@ -31,12 +31,12 @@ public class IterStmt extends Stmt {
         this.expression = expression;
     }
 
-    public Stmt getStmt() {
-        return stmt;
+    public Statement getStatement() {
+        return statement;
     }
 
-    public void setStmt(Stmt stmt) {
-        this.stmt = stmt;
+    public void setStatement(Statement statement) {
+        this.statement = statement;
     }
 
     public ForCondition getForCondition() {

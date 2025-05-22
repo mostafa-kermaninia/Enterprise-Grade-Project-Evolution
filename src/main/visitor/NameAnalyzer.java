@@ -68,7 +68,7 @@ public class NameAnalyzer extends Visitor<Void> {
         functionDefinition.getDeclarator().accept(this);
         if (functionDefinition.getDecList() != null)
             functionDefinition.getDecList().accept(this);
-        functionDefinition.getCompoundStmt().accept(this);
+        functionDefinition.getCompoundStatement().accept(this);
 
         SymbolTable.pop();
         return null;
@@ -155,7 +155,7 @@ public class NameAnalyzer extends Visitor<Void> {
 
     public Void visit(ArgExpression argExpression) {
         for (Expression expression : argExpression.getExpressions())
-            if ( expression != null)
+            if (expression != null)
                 expression.accept(this);
         return null;
     }
@@ -300,52 +300,52 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(CompoundStmt compoundStmt) {
-        for (BlockItem blockItem : compoundStmt.getBlockItems()) {
+    public Void visit(CompoundStatement compoundStatement) {
+        for (BlockItem blockItem : compoundStatement.getBlockItems()) {
             blockItem.accept(this);
         }
         return null;
     }
 
     public Void visit(BlockItem blockItem) {
-        if (blockItem.getStmt() != null)
-            blockItem.getStmt().accept(this);
+        if (blockItem.getStatement() != null)
+            blockItem.getStatement().accept(this);
         else
             blockItem.getDeclaration().accept(this);
         return null;
     }
 
-    public Void visit(ExpressionStmt expressionStmt) {
-        if (expressionStmt.getExpression() != null)
-            expressionStmt.getExpression().accept(this);
+    public Void visit(ExpressionStatement expressionStatement) {
+        if (expressionStatement.getExpression() != null)
+            expressionStatement.getExpression().accept(this);
         return null;
     }
 
-    public Void visit(SelectionStmt selectionStmt) {
+    public Void visit(SelectionStatement selectionStatement) {
         SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
-        selectionStmt.setSymbolTable(symbolTable);
+        selectionStatement.setSymbolTable(symbolTable);
         SymbolTable.push(symbolTable);
 
-        selectionStmt.getExpression().accept(this);
-        selectionStmt.getMainStmt().accept(this);
-        if (selectionStmt.getElseStmt() != null)
-            selectionStmt.getElseStmt().accept(this);
+        selectionStatement.getExpression().accept(this);
+        selectionStatement.getMainStatement().accept(this);
+        if (selectionStatement.getElseStatement() != null)
+            selectionStatement.getElseStatement().accept(this);
 
         SymbolTable.pop();
         return null;
     }
 
-    public Void visit(IterStmt iterStmt) {
+    public Void visit(IterStatement iterStatement) {
         SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
-        iterStmt.setSymbolTable(symbolTable);
+        iterStatement.setSymbolTable(symbolTable);
         SymbolTable.push(symbolTable);
 
-        if (iterStmt.getForCondition() != null)
-            iterStmt.getForCondition().accept(this);
-        if (iterStmt.getExpression() != null)
-            iterStmt.getExpression().accept(this);
-        if (iterStmt.getStmt() != null)
-            iterStmt.getStmt().accept(this);
+        if (iterStatement.getForCondition() != null)
+            iterStatement.getForCondition().accept(this);
+        if (iterStatement.getExpression() != null)
+            iterStatement.getExpression().accept(this);
+        if (iterStatement.getStatement() != null)
+            iterStatement.getStatement().accept(this);
 
         SymbolTable.pop();
         return null;
@@ -371,9 +371,9 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(JumpStmt jumpStmt) {
-        if (jumpStmt.getCondition() != null)
-            jumpStmt.getCondition().accept(this);
+    public Void visit(JumpStatement jumpStatement) {
+        if (jumpStatement.getCondition() != null)
+            jumpStatement.getCondition().accept(this);
         return null;
     }
 

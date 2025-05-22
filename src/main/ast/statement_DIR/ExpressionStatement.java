@@ -3,11 +3,11 @@ package main.ast.statement_DIR;
 import main.ast.expression_DIR.Expression;
 import main.visitor.IVisitor;
 
-public class ExpressionStmt extends Stmt {
+public class ExpressionStatement extends Statement {
     ;
     private Expression expression;
 
-    public ExpressionStmt() {
+    public ExpressionStatement() {
         expression = null;
     }
 

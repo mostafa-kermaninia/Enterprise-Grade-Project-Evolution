@@ -432,7 +432,7 @@ public class SimpleLangParser extends Parser {
 
 			setState(119);
 			((FunctionDefinitionContext)_localctx).c = compoundStatement();
-			_localctx.functionDefinitionRet.setCompoundStmt(((FunctionDefinitionContext)_localctx).c.compoundStmtRet);
+			_localctx.functionDefinitionRet.setCompoundStatement(((FunctionDefinitionContext)_localctx).c.compoundStatementRet);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1497,6 +1497,7 @@ public class SimpleLangParser extends Parser {
 				setState(353);
 				((CastExpressionContext)_localctx).n = match(DigitSequence);
 				_localctx.castExpressionRet.setNum((((CastExpressionContext)_localctx).n!=null?((CastExpressionContext)_localctx).n.getText():null));
+						
 				}
 				break;
 			}
@@ -3578,7 +3579,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class StatementContext extends ParserRuleContext {
-		public Stmt stmtRet;
+		public Statement statementRet;
 		public CompoundStatementContext c;
 		public ExpressionStatementContext e;
 		public SelectionStatementContext s;
@@ -3630,7 +3631,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(691);
 				((StatementContext)_localctx).c = compoundStatement();
-				((StatementContext)_localctx).stmtRet =  ((StatementContext)_localctx).c.compoundStmtRet; 
+				((StatementContext)_localctx).statementRet =  ((StatementContext)_localctx).c.compoundStatementRet; 
 				}
 				break;
 			case Sizeof:
@@ -3651,7 +3652,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(694);
 				((StatementContext)_localctx).e = expressionStatement();
-				((StatementContext)_localctx).stmtRet =  ((StatementContext)_localctx).e.expressionStmtRet; 
+				((StatementContext)_localctx).statementRet =  ((StatementContext)_localctx).e.expressionStatementRet; 
 				}
 				break;
 			case If:
@@ -3659,7 +3660,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(697);
 				((StatementContext)_localctx).s = selectionStatement();
-				((StatementContext)_localctx).stmtRet =  ((StatementContext)_localctx).s.selectionStmtRet; 
+				((StatementContext)_localctx).statementRet =  ((StatementContext)_localctx).s.selectionStatementRet; 
 				}
 				break;
 			case Do:
@@ -3669,7 +3670,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(700);
 				((StatementContext)_localctx).i = iterationStatement();
-				((StatementContext)_localctx).stmtRet =  ((StatementContext)_localctx).i.iterStmtRet; 
+				((StatementContext)_localctx).statementRet =  ((StatementContext)_localctx).i.iterStatementRet; 
 				}
 				break;
 			case Break:
@@ -3679,7 +3680,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(703);
 				((StatementContext)_localctx).j = jumpStatement();
-				((StatementContext)_localctx).stmtRet =  ((StatementContext)_localctx).j.jumpStmtRet; 
+				((StatementContext)_localctx).statementRet =  ((StatementContext)_localctx).j.jumpStatementRet; 
 				}
 				break;
 			default:
@@ -3699,7 +3700,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CompoundStatementContext extends ParserRuleContext {
-		public CompoundStmt compoundStmtRet;
+		public CompoundStatement compoundStatementRet;
 		public BlockItemContext b;
 		public TerminalNode LeftBrace() { return getToken(SimpleLangParser.LeftBrace, 0); }
 		public TerminalNode RightBrace() { return getToken(SimpleLangParser.RightBrace, 0); }
@@ -3735,7 +3736,7 @@ public class SimpleLangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			((CompoundStatementContext)_localctx).compoundStmtRet =  new CompoundStmt();
+			((CompoundStatementContext)_localctx).compoundStatementRet =  new CompoundStatement();
 			setState(709);
 			match(LeftBrace);
 			setState(717);
@@ -3751,7 +3752,7 @@ public class SimpleLangParser extends Parser {
 					{
 					setState(710);
 					((CompoundStatementContext)_localctx).b = blockItem();
-					_localctx.compoundStmtRet.addBlockItem(((CompoundStatementContext)_localctx).b.blockItemRet);
+					_localctx.compoundStatementRet.addBlockItem(((CompoundStatementContext)_localctx).b.blockItemRet);
 					}
 					}
 					setState(715); 
@@ -3819,7 +3820,7 @@ public class SimpleLangParser extends Parser {
 				((BlockItemContext)_localctx).blockItemRet =  new BlockItem();
 				setState(722);
 				((BlockItemContext)_localctx).s = statement();
-				_localctx.blockItemRet.setStmt(((BlockItemContext)_localctx).s.stmtRet);
+				_localctx.blockItemRet.setStatement(((BlockItemContext)_localctx).s.statementRet);
 				}
 				break;
 			case 2:
@@ -3847,7 +3848,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionStatementContext extends ParserRuleContext {
-		public ExpressionStmt expressionStmtRet;
+		public ExpressionStatement expressionStatementRet;
 		public ExpressionContext e;
 		public TerminalNode Semi() { return getToken(SimpleLangParser.Semi, 0); }
 		public ExpressionContext expression() {
@@ -3879,7 +3880,7 @@ public class SimpleLangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			((ExpressionStatementContext)_localctx).expressionStmtRet =  new ExpressionStmt();
+			((ExpressionStatementContext)_localctx).expressionStatementRet =  new ExpressionStatement();
 			setState(735);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -3887,7 +3888,7 @@ public class SimpleLangParser extends Parser {
 				{
 				setState(732);
 				((ExpressionStatementContext)_localctx).e = expression(0);
-				_localctx.expressionStmtRet.setExpression(((ExpressionStatementContext)_localctx).e.expressionRet);
+				_localctx.expressionStatementRet.setExpression(((ExpressionStatementContext)_localctx).e.expressionRet);
 				}
 			}
 
@@ -3908,7 +3909,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class SelectionStatementContext extends ParserRuleContext {
-		public SelectionStmt selectionStmtRet;
+		public SelectionStatement selectionStatementRet;
 		public Token i;
 		public ExpressionContext e;
 		public StatementContext s;
@@ -3962,9 +3963,9 @@ public class SimpleLangParser extends Parser {
 			match(RightParen);
 			setState(743);
 			((SelectionStatementContext)_localctx).s = statement();
-			((SelectionStatementContext)_localctx).selectionStmtRet =  new SelectionStmt(((SelectionStatementContext)_localctx).e.expressionRet, ((SelectionStatementContext)_localctx).s.stmtRet);
+			((SelectionStatementContext)_localctx).selectionStatementRet =  new SelectionStatement(((SelectionStatementContext)_localctx).e.expressionRet, ((SelectionStatementContext)_localctx).s.statementRet);
 					
-			_localctx.selectionStmtRet.setLine((((SelectionStatementContext)_localctx).i!=null?((SelectionStatementContext)_localctx).i.getLine():0));
+			_localctx.selectionStatementRet.setLine((((SelectionStatementContext)_localctx).i!=null?((SelectionStatementContext)_localctx).i.getLine():0));
 			setState(750);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,66,_ctx) ) {
@@ -3974,7 +3975,7 @@ public class SimpleLangParser extends Parser {
 				((SelectionStatementContext)_localctx).el = match(Else);
 				setState(747);
 				((SelectionStatementContext)_localctx).es = statement();
-				_localctx.selectionStmtRet.setElseStmt(((SelectionStatementContext)_localctx).es.stmtRet); {_localctx.selectionStmtRet.setElseLine((((SelectionStatementContext)_localctx).el!=null?((SelectionStatementContext)_localctx).el.getLine():0));}
+				_localctx.selectionStatementRet.setElseStatement(((SelectionStatementContext)_localctx).es.statementRet); {_localctx.selectionStatementRet.setElseLine((((SelectionStatementContext)_localctx).el!=null?((SelectionStatementContext)_localctx).el.getLine():0));}
 							
 				}
 				break;
@@ -3994,7 +3995,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class IterationStatementContext extends ParserRuleContext {
-		public IterStmt iterStmtRet;
+		public IterStatement iterStatementRet;
 		public Token w;
 		public ExpressionContext e;
 		public StatementContext s;
@@ -4058,11 +4059,11 @@ public class SimpleLangParser extends Parser {
 				setState(756);
 				((IterationStatementContext)_localctx).s = statement();
 
-				        ((IterationStatementContext)_localctx).iterStmtRet =  new IterStmt();
-				        _localctx.iterStmtRet.setExpression(((IterationStatementContext)_localctx).e.expressionRet);
-				        _localctx.iterStmtRet.setStmt(((IterationStatementContext)_localctx).s.stmtRet);
-				        _localctx.iterStmtRet.setLine((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getLine():0));
-				        _localctx.iterStmtRet.setType((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getText():null));
+				        ((IterationStatementContext)_localctx).iterStatementRet =  new IterStatement();
+				        _localctx.iterStatementRet.setExpression(((IterationStatementContext)_localctx).e.expressionRet);
+				        _localctx.iterStatementRet.setStatement(((IterationStatementContext)_localctx).s.statementRet);
+				        _localctx.iterStatementRet.setLine((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getLine():0));
+				        _localctx.iterStatementRet.setType((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getText():null));
 				     
 				}
 				break;
@@ -4084,11 +4085,11 @@ public class SimpleLangParser extends Parser {
 				setState(765);
 				match(Semi);
 
-				            ((IterationStatementContext)_localctx).iterStmtRet =  new IterStmt();
-				            _localctx.iterStmtRet.setExpression(((IterationStatementContext)_localctx).e1.expressionRet);
-				            _localctx.iterStmtRet.setStmt(((IterationStatementContext)_localctx).s1.stmtRet);
-				            _localctx.iterStmtRet.setLine((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getLine():0));
-				            _localctx.iterStmtRet.setType((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getText():null));
+				            ((IterationStatementContext)_localctx).iterStatementRet =  new IterStatement();
+				            _localctx.iterStatementRet.setExpression(((IterationStatementContext)_localctx).e1.expressionRet);
+				            _localctx.iterStatementRet.setStatement(((IterationStatementContext)_localctx).s1.statementRet);
+				            _localctx.iterStatementRet.setLine((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getLine():0));
+				            _localctx.iterStatementRet.setType((((IterationStatementContext)_localctx).w!=null?((IterationStatementContext)_localctx).w.getText():null));
 				         
 				}
 				break;
@@ -4106,11 +4107,11 @@ public class SimpleLangParser extends Parser {
 				setState(772);
 				((IterationStatementContext)_localctx).s2 = statement();
 
-				            ((IterationStatementContext)_localctx).iterStmtRet =  new IterStmt();
-				            _localctx.iterStmtRet.setForCondition(((IterationStatementContext)_localctx).f.forConditionRet);
-				            _localctx.iterStmtRet.setStmt(((IterationStatementContext)_localctx).s2.stmtRet);
-				            _localctx.iterStmtRet.setLine((((IterationStatementContext)_localctx).f2!=null?((IterationStatementContext)_localctx).f2.getLine():0));
-				            _localctx.iterStmtRet.setType((((IterationStatementContext)_localctx).f2!=null?((IterationStatementContext)_localctx).f2.getText():null));
+				            ((IterationStatementContext)_localctx).iterStatementRet =  new IterStatement();
+				            _localctx.iterStatementRet.setForCondition(((IterationStatementContext)_localctx).f.forConditionRet);
+				            _localctx.iterStatementRet.setStatement(((IterationStatementContext)_localctx).s2.statementRet);
+				            _localctx.iterStatementRet.setLine((((IterationStatementContext)_localctx).f2!=null?((IterationStatementContext)_localctx).f2.getLine():0));
+				            _localctx.iterStatementRet.setType((((IterationStatementContext)_localctx).f2!=null?((IterationStatementContext)_localctx).f2.getText():null));
 				         
 				}
 				break;
@@ -4384,7 +4385,7 @@ public class SimpleLangParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class JumpStatementContext extends ParserRuleContext {
-		public JumpStmt jumpStmtRet;
+		public JumpStatement jumpStatementRet;
 		public ExpressionContext e;
 		public TerminalNode Semi() { return getToken(SimpleLangParser.Semi, 0); }
 		public TerminalNode Continue() { return getToken(SimpleLangParser.Continue, 0); }
@@ -4419,7 +4420,7 @@ public class SimpleLangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			((JumpStatementContext)_localctx).jumpStmtRet =  new JumpStmt();
+			((JumpStatementContext)_localctx).jumpStatementRet =  new JumpStatement();
 			setState(827);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
@@ -4446,7 +4447,7 @@ public class SimpleLangParser extends Parser {
 					{
 					setState(822);
 					((JumpStatementContext)_localctx).e = expression(0);
-					 _localctx.jumpStmtRet.setReturnExpression(((JumpStatementContext)_localctx).e.expressionRet);
+					 _localctx.jumpStatementRet.setReturnExpression(((JumpStatementContext)_localctx).e.expressionRet);
 					}
 				}
 

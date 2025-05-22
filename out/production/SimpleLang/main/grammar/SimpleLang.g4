@@ -41,7 +41,8 @@ functionDefinition
 	)? d = declarator {$functionDefinitionRet.setDeclarator($d.declaratorRet); $functionDefinitionRet.setLine($d.declaratorRet.getLine());
 		} (
 		dl = declarationList {$functionDefinitionRet.setDecList($dl.decListRet);}
-	)? c = compoundStatement {$functionDefinitionRet.setCompoundStmt($c.compoundStmtRet);};
+	)? c = compoundStatement {$functionDefinitionRet.setCompoundStatement($c.compoundStatementRet);}
+		;
 // az in be bala ham zadam
 
 declarationList
@@ -156,7 +157,8 @@ castExpression
 		} RightParen c = castExpression {$castExpressionRet.setCastExpression($c.castExpressionRet);}
 	| {$castExpressionRet = new CastExpression();} e = expression {$castExpressionRet.setExpression($e.expressionRet);
 		}
-	| {$castExpressionRet = new CastExpression();} n = DigitSequence {$castExpressionRet.setNum($n.text);};
+	| {$castExpressionRet = new CastExpression();} n = DigitSequence {$castExpressionRet.setNum($n.text);
+		};
 
 assignmentOperator
 	returns[AssignmentOp assignmentOpRet]:
@@ -355,63 +357,63 @@ designator
 	| Dot id = Identifier {$designatorRet.setLine($id.line);};
 
 statement
-	returns[Stmt stmtRet]:
-	c = compoundStatement {$stmtRet = $c.compoundStmtRet; }
-	| e = expressionStatement {$stmtRet = $e.expressionStmtRet; }
-	| s = selectionStatement {$stmtRet = $s.selectionStmtRet; }
-	| i = iterationStatement {$stmtRet = $i.iterStmtRet; }
-	| j = jumpStatement {$stmtRet = $j.jumpStmtRet; };
+	returns[Statement statementRet]:
+	c = compoundStatement {$statementRet = $c.compoundStatementRet; }
+	| e = expressionStatement {$statementRet = $e.expressionStatementRet; }
+	| s = selectionStatement {$statementRet = $s.selectionStatementRet; }
+	| i = iterationStatement {$statementRet = $i.iterStatementRet; }
+	| j = jumpStatement {$statementRet = $j.jumpStatementRet; };
 
 compoundStatement
-	returns[CompoundStmt compoundStmtRet]:
-	{$compoundStmtRet = new CompoundStmt();} LeftBrace (
+	returns[CompoundStatement compoundStatementRet]:
+	{$compoundStatementRet = new CompoundStatement();} LeftBrace (
 		(
-			b = blockItem {$compoundStmtRet.addBlockItem($b.blockItemRet);}
+			b = blockItem {$compoundStatementRet.addBlockItem($b.blockItemRet);}
 		)+
 	)? RightBrace;
 
 blockItem
 	returns[BlockItem blockItemRet]:
-	{$blockItemRet = new BlockItem();} s = statement {$blockItemRet.setStmt($s.stmtRet);}
+	{$blockItemRet = new BlockItem();} s = statement {$blockItemRet.setStatement($s.statementRet);}
 	| {$blockItemRet = new BlockItem();} d = declaration {$blockItemRet.setDeclaration($d.declarationRet);
 		};
 
 expressionStatement
-	returns[ExpressionStmt expressionStmtRet]:
-	{$expressionStmtRet = new ExpressionStmt();} (
-		e = expression {$expressionStmtRet.setExpression($e.expressionRet);}
+	returns[ExpressionStatement expressionStatementRet]:
+	{$expressionStatementRet = new ExpressionStatement();} (
+		e = expression {$expressionStatementRet.setExpression($e.expressionRet);}
 	)? Semi;
 
 selectionStatement
-	returns[SelectionStmt selectionStmtRet]:
-	i = If LeftParen e = expression RightParen s = statement {$selectionStmtRet = new SelectionStmt($e.expressionRet, $s.stmtRet);
-		} {$selectionStmtRet.setLine($i.line);} (
-		el = Else es = statement {$selectionStmtRet.setElseStmt($es.stmtRet); {$selectionStmtRet.setElseLine($el.line);}
+	returns[SelectionStatement selectionStatementRet]:
+	i = If LeftParen e = expression RightParen s = statement {$selectionStatementRet = new SelectionStatement($e.expressionRet, $s.statementRet);
+		} {$selectionStatementRet.setLine($i.line);} (
+		el = Else es = statement {$selectionStatementRet.setElseStatement($es.statementRet); {$selectionStatementRet.setElseLine($el.line);}
 			}
 	)?;
 
 iterationStatement
-	returns[IterStmt iterStmtRet]:
+	returns[IterStatement iterStatementRet]:
 	w = While LeftParen e = expression RightParen s = statement {
-        $iterStmtRet = new IterStmt();
-        $iterStmtRet.setExpression($e.expressionRet);
-        $iterStmtRet.setStmt($s.stmtRet);
-        $iterStmtRet.setLine($w.line);
-        $iterStmtRet.setType($w.text);
+        $iterStatementRet = new IterStatement();
+        $iterStatementRet.setExpression($e.expressionRet);
+        $iterStatementRet.setStatement($s.statementRet);
+        $iterStatementRet.setLine($w.line);
+        $iterStatementRet.setType($w.text);
      }
 	| Do s1 = statement w = While LeftParen e1 = expression RightParen Semi {
-            $iterStmtRet = new IterStmt();
-            $iterStmtRet.setExpression($e1.expressionRet);
-            $iterStmtRet.setStmt($s1.stmtRet);
-            $iterStmtRet.setLine($w.line);
-            $iterStmtRet.setType($w.text);
+            $iterStatementRet = new IterStatement();
+            $iterStatementRet.setExpression($e1.expressionRet);
+            $iterStatementRet.setStatement($s1.statementRet);
+            $iterStatementRet.setLine($w.line);
+            $iterStatementRet.setType($w.text);
          }
 	| f2 = For LeftParen f = forCondition RightParen s2 = statement {
-            $iterStmtRet = new IterStmt();
-            $iterStmtRet.setForCondition($f.forConditionRet);
-            $iterStmtRet.setStmt($s2.stmtRet);
-            $iterStmtRet.setLine($f2.line);
-            $iterStmtRet.setType($f2.text);
+            $iterStatementRet = new IterStatement();
+            $iterStatementRet.setForCondition($f.forConditionRet);
+            $iterStatementRet.setStatement($s2.statementRet);
+            $iterStatementRet.setLine($f2.line);
+            $iterStatementRet.setType($f2.text);
          };
 
 forCondition
@@ -440,12 +442,12 @@ forExpression
 	)*;
 
 jumpStatement
-	returns[JumpStmt jumpStmtRet]:
-	{$jumpStmtRet = new JumpStmt();} (
+	returns[JumpStatement jumpStatementRet]:
+	{$jumpStatementRet = new JumpStatement();} (
 		Continue
 		| Break
 		| Return (
-			e = expression { $jumpStmtRet.setReturnExpression($e.expressionRet);}
+			e = expression { $jumpStatementRet.setReturnExpression($e.expressionRet);}
 		)?
 	) Semi;
 

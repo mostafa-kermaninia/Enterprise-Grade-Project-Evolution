@@ -5,11 +5,11 @@ import main.ast.declaration_DIR.Declaration;
 import main.visitor.IVisitor;
 
 public class BlockItem extends Node {
-    private Stmt stmt;
+    private Statement statement;
     private Declaration declaration;
 
     public BlockItem() {
-        stmt = null;
+        statement = null;
         declaration = null;
     }
 
@@ -18,12 +18,12 @@ public class BlockItem extends Node {
         return visitor.visit(this);
     }
 
-    public Stmt getStmt() {
-        return stmt;
+    public Statement getStatement() {
+        return statement;
     }
 
-    public void setStmt(Stmt stmt) {
-        this.stmt = stmt;
+    public void setStatement(Statement statement) {
+        this.statement = statement;
     }
 
     public Declaration getDeclaration() {

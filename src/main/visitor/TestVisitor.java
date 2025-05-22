@@ -32,16 +32,16 @@ public class TestVisitor extends Visitor<Void> {
     public Void visit(FunctionDefinition functionDefinition) {
         System.out.print("Line ");
         System.out.print(functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
-        System.out.print(": Stmt function "
+        System.out.print(": Statement function "
                 + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getIdentifier() + " = ");
-        System.out.print(functionDefinition.getCompoundStmt().getBlockItems().size());
+        System.out.print(functionDefinition.getCompoundStatement().getBlockItems().size());
         System.out.println(" " + functionDefinition.getNumArgs());
         if (functionDefinition.getDecSpecifiers() != null)
             functionDefinition.getDecSpecifiers().accept(this);
         functionDefinition.getDeclarator().accept(this);
         if (functionDefinition.getDecList() != null)
             functionDefinition.getDecList().accept(this);
-        functionDefinition.getCompoundStmt().accept(this);
+        functionDefinition.getCompoundStatement().accept(this);
 
         return null;
     }
@@ -226,72 +226,73 @@ public class TestVisitor extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(CompoundStmt compoundStmt) {
-        for (BlockItem blockItem : compoundStmt.getBlockItems()) {
+    public Void visit(CompoundStatement compoundStatement) {
+        for (BlockItem blockItem : compoundStatement.getBlockItems()) {
             blockItem.accept(this);
         }
         return null;
     }
 
     public Void visit(BlockItem blockItem) {
-        if (blockItem.getStmt() != null)
-            blockItem.getStmt().accept(this);
+        if (blockItem.getStatement() != null)
+            blockItem.getStatement().accept(this);
         else
             blockItem.getDeclaration().accept(this);
         return null;
     }
 
-    public Void visit(ExpressionStmt expressionStmt) {
-        if (expressionStmt.getExpression() != null)
-            expressionStmt.getExpression().accept(this);
+    public Void visit(ExpressionStatement expressionStatement) {
+        if (expressionStatement.getExpression() != null)
+            expressionStatement.getExpression().accept(this);
         return null;
     }
 
-    public Void visit(SelectionStmt selectionStmt) {
-        selectionStmt.getExpression().accept(this);
+    public Void visit(SelectionStatement selectionStatement) {
+        selectionStatement.getExpression().accept(this);
         System.out.print("Line ");
-        System.out.print(selectionStmt.getLine());
-        System.out.print(": Stmt selection = ");
-        if (selectionStmt.getMainStmt() instanceof CompoundStmt) {
-            CompoundStmt compoundStmt = (CompoundStmt) selectionStmt.getMainStmt();
-            System.out.println(compoundStmt.getBlockItems().size());
+        System.out.print(selectionStatement.getLine());
+        System.out.print(": Statement selection = ");
+        if (selectionStatement.getMainStatement() instanceof CompoundStatement) {
+            CompoundStatement compoundStatement = (CompoundStatement) selectionStatement.getMainStatement();
+            System.out.println(compoundStatement.getBlockItems().size());
         } else
             System.out.println(0);
-        selectionStmt.getMainStmt().accept(this);
-        if (selectionStmt.getElseStmt() instanceof CompoundStmt) {
-            CompoundStmt compoundStmt = (CompoundStmt) selectionStmt.getElseStmt();
-            if (compoundStmt.getBlockItems().size() > 0) {
+        selectionStatement.getMainStatement().accept(this);
+        if (selectionStatement.getElseStatement() instanceof CompoundStatement) {
+            CompoundStatement compoundStatement = (CompoundStatement) selectionStatement.getElseStatement();
+            if (compoundStatement.getBlockItems().size() > 0) {
                 System.out.print("Line ");
-                System.out.print(selectionStmt.getElseLine());
-                System.out.print(": Stmt selection = ");
-                System.out.println(compoundStmt.getBlockItems().size());
+                System.out.print(selectionStatement.getElseLine());
+                System.out.print(": Statement selection = ");
+                System.out.println(compoundStatement.getBlockItems().size());
             }
-        } else if (selectionStmt.getElseStmt() != null && !(selectionStmt.getElseStmt() instanceof SelectionStmt)) {
+        } else if (selectionStatement.getElseStatement() != null
+                && !(selectionStatement.getElseStatement() instanceof SelectionStatement)) {
             System.out.print("Line ");
-            System.out.print(selectionStmt.getElseLine());
-            System.out.print(": Stmt selection = ");
+            System.out.print(selectionStatement.getElseLine());
+            System.out.print(": Statement selection = ");
             System.out.println(0);
         }
-        if (selectionStmt.getElseStmt() != null)
-            selectionStmt.getElseStmt().accept(this);
+        if (selectionStatement.getElseStatement() != null)
+            selectionStatement.getElseStatement().accept(this);
         return null;
     }
 
-    public Void visit(IterStmt iterStmt) {
-        if (iterStmt.getExpression() != null)
-            iterStmt.getExpression().accept(this);
+    public Void visit(IterStatement iterStatement) {
+        if (iterStatement.getExpression() != null)
+            iterStatement.getExpression().accept(this);
         System.out.print("Line ");
-        System.out.print(iterStmt.getLine());
-        System.out.print(": Stmt " + iterStmt.getType() + " = ");
-        if (iterStmt.getStmt() instanceof CompoundStmt) {
-            CompoundStmt compoundStmt = (CompoundStmt) iterStmt.getStmt();
-            System.out.println(compoundStmt.getBlockItems().size());
+        System.out.print(iterStatement.getLine());
+        System.out.print(": Statement " + iterStatement.getType() + " = ");
+        if (iterStatement.getStatement() instanceof CompoundStatement) {
+            CompoundStatement compoundStatement = (CompoundStatement) iterStatement.getStatement();
+            System.out.println(compoundStatement.getBlockItems().size());
         } else
             System.out.println(0);
-        if (iterStmt.getStmt() != null)
-            iterStmt.getStmt().accept(this);
-        if (iterStmt.getForCondition() != null)
-            iterStmt.getForCondition().accept(this);
+        if (iterStatement.getStatement() != null)
+            iterStatement.getStatement().accept(this);
+        if (iterStatement.getForCondition() != null)
+            iterStatement.getForCondition().accept(this);
         return null;
     }
 
@@ -315,9 +316,9 @@ public class TestVisitor extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(JumpStmt jumpStmt) {
-        if (jumpStmt.getCondition() != null)
-            jumpStmt.getCondition().accept(this);
+    public Void visit(JumpStatement jumpStatement) {
+        if (jumpStatement.getCondition() != null)
+            jumpStatement.getCondition().accept(this);
         return null;
     }
 

@@ -1,8 +1,8 @@
-Line 1: Stmt function main = 2
-Line 2: Stmt for = 3
+Line 1: Statement function main = 2
+Line 2: Statement for = 3
 Line 5: Expr 1
-Line 5: Stmt selection = 1
-Line 7: Stmt selection = 2
-Line 10: Stmt selection = 3
+Line 5: Statement selection = 1
+Line 7: Statement selection = 2
+Line 10: Statement selection = 3
 Line 7: Expr 0
 Line 16: Expr 0

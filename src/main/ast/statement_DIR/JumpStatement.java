@@ -3,10 +3,10 @@ package main.ast.statement_DIR;
 import main.ast.expression_DIR.Expression;
 import main.visitor.IVisitor;
 
-public class JumpStmt extends Stmt {
+public class JumpStatement extends Statement {
     private Expression returnExpression;
 
-    public JumpStmt() {
+    public JumpStatement() {
         returnExpression = null;
     }
 
@@ -20,6 +20,6 @@ public class JumpStmt extends Stmt {
     }
 
     public void setReturnExpression(Expression returnExpr) {
-        this.returnExpression= returnExpr;
+        this.returnExpression = returnExpr;
     }
 }

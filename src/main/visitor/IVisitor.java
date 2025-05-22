@@ -69,21 +69,21 @@ public interface IVisitor<T> {
 
     T visit(Designator designator);
 
-    T visit(CompoundStmt compoundStmt);
+    T visit(CompoundStatement compoundStatement);
 
     T visit(BlockItem blockItem);
 
-    T visit(ExpressionStmt expressionStmt);
+    T visit(ExpressionStatement expressionStatement);
 
-    T visit(SelectionStmt selectionStmt);
+    T visit(SelectionStatement selectionStatement);
 
-    T visit(IterStmt iterStmt);
+    T visit(IterStatement iterStatement);
 
     T visit(ForCondition forCondition);
 
     T visit(ForExpression forExpression);
 
-    T visit(JumpStmt jumpStmt);
+    T visit(JumpStatement jumpStatement);
 
     // az inja be baad male expression ha
     T visit(FuncCall funcCall);

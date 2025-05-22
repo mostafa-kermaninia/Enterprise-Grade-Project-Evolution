@@ -4,7 +4,7 @@ import main.ast.baseNodes_DIR.Node;
 import main.ast.declaration_DIR.DecList;
 import main.ast.declaration_DIR.DeclarationSpecifiers;
 import main.ast.declaration_DIR.Declarator;
-import main.ast.statement_DIR.CompoundStmt;
+import main.ast.statement_DIR.CompoundStatement;
 import main.symbolTable.SymbolTable;
 import main.visitor.IVisitor;
 
@@ -13,7 +13,7 @@ public class FunctionDefinition extends Node {
     private DeclarationSpecifiers declarationSpecifiers;
     private Declarator declarator;
     private DecList decList;
-    private CompoundStmt compoundStmt;
+    private CompoundStatement compoundStatement;
     private SymbolTable symbolTable;
     private int numArgs;
 
@@ -51,12 +51,12 @@ public class FunctionDefinition extends Node {
         this.decList = decList;
     }
 
-    public CompoundStmt getCompoundStmt() {
-        return compoundStmt;
+    public CompoundStatement getCompoundStatement() {
+        return compoundStatement;
     }
 
-    public void setCompoundStmt(CompoundStmt compoundStmt) {
-        this.compoundStmt = compoundStmt;
+    public void setCompoundStatement(CompoundStatement compoundStatement) {
+        this.compoundStatement = compoundStatement;
     }
 
     public SymbolTable getSymbolTable() {

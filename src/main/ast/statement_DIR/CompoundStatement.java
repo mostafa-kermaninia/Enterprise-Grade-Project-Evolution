@@ -4,11 +4,11 @@ import main.visitor.IVisitor;
 
 import java.util.ArrayList;
 
-public class CompoundStmt extends Stmt {
+public class CompoundStatement extends Statement {
     ;
     private ArrayList<BlockItem> blockItems = new ArrayList<BlockItem>();
 
-    public CompoundStmt() {
+    public CompoundStatement() {
     }
 
     @Override
@@ -48,13 +48,13 @@ public class CompoundStmt extends Stmt {
         return found;
     }
 
-    public boolean hasJumpStmt() {
+    public boolean hasJumpStatement() {
         for (BlockItem blockItem : this.blockItems) {
-            if (blockItem.getStmt() instanceof JumpStmt) {
+            if (blockItem.getStatement() instanceof JumpStatement) {
                 return true;
             }
-            if (blockItem.getStmt() instanceof SelectionStmt) {
-                return ((SelectionStmt) blockItem.getStmt()).allReturn();
+            if (blockItem.getStatement() instanceof SelectionStatement) {
+                return ((SelectionStatement) blockItem.getStatement()).allReturn();
             }
         }
         return false;
