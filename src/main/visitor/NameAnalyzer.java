@@ -7,7 +7,6 @@ import main.ast.expression_DIR.*;
 import main.ast.literal_DIR.*;
 import main.ast.statement_DIR.*;
 import main.symbolTable.SymbolTable;
-import main.visitor.Visitor;
 
 
 public class NameAnalyzer extends Visitor<Void> {
@@ -87,7 +86,7 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(UnaryOperator unaryOperator) {
-        return visitorUtils.visitUnaryOperator(unaryOperator);
+        return visitorUtils.visitUnaryOperator();
     }
 
     @Override
@@ -97,12 +96,12 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(AssignmentOp assignmentOp) {
-        return visitorUtils.visitAssignmentOp(assignmentOp);
+        return visitorUtils.visitAssignmentOp();
     }
 
     @Override
     public Void visit(Pointer pointer) {
-        return visitorUtils.visitPointer(pointer);
+        return visitorUtils.visitPointer();
     }
 
     @Override
@@ -132,7 +131,7 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(IdentifierList identifierList) {
-        return visitorUtils.visitIdentifierList(identifierList);
+        return visitorUtils.visitIdentifierList();
     }
 
     @Override
@@ -252,7 +251,7 @@ public class NameAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(Constant constant) {
-        return visitorUtils.visitConstant(constant);
+        return visitorUtils.visitConstant();
     }
 
     @Override

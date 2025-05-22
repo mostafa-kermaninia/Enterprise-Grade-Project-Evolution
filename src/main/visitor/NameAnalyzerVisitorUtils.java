@@ -133,7 +133,7 @@ public class NameAnalyzerVisitorUtils {
         if (declarationSpecifiers.getDeclarationSpecifiers().get(0).getType() != null
                 && declarationSpecifiers.getDeclarationSpecifiers().get(0).getType().equals("typedef")) {
             declarationSpecifiers.getDeclarationSpecifiers()
-                    .get(declarationSpecifiers.getDeclarationSpecifiers().size() - 1)
+                    .getLast()
                     .getTypeSpecifier()
                     .setTypeDef(declarationSpecifiers.getDeclarationSpecifiers().get(1).getType());
         }
@@ -209,7 +209,7 @@ public class NameAnalyzerVisitorUtils {
     // --------------------------------------------------------------------------------
     // visit(UnaryOperator unaryOperator)
     // --------------------------------------------------------------------------------
-    public Void visitUnaryOperator(UnaryOperator unaryOperator) {
+    public Void visitUnaryOperator() {
         return null;
     }
 
@@ -245,14 +245,14 @@ public class NameAnalyzerVisitorUtils {
     // --------------------------------------------------------------------------------
     // visit(AssignmentOp assignmentOp)
     // --------------------------------------------------------------------------------
-    public Void visitAssignmentOp(AssignmentOp assignmentOp) {
+    public Void visitAssignmentOp() {
         return null;
     }
 
     // --------------------------------------------------------------------------------
     // visit(Pointer pointer)
     // --------------------------------------------------------------------------------
-    public Void visitPointer(Pointer pointer) {
+    public Void visitPointer() {
         return null;
     }
 
@@ -318,7 +318,7 @@ public class NameAnalyzerVisitorUtils {
     // --------------------------------------------------------------------------------
     // visit(IdentifierList identifierList)
     // --------------------------------------------------------------------------------
-    public Void visitIdentifierList(IdentifierList identifierList) {
+    public Void visitIdentifierList() {
         return null;
     }
 
@@ -503,7 +503,7 @@ public class NameAnalyzerVisitorUtils {
     // --------------------------------------------------------------------------------
     public Void visitFuncCall(FuncCall funcCall) {
         String funcName = ((Identifier) funcCall.getExpression()).getIdentifier();
-        int line = ((Identifier) funcCall.getExpression()).getLine();
+        int line = funcCall.getExpression().getLine();
         ((Identifier) funcCall.getExpression()).setFunc();
 
         if (funcName.equals("scanf") || funcName.equals("printf")) {
@@ -591,7 +591,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    public Void visitConstant(Constant constant) {
+    public Void visitConstant() {
         return null;
     }
 
