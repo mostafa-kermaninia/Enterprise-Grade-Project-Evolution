@@ -33,7 +33,7 @@ public interface IVisitor<T> {
 
     T visit(InitDeclaratorList initDeclaratorList);
 
-    T visit(AssignmentOperation assignmentOperation);
+    T visit(AssignmentOp assignmentOp);
 
     T visit(UnaryOperator unaryOperator);
 
@@ -85,7 +85,6 @@ public interface IVisitor<T> {
 
     T visit(JumpStatement jumpStatement);
 
-    // az inja be baad male expression ha
     T visit(FuncCall funcCall);
 
     T visit(UnaryExpression unaryExpression);

@@ -4,11 +4,11 @@ import main.visitor.IVisitor;
 
 public class UnaryExpression extends Expression {
     private Expression expression;
-    private String Operation;
+    private String Op;
 
-    public UnaryExpression(Expression expression, String Operation) {
+    public UnaryExpression(Expression expression, String Op) {
         this.expression = expression;
-        this.Operation = Operation;
+        this.Op = Op;
     }
 
     @Override
@@ -20,8 +20,8 @@ public class UnaryExpression extends Expression {
         return expression;
     }
 
-    public String getOperation() {
-        return Operation;
+    public String getOp() {
+        return Op;
     }
 
 }

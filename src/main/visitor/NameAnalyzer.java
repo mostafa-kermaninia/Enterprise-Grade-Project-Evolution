@@ -74,13 +74,13 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(CastExpression castExpr) {
-        if (castExpr.getCastExpression() != null)
-            castExpr.getCastExpression().accept(this);
-        if (castExpr.getExpression() != null)
-            castExpr.getExpression().accept(this);
-        if (castExpr.getTypeName() != null)
-            castExpr.getTypeName().accept(this);
+    public Void visit(CastExpression castExpression) {
+        if (castExpression.getCastExpression() != null)
+            castExpression.getCastExpression().accept(this);
+        if (castExpression.getExpression() != null)
+            castExpression.getExpression().accept(this);
+        if (castExpression.getTypeName() != null)
+            castExpression.getTypeName().accept(this);
         return null;
     }
 
@@ -190,7 +190,7 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(AssignmentOperation assignmentOperation) {
+    public Void visit(AssignmentOp assignmentOp) {
         return null;
     }
 
@@ -417,8 +417,8 @@ public class NameAnalyzer extends Visitor<Void> {
     public Void visit(BinaryExpression binaryExpr) {
         binaryExpr.getExpression1().accept(this);
         binaryExpr.getExpression2().accept(this);
-        if (binaryExpr.getAssignmentOperation() != null)
-            binaryExpr.getAssignmentOperation().accept(this);
+        if (binaryExpr.getAssignmentOp() != null)
+            binaryExpr.getAssignmentOp().accept(this);
         return null;
     }
 
@@ -475,8 +475,8 @@ public class NameAnalyzer extends Visitor<Void> {
             prefixExpr.getTypeName().accept(this);
         if (prefixExpr.getTIExpression() != null)
             prefixExpr.getTIExpression().accept(this);
-        if (prefixExpr.getUnaryOperation() != null)
-            prefixExpr.getUnaryOperation().accept(this);
+        if (prefixExpr.getUnaryOp() != null)
+            prefixExpr.getUnaryOp().accept(this);
         return null;
     }
 

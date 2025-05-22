@@ -202,7 +202,7 @@
 // return null;
 // }
 //
-// public Void visit(AssignmentOperation assignmentOperation) {
+// public Void visit(AssignmentOp assignmentOp) {
 // return null;
 // }
 //
@@ -435,8 +435,8 @@
 // public Void visit(BinaryExpression binaryExpression) {
 // binaryExpression.getExpression1().accept(this);
 // binaryExpression.getExpression2().accept(this);
-// if (binaryExpression.getAssignmentOperation() != null)
-// binaryExpression.getAssignmentOperation().accept(this);
+// if (binaryExpression.getAssignmentOp() != null)
+// binaryExpression.getAssignmentOp().accept(this);
 // return null;
 // }
 //
@@ -495,8 +495,8 @@
 // prefixExpression.getTypeName().accept(this);
 // if (prefixExpression.getTypeInitExpression() != null)
 // prefixExpression.getTypeInitExpression().accept(this);
-// if (prefixExpression.getUnaryOperation() != null)
-// prefixExpression.getUnaryOperation().accept(this);
+// if (prefixExpression.getUnaryOp() != null)
+// prefixExpression.getUnaryOp().accept(this);
 // return null;
 // }
 //

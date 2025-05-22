@@ -118,7 +118,7 @@ public class TestVisitor extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(AssignmentOperation assignmentOperation) {
+    public Void visit(AssignmentOp assignmentOp) {
         return null;
     }
 
@@ -343,8 +343,8 @@ public class TestVisitor extends Visitor<Void> {
     public Void visit(BinaryExpression binaryExpression) {
         binaryExpression.getExpression1().accept(this);
         binaryExpression.getExpression2().accept(this);
-        if (binaryExpression.getAssignmentOperation() != null)
-            binaryExpression.getAssignmentOperation().accept(this);
+        if (binaryExpression.getAssignmentOp() != null)
+            binaryExpression.getAssignmentOp().accept(this);
         return null;
     }
 
@@ -391,8 +391,8 @@ public class TestVisitor extends Visitor<Void> {
             prefixExpression.getTypeName().accept(this);
         if (prefixExpression.getTIExpression() != null)
             prefixExpression.getTIExpression().accept(this);
-        if (prefixExpression.getUnaryOperation() != null)
-            prefixExpression.getUnaryOperation().accept(this);
+        if (prefixExpression.getUnaryOp() != null)
+            prefixExpression.getUnaryOp().accept(this);
         return null;
     }
 
