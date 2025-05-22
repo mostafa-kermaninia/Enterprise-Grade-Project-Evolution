@@ -74,13 +74,13 @@ public class NameAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    public Void visit(CastExpression castExpr) {
-        if (castExpr.getCastExpression() != null)
-            castExpr.getCastExpression().accept(this);
-        if (castExpr.getExpression() != null)
-            castExpr.getExpression().accept(this);
-        if (castExpr.getTypeName() != null)
-            castExpr.getTypeName().accept(this);
+    public Void visit(CastExpression castExpression) {
+        if (castExpression.getCastExpression() != null)
+            castExpression.getCastExpression().accept(this);
+        if (castExpression.getExpression() != null)
+            castExpression.getExpression().accept(this);
+        if (castExpression.getTypeName() != null)
+            castExpression.getTypeName().accept(this);
         return null;
     }
 
