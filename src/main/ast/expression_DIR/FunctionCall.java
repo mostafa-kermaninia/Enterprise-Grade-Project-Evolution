@@ -18,6 +18,7 @@ public class FunctionCall extends Expression {
     }
 
     public void removeArg() {
+
         argumentExpression.removeLastExpr();
     }
 
