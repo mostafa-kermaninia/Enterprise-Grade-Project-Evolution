@@ -57,35 +57,42 @@ declarationList
 		decl = declaration {$decListRet.addDeclaration($decl.declarationRet);}
 	)+;
 
+// Defines various forms of expressions, maintaining C operator precedence.
 expression
 	returns[Expression expressionRet]:
-	id = Identifier {$expressionRet = new Identifier($id.text); $expressionRet.setLine($id.line);}
-	| c = Constant {$expressionRet = new Constant($c.text); $expressionRet.setLine($c.line);}
-	| s = StringLiteral+ {$expressionRet = new Identifier($s.text); $expressionRet.notFirst();}
-	| LeftParen e = expression {$expressionRet = $e.expressionRet; $e.expressionRet.notFirst();
+	identifierToken = Identifier {$expressionRet = new Identifier($identifierToken.text); $expressionRet.setLine($identifierToken.line);}
+	| constantToken = Constant {$expressionRet = new Constant($constantToken.text); $expressionRet.setLine($constantToken.line);}
+	| stringLiteralSequence = StringLiteral+ {$expressionRet = new Identifier($stringLiteralSequence.text); $expressionRet.notFirst();}
+    | LeftParen parenExpression = expression {$expressionRet = $parenExpression.expressionRet; $parenExpression.expressionRet.notFirst();
 		} RightParen
-	| LeftParen t = typeName RightParen LeftBrace i = initializerList {$expressionRet = new TIExpression($t.typeNameRet, $i.initializerListRet);
+    // Compound literal: (type_name){initializer_list}
+	| LeftParen compoundType = typeName RightParen LeftBrace compoundInitializer = initializerList {$expressionRet = new TIExpression($compoundType.typeNameRet, $compoundInitializer.initializerListRet);
 		} Comma? RightBrace
+    // Array indexing: expression[expression]
 	| e1 = expression LeftBracket e2 = expression RightBracket {$expressionRet = new ArrayIndexing($e1.expressionRet, $e2.expressionRet);  $e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
-		} // Array indexing
+		} 
+    // Function call: expression(argument_expression_list?)
 	| fe = expression {$expressionRet = new FuncCall($fe.expressionRet); $expressionRet.notFirst();
 		} LeftParen (
 		fa = argumentExpressionList {$expressionRet.setArgExpression($fa.argExpressionRet); $fa.argExpressionRet.notFirstExpression();
 			}
-	)? RightParen // Function call
+	)? RightParen 
+    // Postfix increment: expression++
 	| ue = expression pp = PlusPlus {$expressionRet = new UnaryExpression($ue.expressionRet, $pp.text); $expressionRet.setLine($pp.line);  $ue.expressionRet.notFirst();
-		} // Postfix increment
+		} 
+    // Postfix decrement: expression--
 	| ue2 = expression mm = MinusMinus {$expressionRet = new UnaryExpression($ue2.expressionRet, $mm.text); $expressionRet.setLine($mm.line);   $ue2.expressionRet.notFirst();
-		} // Postfix decrement
+		} 
+	// Prefix expressions: ++expr, --expr, sizeof expr, &expr, *expr, +expr, -expr, ~expr, !expr, sizeof(type)
 	| {PrefixExpression pe = new PrefixExpression();} (
 		pp = PlusPlus {pe.addOp($pp.text);}
 		| mm = MinusMinus {pe.addOp($mm.text);}
 		| s = Sizeof {pe.addOp($s.text);}
 	)* (
-		// Prefix operators (zero or more)
+		// Operand of the prefix expression
 		id = Identifier {pe.setIdentifier($id.text);}
 		| c = Constant {pe.setConstant($c.text);}
-		| StringLiteral+
+		| StringLiteral+ // String literals as an operand, raw
 		| LeftParen e = expression RightParen {pe.setExpression($e.expressionRet); $e.expressionRet.notFirst();
 			}
 		| LeftParen t = typeName RightParen LeftBrace i = initializerList {
@@ -98,49 +105,61 @@ expression
             }
 		| Sizeof LeftParen t1 = typeName {pe.setTypeName($t1.typeNameRet); } RightParen
 	) {$expressionRet = pe;}
+	// Cast expression: (type_name) cast_expression
 	| LeftParen t = typeName RightParen ce = castExpression {$expressionRet = new ExpressionCast($t.typeNameRet, $ce.castExpressionRet);
-		} // Cast expression
+		} 
+	// Multiplicative operators: *, /, %
 	| e1 = expression op = (Star | Div | Mod) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Multiplicative
+		} 
+	// Additive operators: +, -
 	| e1 = expression op = (Plus | Minus) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Additive
+		} 
+	// Shift operators: <<, >>
 	| e1 = expression op = (LeftShift | RightShift) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Shift
+		} 
+	// Relational operators: <, >, <=, >=
 	| e1 = expression op = (
 		Less
 		| Greater
 		| LessEqual
 		| GreaterEqual
 	) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Relational
+		}
+	// Equality operators: ==, !=
 	| e1 = expression op = (Equal | NotEqual) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Equality
+		} 
+	// Bitwise AND operator: &
 	| e1 = expression op = And e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise AND
+		} 
+	// Bitwise XOR operator: ^
 	| e1 = expression op = Xor e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise XOR
+		} 
+	// Bitwise OR operator: |
 	| e1 = expression op = Or e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise OR
+		} 
+	// Logical AND operator: &&
 	| e1 = expression op = AndAnd e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
 		}
-	// Logical AND
+	// Logical OR operator: ||
 	| e1 = expression op = OrOr e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Logical OR
+		} 
+	// Conditional operator: expr ? expr : expr
 	| e1 = expression q = Question e2 = expression Colon e3 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst(); $e3.expressionRet.notFirst();
 		} {$expressionRet = new CondExpression($e1.expressionRet, $e2.expressionRet, $e3.expressionRet); $expressionRet.setLine($q.line);
-		} // Conditional operator
+		} 
+	// Assignment operators: =, *=, /=, etc.
 	| e1 = expression a = assignmentOperator e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $a.assignmentOpRet); $expressionRet.setLine($a.assignmentOpRet.getLine());
-		}; // Assignment
+		};
 
 argumentExpressionList
 	returns[ArgExpression argExpressionRet]:

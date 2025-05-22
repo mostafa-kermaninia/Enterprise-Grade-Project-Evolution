@@ -452,14 +452,20 @@ public class SimpleLangParser extends Parser {
 		public ExpressionContext fe;
 		public ExpressionContext ue;
 		public ExpressionContext ue2;
+		public Token identifierToken;
+		public Token constantToken;
+		public Token stringLiteralSequence;
+		public ExpressionContext parenExpression;
+		public TypeNameContext compoundType;
+		public InitializerListContext compoundInitializer;
+		public Token pp;
+		public Token mm;
+		public Token s;
 		public Token id;
 		public Token c;
-		public Token s;
 		public ExpressionContext e;
 		public TypeNameContext t;
 		public InitializerListContext i;
-		public Token pp;
-		public Token mm;
 		public UnaryOperatorContext u;
 		public CastExpressionContext c1;
 		public TypeNameContext t1;
@@ -567,15 +573,15 @@ public class SimpleLangParser extends Parser {
 			case 1:
 				{
 				setState(131);
-				((ExpressionContext)_localctx).id = match(Identifier);
-				((ExpressionContext)_localctx).expressionRet =  new Identifier((((ExpressionContext)_localctx).id!=null?((ExpressionContext)_localctx).id.getText():null)); _localctx.expressionRet.setLine((((ExpressionContext)_localctx).id!=null?((ExpressionContext)_localctx).id.getLine():0));
+				((ExpressionContext)_localctx).identifierToken = match(Identifier);
+				((ExpressionContext)_localctx).expressionRet =  new Identifier((((ExpressionContext)_localctx).identifierToken!=null?((ExpressionContext)_localctx).identifierToken.getText():null)); _localctx.expressionRet.setLine((((ExpressionContext)_localctx).identifierToken!=null?((ExpressionContext)_localctx).identifierToken.getLine():0));
 				}
 				break;
 			case 2:
 				{
 				setState(133);
-				((ExpressionContext)_localctx).c = match(Constant);
-				((ExpressionContext)_localctx).expressionRet =  new Constant((((ExpressionContext)_localctx).c!=null?((ExpressionContext)_localctx).c.getText():null)); _localctx.expressionRet.setLine((((ExpressionContext)_localctx).c!=null?((ExpressionContext)_localctx).c.getLine():0));
+				((ExpressionContext)_localctx).constantToken = match(Constant);
+				((ExpressionContext)_localctx).expressionRet =  new Constant((((ExpressionContext)_localctx).constantToken!=null?((ExpressionContext)_localctx).constantToken.getText():null)); _localctx.expressionRet.setLine((((ExpressionContext)_localctx).constantToken!=null?((ExpressionContext)_localctx).constantToken.getLine():0));
 				}
 				break;
 			case 3:
@@ -589,7 +595,7 @@ public class SimpleLangParser extends Parser {
 						{
 						{
 						setState(135);
-						((ExpressionContext)_localctx).s = match(StringLiteral);
+						((ExpressionContext)_localctx).stringLiteralSequence = match(StringLiteral);
 						}
 						}
 						break;
@@ -600,7 +606,7 @@ public class SimpleLangParser extends Parser {
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
-				((ExpressionContext)_localctx).expressionRet =  new Identifier((((ExpressionContext)_localctx).s!=null?((ExpressionContext)_localctx).s.getText():null)); _localctx.expressionRet.notFirst();
+				((ExpressionContext)_localctx).expressionRet =  new Identifier((((ExpressionContext)_localctx).stringLiteralSequence!=null?((ExpressionContext)_localctx).stringLiteralSequence.getText():null)); _localctx.expressionRet.notFirst();
 				}
 				break;
 			case 4:
@@ -608,8 +614,8 @@ public class SimpleLangParser extends Parser {
 				setState(141);
 				match(LeftParen);
 				setState(142);
-				((ExpressionContext)_localctx).e = expression(0);
-				((ExpressionContext)_localctx).expressionRet =  ((ExpressionContext)_localctx).e.expressionRet; ((ExpressionContext)_localctx).e.expressionRet.notFirst();
+				((ExpressionContext)_localctx).parenExpression = expression(0);
+				((ExpressionContext)_localctx).expressionRet =  ((ExpressionContext)_localctx).parenExpression.expressionRet; ((ExpressionContext)_localctx).parenExpression.expressionRet.notFirst();
 						
 				setState(144);
 				match(RightParen);
@@ -620,14 +626,14 @@ public class SimpleLangParser extends Parser {
 				setState(146);
 				match(LeftParen);
 				setState(147);
-				((ExpressionContext)_localctx).t = typeName();
+				((ExpressionContext)_localctx).compoundType = typeName();
 				setState(148);
 				match(RightParen);
 				setState(149);
 				match(LeftBrace);
 				setState(150);
-				((ExpressionContext)_localctx).i = initializerList();
-				((ExpressionContext)_localctx).expressionRet =  new TIExpression(((ExpressionContext)_localctx).t.typeNameRet, ((ExpressionContext)_localctx).i.initializerListRet);
+				((ExpressionContext)_localctx).compoundInitializer = initializerList();
+				((ExpressionContext)_localctx).expressionRet =  new TIExpression(((ExpressionContext)_localctx).compoundType.typeNameRet, ((ExpressionContext)_localctx).compoundInitializer.initializerListRet);
 						
 				setState(153);
 				_errHandler.sync(this);
