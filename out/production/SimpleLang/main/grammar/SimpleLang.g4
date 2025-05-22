@@ -390,158 +390,250 @@ typeName
         absDeclarator = abstractDeclarator { $typeNameRet.setAbstractDec($absDeclarator.abstractDecRet); }
     )?
     ;
-    
+// Rule for an abstract declarator, used for type names where no identifier is present (e.g., in casts).
 abstractDeclarator
-	returns[AbstractDec abstractDecRet]:
-	{$abstractDecRet = new AbstractDec();} p = pointer {$abstractDecRet.setPointer($p.pointerRet);}
-	| {$abstractDecRet = new AbstractDec();} (
-		p = pointer {$abstractDecRet.setPointer($p.pointerRet);}
-	)? d = directAbstractDeclarator {$abstractDecRet.setDirectAbsDec($d.directAbsDecRet);};
+    returns[AbstractDec abstractDecRet]
+    :
+    { $abstractDecRet = new AbstractDec(); }
+    pointerNode = pointer { $abstractDecRet.setPointer($pointerNode.pointerRet); }
+    |
+    { $abstractDecRet = new AbstractDec(); }
+    ( optionalPointerNode = pointer { $abstractDecRet.setPointer($optionalPointerNode.pointerRet); } )?
+    directAbsDeclaratorNode = directAbstractDeclarator { $abstractDecRet.setDirectAbsDec($directAbsDeclaratorNode.directAbsDecRet); }
+    ;
 
+// Rule for the core part of an abstract declarator: array type, function type, or parenthesized abstract declarator.
 directAbstractDeclarator
-	returns[DirectAbsDec directAbsDecRet]:
-	{$directAbsDecRet = new DirectAbsDec();} LeftBracket (
-		e = expression {$directAbsDecRet.setExpression($e.expressionRet);}
-	)? RightBracket
-	| {$directAbsDecRet = new DirectAbsDec();} LeftParen (
-		a = abstractDeclarator {$directAbsDecRet.setAbstractDec($a.abstractDecRet);}
-		| (
-			p = parameterList {$directAbsDecRet.setParameterList($p.parameterListRet);}
-		)?
-	) RightParen
-	| d = directAbstractDeclarator {$directAbsDecRet = new DirectAbsDec();} {$directAbsDecRet.setDirectAbsDec($d.directAbsDecRet);
-		} LeftBracket (
-		e = expression {$directAbsDecRet.setExpression($e.expressionRet);}
-	)? RightBracket
-	| d = directAbstractDeclarator {$directAbsDecRet = new DirectAbsDec();} {$directAbsDecRet.setDirectAbsDec($d.directAbsDecRet);
-		} LeftParen (
-		p = parameterList {$directAbsDecRet.setParameterList($p.parameterListRet);}
-	)? RightParen;
+    returns[DirectAbsDec directAbsDecRet]
+    :
+    { $directAbsDecRet = new DirectAbsDec(); } // Abstract array declarator: [ expression? ]
+    LeftBracket (arraySizeExpr = expression { $directAbsDecRet.setExpression($arraySizeExpr.expressionRet); })? RightBracket
+    |
+    { $directAbsDecRet = new DirectAbsDec(); } // Parenthesized abstract declarator or abstract function type: ( abstract_declarator | parameter_list? )
+    LeftParen
+    (
+        nestedAbstractDeclarator = abstractDeclarator { $directAbsDecRet.setAbstractDec($nestedAbstractDeclarator.abstractDecRet); }
+        | (paramList = parameterList { $directAbsDecRet.setParameterList($paramList.parameterListRet); })?
+    )
+    RightParen
+    |
+    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract array declarator: direct_abstract_declarator [ expression? ]
+    baseDirectAbstractDeclarator_Array = directAbstractDeclarator
+    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Array.directAbsDecRet); }
+    LeftBracket (recursiveArraySizeExpr = expression { $directAbsDecRet.setExpression($recursiveArraySizeExpr.expressionRet); })? RightBracket
+    |
+    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract function declarator: direct_abstract_declarator ( parameter_list? )
+    baseDirectAbstractDeclarator_Func = directAbstractDeclarator
+    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Func.directAbsDecRet); }
+    LeftParen (recursiveParamList = parameterList { $directAbsDecRet.setParameterList($recursiveParamList.parameterListRet); })? RightParen
+    ;
 
+// Rule for an initializer for a variable or member: either a single expression or a brace-enclosed list.
 initializer
-	returns[Initializer initializerRet]:
-	{$initializerRet = new Initializer();} e = expression {$initializerRet.setExpression($e.expressionRet);
-		}
-	| {$initializerRet = new Initializer();} LeftBrace i = initializerList {$initializerRet.setInitializerList($i.initializerListRet);
-		} Comma? RightBrace;
-
+    returns[Initializer initializerRet]
+    :
+    { $initializerRet = new Initializer(); }
+    initExpression = expression { $initializerRet.setExpression($initExpression.expressionRet); }
+    |
+    { $initializerRet = new Initializer(); }
+    LeftBrace initItemsList = initializerList { $initializerRet.setInitializerList($initItemsList.initializerListRet); } Comma? RightBrace
+    ;
+ 
+// Rule for a comma-separated list of initializers, possibly with C99 designated initializers.
 initializerList
-	returns[InitializerList initializerListRet]:
-	{$initializerListRet = new InitializerList();} (
-		d = designation {$initializerListRet.addDesignation($d.designationRet);}
-	)? i = initializer {$initializerListRet.addInitializer($i.initializerRet);} (
-		Comma (
-			d1 = designation {$initializerListRet.addDesignation($d1.designationRet);}
-		)? i1 = initializer {$initializerListRet.addInitializer($i1.initializerRet);}
-	)*;
-
+    returns[InitializerList initializerListRet]
+    :
+    { $initializerListRet = new InitializerList(); }
+    ( firstDesignation = designation { $initializerListRet.addDesignation($firstDesignation.designationRet); } )?
+    firstInitializerItem = initializer { $initializerListRet.addInitializer($firstInitializerItem.initializerRet); }
+    (
+        Comma
+        ( nextDesignation = designation { $initializerListRet.addDesignation($nextDesignation.designationRet); } )?
+        nextInitializerItem = initializer { $initializerListRet.addInitializer($nextInitializerItem.initializerRet); }
+    )*
+    ;
+  // Rule for a C99 designated initializer part (e.g., .member = or [index] =).
 designation
-	returns[Designation designationRet]:
-	{$designationRet = new Designation();} (
-		d = designator {$designationRet.addDesignator($d.designatorRet);}
-	)+ Assign;
+    returns[Designation designationRet]
+    :
+    { $designationRet = new Designation(); }
+    (
+        designatorElement = designator { $designationRet.addDesignator($designatorElement.designatorRet); }
+    )+
+    Assign
+    ;
 
+// Rule for a single designator in a C99 designated initializer: either an array index or a struct/union member.
 designator
-	returns[Designator designatorRet]:
-	{$designatorRet = new Designator();} LeftBracket e = expression {$designatorRet.setExpression($e.expressionRet);
-		} RightBracket
-	| Dot id = Identifier {$designatorRet.setLine($id.line);};
+    returns[Designator designatorRet]
+    :
+    { $designatorRet = new Designator(); }
+    LeftBracket indexValueExpression = expression RightBracket
+    { $designationRet.setExpression($indexValueExpression.expressionRet); }
+    |
+    Dot memberNameIdentifier = Identifier
+    { $designationRet.setLine($memberNameIdentifier.line); } // Assuming Designator AST node can store line info for dot member
+    ;
 
+// Rule for a generic statement, dispatching to specific statement types.
 statement
-	returns[Statement statementRet]:
-	c = compoundStatement {$statementRet = $c.compoundStatementRet; }
-	| e = expressionStatement {$statementRet = $e.expressionStatementRet; }
-	| s = selectionStatement {$statementRet = $s.selectionStatementRet; }
-	| i = iterationStatement {$statementRet = $i.iterStatementRet; }
-	| j = jumpStatement {$statementRet = $j.jumpStatementRet; };
+    returns[Statement statementRet]
+    :
+    compoundStmtNode = compoundStatement { $statementRet = $compoundStmtNode.compoundStatementRet; }
+    | exprStmtNode = expressionStatement { $statementRet = $exprStmtNode.expressionStatementRet; }
+    | selectionStmtNode = selectionStatement { $statementRet = $selectionStmtNode.selectionStatementRet; }
+    | iterationStmtNode = iterationStatement { $statementRet = $iterationStmtNode.iterStatementRet; }
+    | jumpStmtNode = jumpStatement { $statementRet = $jumpStmtNode.jumpStatementRet; }
+    ;
 
+// Rule for a compound statement (a block of code enclosed in braces {}).
 compoundStatement
-	returns[CompoundStatement compoundStatementRet]:
-	{$compoundStatementRet = new CompoundStatement();} LeftBrace (
-		(
-			b = blockItem {$compoundStatementRet.addBlockItem($b.blockItemRet);}
-		)+
-	)? RightBrace;
+    returns[CompoundStatement compoundStatementRet]
+    :
+    { $compoundStatementRet = new CompoundStatement(); }
+    LeftBrace
+    (
+        (
+            itemInBlock = blockItem { $compoundStatementRet.addBlockItem($itemInBlock.blockItemRet); }
+        )+
+    )?
+    RightBrace
+    ;
 
+// Rule for an item within a block: either a statement or a declaration.
 blockItem
-	returns[BlockItem blockItemRet]:
-	{$blockItemRet = new BlockItem();} s = statement {$blockItemRet.setStatement($s.statementRet);}
-	| {$blockItemRet = new BlockItem();} d = declaration {$blockItemRet.setDeclaration($d.declarationRet);
-		};
+    returns[BlockItem blockItemRet]
+    :
+    { $blockItemRet = new BlockItem(); }
+    statementNode = statement { $blockItemRet.setStatement($statementNode.statementRet); }
+    |
+    { $blockItemRet = new BlockItem(); }
+    declarationNode = declaration { $blockItemRet.setDeclaration($declarationNode.declarationRet); }
+    ;
 
+// Rule for an expression statement, which is an optional expression followed by a semicolon.
 expressionStatement
-	returns[ExpressionStatement expressionStatementRet]:
-	{$expressionStatementRet = new ExpressionStatement();} (
-		e = expression {$expressionStatementRet.setExpression($e.expressionRet);}
-	)? Semi;
+    returns[ExpressionStatement expressionStatementRet]
+    :
+    { $expressionStatementRet = new ExpressionStatement(); }
+    (
+        exprNode = expression { $expressionStatementRet.setExpression($exprNode.expressionRet); }
+    )?
+    Semi
+    ;
 
+// Rule for a selection statement, primarily an if-else construct.
 selectionStatement
-	returns[SelectionStatement selectionStatementRet]:
-	i = If LeftParen e = expression RightParen s = statement {$selectionStatementRet = new SelectionStatement($e.expressionRet, $s.statementRet);
-		} {$selectionStatementRet.setLine($i.line);} (
-		el = Else es = statement {$selectionStatementRet.setElseStatement($es.statementRet); {$selectionStatementRet.setElseLine($el.line);}
-			}
-	)?;
+    returns[SelectionStatement selectionStatementRet]
+    :
+    ifToken = If LeftParen conditionExpr = expression RightParen thenStatementNode = statement
+    {
+        $selectionStatementRet = new SelectionStatement($conditionExpr.expressionRet, $thenStatementNode.statementRet);
+        $selectionStatementRet.setLine($ifToken.line);
+    }
+    (
+        elseToken = Else elseStatementNode = statement
+        {
+            $selectionStatementRet.setElseStatement($elseStatementNode.statementRet);
+            $selectionStatementRet.setElseLine($elseToken.line);
+        }
+    )?
+    ;
 
+// Rule for iteration statements: while, do-while, and for loops.
 iterationStatement
-	returns[IterStatement iterStatementRet]:
-	w = While LeftParen e = expression RightParen s = statement {
+    returns[IterStatement iterStatementRet]
+    :
+    whileToken = While LeftParen loopConditionExpr = expression RightParen loopBodyStatement = statement
+    {
         $iterStatementRet = new IterStatement();
-        $iterStatementRet.setExpression($e.expressionRet);
-        $iterStatementRet.setStatement($s.statementRet);
-        $iterStatementRet.setLine($w.line);
-        $iterStatementRet.setType($w.text);
-     }
-	| Do s1 = statement w = While LeftParen e1 = expression RightParen Semi {
-            $iterStatementRet = new IterStatement();
-            $iterStatementRet.setExpression($e1.expressionRet);
-            $iterStatementRet.setStatement($s1.statementRet);
-            $iterStatementRet.setLine($w.line);
-            $iterStatementRet.setType($w.text);
-         }
-	| f2 = For LeftParen f = forCondition RightParen s2 = statement {
-            $iterStatementRet = new IterStatement();
-            $iterStatementRet.setForCondition($f.forConditionRet);
-            $iterStatementRet.setStatement($s2.statementRet);
-            $iterStatementRet.setLine($f2.line);
-            $iterStatementRet.setType($f2.text);
-         };
+        $iterStatementRet.setExpression($loopConditionExpr.expressionRet);
+        $iterStatementRet.setStatement($loopBodyStatement.statementRet);
+        $iterStatementRet.setLine($whileToken.line);
+        $iterStatementRet.setType($whileToken.text);
+    }
+    |
+    Do doLoopBodyStatement = statement doWhileToken = While LeftParen doLoopConditionExpr = expression RightParen Semi
+    {
+        $iterStatementRet = new IterStatement();
+        $iterStatementRet.setExpression($doLoopConditionExpr.expressionRet);
+        $iterStatementRet.setStatement($doLoopBodyStatement.statementRet);
+        $iterStatementRet.setLine($doWhileToken.line);
+        $iterStatementRet.setType($doWhileToken.text); // Type is 'while' for do-while
+    }
+    |
+    forToken = For LeftParen forLoopConditions = forCondition RightParen forLoopBodyStatement = statement
+    {
+        $iterStatementRet = new IterStatement();
+        $iterStatementRet.setForCondition($forLoopConditions.forConditionRet);
+        $iterStatementRet.setStatement($forLoopBodyStatement.statementRet);
+        $iterStatementRet.setLine($forToken.line);
+        $iterStatementRet.setType($forToken.text);
+    }
+    ;
 
+// Rule for the three components within a for-loop's parentheses: initialization, condition, and iteration.
 forCondition
-	returns[ForCondition forConditionRet]:
-	{$forConditionRet = new ForCondition();} (
-		fd = forDeclaration {$forConditionRet.setForDec($fd.forDecRet);}
-		| (
-			e = expression {$forConditionRet.setExpression($e.expressionRet);}
-		)?
-	) Semi (
-		fe1 = forExpression {$forConditionRet.setForExpression1($fe1.forExpressionRet);}
-	)? Semi (
-		fe2 = forExpression {$forConditionRet.setForExpression1($fe2.forExpressionRet);}
-	)?;
-
+    returns[ForCondition forConditionRet]
+    :
+    { $forConditionRet = new ForCondition(); }
+    ( // Initialization part
+        initDeclarationNode = forDeclaration { $forConditionRet.setForDec($initDeclarationNode.forDecRet); }
+        |
+        ( initExpressionNode = expression { $forConditionRet.setExpression($initExpressionNode.expressionRet); } )?
+    )
+    Semi
+    ( // Condition part
+        conditionExpressionNode = forExpression { $forConditionRet.setForExpression1($conditionExpressionNode.forExpressionRet); }
+    )?
+    Semi
+    ( // Iteration part
+        iterationExpressionNode = forExpression { $forConditionRet.setForExpression1($iterationExpressionNode.forExpressionRet); } // AST uses ForExpression1 for iteration too
+    )?
+    ;
+// Rule for the declaration part within a for-loop's initialization (e.g., for(int i=0; ...)).
 forDeclaration
-	returns[ForDec forDecRet]:
-	d = declarationSpecifiers {$forDecRet = new ForDec($d.declarationSpecifiersRet);} (
-		i = initDeclaratorList {$forDecRet.setInitDecList($i.initDeclaratorListRet);}
-	)?;
+    returns[ForDec forDecRet]
+    :
+    declarationSpecs = declarationSpecifiers
+    { $forDecRet = new ForDec($declarationSpecs.declarationSpecifiersRet); }
+    (
+        initDeclarators = initDeclaratorList
+        { $forDecRet.setInitDecList($initDeclarators.initDeclaratorListRet); }
+    )?
+    ;
 
+// Rule for an expression within a for-loop's condition or iteration part (can be a comma-separated list).
 forExpression
-	returns[ForExpression forExpressionRet]:
-	e = expression {$forExpressionRet = new ForExpression($e.expressionRet);} (
-		Comma a = expression {$forExpressionRet.addExpression($a.expressionRet);}
-	)*;
+    returns[ForExpression forExpressionRet]
+    :
+    initialExpression = expression
+    { $forExpressionRet = new ForExpression($initialExpression.expressionRet); }
+    (
+        Comma additionalExpr = expression
+        { $forExpressionRet.addExpression($additionalExpr.expressionRet); }
+    )*
+    ;
 
+// Rule for jump statements: continue, break, or return (optionally with an expression).
 jumpStatement
-	returns[JumpStatement jumpStatementRet]:
-	{$jumpStatementRet = new JumpStatement();} (
-		Continue
-		| Break
-		| Return (
-			e = expression { $jumpStatementRet.setReturnExpression($e.expressionRet);}
-		)?
-	) Semi;
+    returns[JumpStatement jumpStatementRet]
+    :
+    { $jumpStatementRet = new JumpStatement(); }
+    (
+        Continue
+        | Break
+        | Return
+          (
+            returnValueExpr = expression { $jumpStatementRet.setReturnExpression($returnValueExpr.expressionRet); }
+          )?
+    )
+    Semi
+    ;
 
+// --- LEXER RULES ---
+
+// Keywords
 Break: 'break';
 Char: 'char';
 Const: 'const';
@@ -564,6 +656,8 @@ Unsigned: 'unsigned';
 Void: 'void';
 While: 'while';
 Bool: 'bool';
+
+// Punctuation and Operators
 LeftParen: '(';
 RightParen: ')';
 LeftBracket: '[';
@@ -610,6 +704,7 @@ NotEqual: '!=';
 Arrow: '->';
 Dot: '.';
 
+// Identifier
 Identifier: IdentifierNondigit (IdentifierNondigit | Digit)*;
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
@@ -625,6 +720,7 @@ fragment UniversalCharacterName:
 fragment HexQuad:
 	HexadecimalDigit HexadecimalDigit HexadecimalDigit HexadecimalDigit;
 
+// Constants (Numeric and Character)
 Constant:
 	IntegerConstant
 	| FloatingConstant
@@ -687,6 +783,9 @@ fragment ExponentPart: [eE] Sign? DigitSequence;
 
 fragment Sign: [+-];
 
+
+// A sequence of one or more digits. This is a lexer rule. It's used by castExpression and also as a
+// fragment in FloatingConstant.
 DigitSequence: Digit+;
 
 fragment HexadecimalFractionalConstant:
@@ -701,9 +800,9 @@ fragment FloatingSuffix: [flFL];
 
 fragment CharacterConstant:
 	'\'' CCharSequence '\''
-	| 'L\'' CCharSequence '\''
-	| 'u\'' CCharSequence '\''
-	| 'U\'' CCharSequence '\'';
+	| 'L\'' CCharSequence '\'' // Wide character constant
+	| 'u\'' CCharSequence '\'' // UTF-16 character constant
+	| 'U\'' CCharSequence '\''; // UTF-32 character constant
 
 fragment CCharSequence: CChar+;
 
@@ -722,6 +821,7 @@ fragment OctalEscapeSequence:
 
 fragment HexadecimalEscapeSequence: '\\x' HexadecimalDigit+;
 
+// String Literals
 StringLiteral: EncodingPrefix? '"' SCharSequence? '"';
 
 fragment EncodingPrefix: 'u8' | 'u' | 'U' | 'L';
@@ -730,6 +830,7 @@ fragment SCharSequence: SChar+;
 
 fragment SChar: ~["\\\r\n] | EscapeSequence | '\\\n' | '\\\r\n';
 
+// Preprocessor directives and comments (sent to hidden channel)
 MultiLineMacro:
 	'#' (~[\n]*? '\\' '\r'? '\n')+ ~ [\n]+ -> channel(HIDDEN);
 

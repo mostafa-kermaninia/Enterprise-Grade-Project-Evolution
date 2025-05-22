@@ -631,6 +631,9 @@ jumpStatement
     Semi
     ;
 
+// --- LEXER RULES ---
+
+// Keywords
 Break: 'break';
 Char: 'char';
 Const: 'const';
@@ -653,6 +656,8 @@ Unsigned: 'unsigned';
 Void: 'void';
 While: 'while';
 Bool: 'bool';
+
+// Punctuation and Operators
 LeftParen: '(';
 RightParen: ')';
 LeftBracket: '[';
@@ -699,6 +704,7 @@ NotEqual: '!=';
 Arrow: '->';
 Dot: '.';
 
+// Identifier
 Identifier: IdentifierNondigit (IdentifierNondigit | Digit)*;
 
 fragment IdentifierNondigit: Nondigit | UniversalCharacterName;
@@ -714,6 +720,7 @@ fragment UniversalCharacterName:
 fragment HexQuad:
 	HexadecimalDigit HexadecimalDigit HexadecimalDigit HexadecimalDigit;
 
+// Constants (Numeric and Character)
 Constant:
 	IntegerConstant
 	| FloatingConstant
@@ -776,6 +783,9 @@ fragment ExponentPart: [eE] Sign? DigitSequence;
 
 fragment Sign: [+-];
 
+
+// A sequence of one or more digits. This is a lexer rule. It's used by castExpression and also as a
+// fragment in FloatingConstant.
 DigitSequence: Digit+;
 
 fragment HexadecimalFractionalConstant:
@@ -790,9 +800,9 @@ fragment FloatingSuffix: [flFL];
 
 fragment CharacterConstant:
 	'\'' CCharSequence '\''
-	| 'L\'' CCharSequence '\''
-	| 'u\'' CCharSequence '\''
-	| 'U\'' CCharSequence '\'';
+	| 'L\'' CCharSequence '\'' // Wide character constant
+	| 'u\'' CCharSequence '\'' // UTF-16 character constant
+	| 'U\'' CCharSequence '\''; // UTF-32 character constant
 
 fragment CCharSequence: CChar+;
 
@@ -811,6 +821,7 @@ fragment OctalEscapeSequence:
 
 fragment HexadecimalEscapeSequence: '\\x' HexadecimalDigit+;
 
+// String Literals
 StringLiteral: EncodingPrefix? '"' SCharSequence? '"';
 
 fragment EncodingPrefix: 'u8' | 'u' | 'U' | 'L';
@@ -819,6 +830,7 @@ fragment SCharSequence: SChar+;
 
 fragment SChar: ~["\\\r\n] | EscapeSequence | '\\\n' | '\\\r\n';
 
+// Preprocessor directives and comments (sent to hidden channel)
 MultiLineMacro:
 	'#' (~[\n]*? '\\' '\r'? '\n')+ ~ [\n]+ -> channel(HIDDEN);
 
