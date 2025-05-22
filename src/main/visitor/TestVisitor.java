@@ -251,7 +251,7 @@ public class TestVisitor extends Visitor<Void> {
         selectionStatement.getExpression().accept(this);
         System.out.print("Line ");
         System.out.print(selectionStatement.getLine());
-        System.out.print(": Stmt selection = ");
+        System.out.print(": Statement selection = ");
         if (selectionStatement.getMainStatement() instanceof CompoundStatement) {
             CompoundStatement compoundStatement = (CompoundStatement) selectionStatement.getMainStatement();
             System.out.println(compoundStatement.getBlockItems().size());
@@ -263,14 +263,14 @@ public class TestVisitor extends Visitor<Void> {
             if (compoundStatement.getBlockItems().size() > 0) {
                 System.out.print("Line ");
                 System.out.print(selectionStatement.getElseLine());
-                System.out.print(": Stmt selection = ");
+                System.out.print(": Statement selection = ");
                 System.out.println(compoundStatement.getBlockItems().size());
             }
         } else if (selectionStatement.getElseStatement() != null
                 && !(selectionStatement.getElseStatement() instanceof SelectionStatement)) {
             System.out.print("Line ");
             System.out.print(selectionStatement.getElseLine());
-            System.out.print(": Stmt selection = ");
+            System.out.print(": Statement selection = ");
             System.out.println(0);
         }
         if (selectionStatement.getElseStatement() != null)
@@ -283,7 +283,7 @@ public class TestVisitor extends Visitor<Void> {
             iterStatement.getExpression().accept(this);
         System.out.print("Line ");
         System.out.print(iterStatement.getLine());
-        System.out.print(": Stmt " + iterStatement.getType() + " = ");
+        System.out.print(": Statement " + iterStatement.getType() + " = ");
         if (iterStatement.getStatement() instanceof CompoundStatement) {
             CompoundStatement compoundStatement = (CompoundStatement) iterStatement.getStatement();
             System.out.println(compoundStatement.getBlockItems().size());
