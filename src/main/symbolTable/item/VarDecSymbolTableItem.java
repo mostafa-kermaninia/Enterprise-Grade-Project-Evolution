@@ -5,6 +5,12 @@ import main.ast.literal_DIR.TypeSpecifier;
 public class VarDecSymbolTableItem extends SymbolTableItem {
     public static final String START_KEY = "VarDec_";
 
+    private TypeSpecifier varDec;
+
+    public VarDecSymbolTableItem(TypeSpecifier varDec) {
+        this.varDec = varDec;
+    }
+
     public TypeSpecifier getVarDec() {
         return varDec;
     }
@@ -13,10 +19,23 @@ public class VarDecSymbolTableItem extends SymbolTableItem {
         this.varDec = varDec;
     }
 
-    private TypeSpecifier varDec;
+    // Additional method to retrieve just the type name
+    public String getVarTypeName() {
+        return varDec.getType();
+    }
 
-    public VarDecSymbolTableItem(TypeSpecifier varDec) {
-        this.varDec = varDec;
+    // New setter to change the underlying type name (demonstration only)
+    public void setVarTypeName(String newTypeName) {
+        this.varDec.setType(newTypeName);
+    }
+
+    // New toString method
+    @Override
+    public String toString() {
+        return "VarDecSymbolTableItem{" +
+                "key='" + getKey() + '\'' +
+                ", varDec=" + (varDec != null ? varDec.toString() : "null") +
+                '}';
     }
 
     @Override

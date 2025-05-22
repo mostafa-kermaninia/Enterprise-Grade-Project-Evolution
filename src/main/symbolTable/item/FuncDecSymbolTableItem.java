@@ -5,6 +5,12 @@ import main.ast.literal_DIR.FunctionDefinition;
 public class FuncDecSymbolTableItem extends SymbolTableItem {
     public static final String START_KEY = "FuncDec_";
 
+    private FunctionDefinition funcDec;
+
+    public FuncDecSymbolTableItem(FunctionDefinition funcDec) {
+        this.funcDec = funcDec;
+    }
+
     public FunctionDefinition getFuncDec() {
         return funcDec;
     }
@@ -13,10 +19,18 @@ public class FuncDecSymbolTableItem extends SymbolTableItem {
         this.funcDec = funcDec;
     }
 
-    private FunctionDefinition funcDec;
+    // Additional method
+    public int getFunctionArgumentCount() {
+        return this.funcDec.getNumArgs();
+    }
 
-    public FuncDecSymbolTableItem(FunctionDefinition funcDec) {
-        this.funcDec = funcDec;
+    // toString method
+    @Override
+    public String toString() {
+        return "FuncDecSymbolTableItem{" +
+                "key='" + getKey() + '\'' +
+                ", funcDec=" + (funcDec != null ? funcDec.toString() : "null") +
+                '}';
     }
 
     @Override
