@@ -13,8 +13,7 @@ import main.symbolTable.item.FuncDecSymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 import java.util.Arrays;
 import java.util.List;
-
-
+import main.visitor.ListUtils.*;
 
 public class NameAnalyzerVisitorUtils {
     private final NameAnalyzer parent;
