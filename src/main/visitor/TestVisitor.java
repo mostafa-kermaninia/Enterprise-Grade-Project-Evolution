@@ -32,7 +32,7 @@ public class TestVisitor extends Visitor<Void> {
     public Void visit(FunctionDefinition functionDefinition) {
         System.out.print("Line ");
         System.out.print(functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
-        System.out.print(": Stmt function "
+        System.out.print(": Statement function "
                 + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getIdentifier() + " = ");
         System.out.print(functionDefinition.getCompoundStatement().getBlockItems().size());
         System.out.println(" " + functionDefinition.getNumArgs());
