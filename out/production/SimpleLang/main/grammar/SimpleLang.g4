@@ -310,32 +310,41 @@ declarator
     ;
   
 // Rule for the core part of a declarator: an identifier, a parenthesized declarator, an array, or a function.
-directDeclarator
-    returns[DirectDec directDecRet]
-    :
-    { $directDecRet = new DirectDec(); }
-    identifierToken = Identifier
-    { $directDecRet.setIdentifier($identifierToken.text); $directDecRet.setLine($identifierToken.line); }
-    |
-    { $directDecRet = new DirectDec(); }
-    leftParenToken = LeftParen nestedDeclarator = declarator RightParen
-    { $directDecRet.setDeclarator($nestedDeclarator.declaratorRet); $directDecRet.setLine($leftParenToken.line); }
-    |
-    { $directDecRet = new DirectDec(); } // Array declarator
-    arrayBaseDeclarator = directDeclarator
-    { $directDecRet.setDirectDec($arrayBaseDeclarator.directDecRet); }
-    LeftBracket (arraySizeExpr = expression { $directDecRet.setExpression($arraySizeExpr.expressionRet); })? RightBracket
-    |
-    { $directDecRet = new DirectDec(); } // Function declarator
-    funcBaseDeclarator = directDeclarator
-    { $directDecRet.setDirectDec($funcBaseDeclarator.directDecRet); }
-    funcLeftParen = LeftParen
-    (
-        paramList = parameterList { $directDecRet.setParameterList($paramList.parameterListRet); $directDecRet.setLine($funcLeftParen.line); }
-        | (identList = identifierList { $directDecRet.setIdentifierList($identList.identifierListRet); })? // K&R style
-    )
-    RightParen
-    ;
+//directDeclarator
+//    returns[DirectDec directDecRet]
+//    :
+//    { $directDecRet = new DirectDec(); }
+//    identifierToken = Identifier
+//    { $directDecRet.setIdentifier($identifierToken.text); $directDecRet.setLine($identifierToken.line); }
+//    |
+//    { $directDecRet = new DirectDec(); }
+//    leftParenToken = LeftParen nestedDeclarator = declarator RightParen
+//    { $directDecRet.setDeclarator($nestedDeclarator.declaratorRet); $directDecRet.setLine($leftParenToken.line); }
+//    |
+//    { $directDecRet = new DirectDec(); } // Array declarator
+//    arrayBaseDeclarator = directDeclarator
+//    { $directDecRet.setDirectDec($arrayBaseDeclarator.directDecRet); }
+//    LeftBracket (arraySizeExpr = expression { $directDecRet.setExpression($arraySizeExpr.expressionRet); })? RightBracket
+//    |
+//    { $directDecRet = new DirectDec(); } // Function declarator
+//    funcBaseDeclarator = directDeclarator
+//    { $directDecRet.setDirectDec($funcBaseDeclarator.directDecRet); }
+//    funcLeftParen = LeftParen
+//    (
+//        paramList = parameterList { $directDecRet.setParameterList($paramList.parameterListRet); $directDecRet.setLine($funcLeftParen.line); }
+//        | (identList = identifierList { $directDecRet.setIdentifierList($identList.identifierListRet); })? // K&R style
+//    )
+//    RightParen
+//    ;
+directDeclarator returns [DirectDec directDecRet]
+    : {$directDecRet = new DirectDec();} id = Identifier {$directDecRet.setIdentifier($id.text); $directDecRet.setLine($id.line);}
+    | {$directDecRet = new DirectDec();} l = LeftParen d = declarator {$directDecRet.setDeclarator($d.declaratorRet); $directDecRet.setLine($l.line);} RightParen
+    |  d1 = directDeclarator {$directDecRet = new DirectDec();} {$directDecRet.setDirectDec($d1.directDecRet);}
+        LeftBracket (e = expression {$directDecRet.setExpression($e.expressionRet);})? RightBracket
+    |  d2 = directDeclarator {$directDecRet = new DirectDec();} {$directDecRet.setDirectDec($d2.directDecRet);}
+        l = LeftParen  (p = parameterList {$directDecRet.setParameterList($p.parameterListRet); $directDecRet.setLine($l.line);}
+        | (i = identifierList {$directDecRet.setIdentifierList($i.identifierListRet);} )?) RightParen ;
+
 
 // Rule for a pointer declaration, like '*' or '* const'.
 pointer
@@ -403,30 +412,41 @@ abstractDeclarator
     ;
 
 // Rule for the core part of an abstract declarator: array type, function type, or parenthesized abstract declarator.
-directAbstractDeclarator
-    returns[DirectAbsDec directAbsDecRet]
-    :
-    { $directAbsDecRet = new DirectAbsDec(); } // Abstract array declarator: [ expression? ]
-    LeftBracket (arraySizeExpr = expression { $directAbsDecRet.setExpression($arraySizeExpr.expressionRet); })? RightBracket
-    |
-    { $directAbsDecRet = new DirectAbsDec(); } // Parenthesized abstract declarator or abstract function type: ( abstract_declarator | parameter_list? )
-    LeftParen
-    (
-        nestedAbstractDeclarator = abstractDeclarator { $directAbsDecRet.setAbstractDec($nestedAbstractDeclarator.abstractDecRet); }
-        | (paramList = parameterList { $directAbsDecRet.setParameterList($paramList.parameterListRet); })?
-    )
-    RightParen
-    |
-    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract array declarator: direct_abstract_declarator [ expression? ]
-    baseDirectAbstractDeclarator_Array = directAbstractDeclarator
-    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Array.directAbsDecRet); }
-    LeftBracket (recursiveArraySizeExpr = expression { $directAbsDecRet.setExpression($recursiveArraySizeExpr.expressionRet); })? RightBracket
-    |
-    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract function declarator: direct_abstract_declarator ( parameter_list? )
-    baseDirectAbstractDeclarator_Func = directAbstractDeclarator
-    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Func.directAbsDecRet); }
-    LeftParen (recursiveParamList = parameterList { $directAbsDecRet.setParameterList($recursiveParamList.parameterListRet); })? RightParen
-    ;
+//directAbstractDeclarator
+//    returns[DirectAbsDec directAbsDecRet]
+//    :
+//    { $directAbsDecRet = new DirectAbsDec(); } // Abstract array declarator: [ expression? ]
+//    LeftBracket (arraySizeExpr = expression { $directAbsDecRet.setExpression($arraySizeExpr.expressionRet); })? RightBracket
+//    |
+//    { $directAbsDecRet = new DirectAbsDec(); } // Parenthesized abstract declarator or abstract function type: ( abstract_declarator | parameter_list? )
+//    LeftParen
+//    (
+//        nestedAbstractDeclarator = abstractDeclarator { $directAbsDecRet.setAbstractDec($nestedAbstractDeclarator.abstractDecRet); }
+//        | (paramList = parameterList { $directAbsDecRet.setParameterList($paramList.parameterListRet); })?
+//    )
+//    RightParen
+//    |
+//    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract array declarator: direct_abstract_declarator [ expression? ]
+//    baseDirectAbstractDeclarator_Array = directAbstractDeclarator
+//    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Array.directAbsDecRet); }
+//    LeftBracket (recursiveArraySizeExpr = expression { $directAbsDecRet.setExpression($recursiveArraySizeExpr.expressionRet); })? RightBracket
+//    |
+//    { $directAbsDecRet = new DirectAbsDec(); } // Recursive abstract function declarator: direct_abstract_declarator ( parameter_list? )
+//    baseDirectAbstractDeclarator_Func = directAbstractDeclarator
+//    { $directAbsDecRet.setDirectAbsDec($baseDirectAbstractDeclarator_Func.directAbsDecRet); }
+//    LeftParen (recursiveParamList = parameterList { $directAbsDecRet.setParameterList($recursiveParamList.parameterListRet); })? RightParen
+//    ;
+//
+
+directAbstractDeclarator returns [DirectAbsDec directAbsDecRet]
+    : {$directAbsDecRet = new DirectAbsDec();} LeftBracket (e = expression {$directAbsDecRet.setExpression($e.expressionRet);})? RightBracket
+    | {$directAbsDecRet = new DirectAbsDec();} LeftParen
+     (a = abstractDeclarator {$directAbsDecRet.setAbstractDec($a.abstractDecRet);} |
+     (p = parameterList {$directAbsDecRet.setParameterList($p.parameterListRet);})?) RightParen
+    |  d = directAbstractDeclarator {$directAbsDecRet = new DirectAbsDec();} {$directAbsDecRet.setDirectAbsDec($d.directAbsDecRet);}
+     LeftBracket (e = expression {$directAbsDecRet.setExpression($e.expressionRet);})? RightBracket
+    |  d = directAbstractDeclarator {$directAbsDecRet = new DirectAbsDec();} {$directAbsDecRet.setDirectAbsDec($d.directAbsDecRet);}
+     LeftParen (p = parameterList {$directAbsDecRet.setParameterList($p.parameterListRet);})? RightParen ;
 
 // Rule for an initializer for a variable or member: either a single expression or a brace-enclosed list.
 initializer
@@ -469,10 +489,10 @@ designator
     :
     { $designatorRet = new Designator(); }
     LeftBracket indexValueExpression = expression RightBracket
-    { $designationRet.setExpression($indexValueExpression.expressionRet); }
+    { $designatorRet.setExpression($indexValueExpression.expressionRet); }
     |
     Dot memberNameIdentifier = Identifier
-    { $designationRet.setLine($memberNameIdentifier.line); } // Assuming Designator AST node can store line info for dot member
+    { $designatorRet.setLine($memberNameIdentifier.line); } // Assuming Designator AST node can store line info for dot member
     ;
 
 // Rule for a generic statement, dispatching to specific statement types.
