@@ -46,9 +46,10 @@ functionDefinition
 			}
 	)? declaratorNode = declarator {$functionDefinitionRet.setDeclarator($declaratorNode.declaratorRet); $functionDefinitionRet.setLine($declaratorNode.declaratorRet.getLine());
 		} (
-		k_and_r_decls = declarationList {$functionDefinitionRet.setDecList($k_and_r_decls.decListRet);}
-	)? body = compoundStatement {$functionDefinitionRet.setCompoundStatement($body.compoundStatementRet);}
-		;
+		k_and_r_decls = declarationList {$functionDefinitionRet.setDecList($k_and_r_decls.decListRet);
+			}
+	)? body = compoundStatement {$functionDefinitionRet.setCompoundStatement($body.compoundStatementRet);
+		};
 
 // A list of declarations, typically used for K&R style function parameter declarations.
 declarationList
@@ -57,35 +58,45 @@ declarationList
 		decl = declaration {$decListRet.addDeclaration($decl.declarationRet);}
 	)+;
 
+// Defines various forms of expressions, maintaining C operator precedence.
 expression
 	returns[Expression expressionRet]:
-	id = Identifier {$expressionRet = new Identifier($id.text); $expressionRet.setLine($id.line);}
-	| c = Constant {$expressionRet = new Constant($c.text); $expressionRet.setLine($c.line);}
-	| s = StringLiteral+ {$expressionRet = new Identifier($s.text); $expressionRet.notFirst();}
-	| LeftParen e = expression {$expressionRet = $e.expressionRet; $e.expressionRet.notFirst();
+	identifierToken = Identifier {$expressionRet = new Identifier($identifierToken.text); $expressionRet.setLine($identifierToken.line);
+		}
+	| constantToken = Constant {$expressionRet = new Constant($constantToken.text); $expressionRet.setLine($constantToken.line);
+		}
+	| stringLiteralSequence = StringLiteral+ {$expressionRet = new Identifier($stringLiteralSequence.text); $expressionRet.notFirst();
+		}
+	| LeftParen parenExpression = expression {$expressionRet = $parenExpression.expressionRet; $parenExpression.expressionRet.notFirst();
 		} RightParen
-	| LeftParen t = typeName RightParen LeftBrace i = initializerList {$expressionRet = new TIExpression($t.typeNameRet, $i.initializerListRet);
+	// Compound literal: (type_name){initializer_list}
+	| LeftParen compoundType = typeName RightParen LeftBrace compoundInitializer = initializerList {$expressionRet = new TIExpression($compoundType.typeNameRet, $compoundInitializer.initializerListRet);
 		} Comma? RightBrace
+	// Array indexing: expression[expression]
 	| e1 = expression LeftBracket e2 = expression RightBracket {$expressionRet = new ArrayIndexing($e1.expressionRet, $e2.expressionRet);  $e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
-		} // Array indexing
+		}
+	// Function call: expression(argument_expression_list?)
 	| fe = expression {$expressionRet = new FuncCall($fe.expressionRet); $expressionRet.notFirst();
 		} LeftParen (
 		fa = argumentExpressionList {$expressionRet.setArgExpression($fa.argExpressionRet); $fa.argExpressionRet.notFirstExpression();
 			}
-	)? RightParen // Function call
+	)? RightParen
+	// Postfix increment: expression++
 	| ue = expression pp = PlusPlus {$expressionRet = new UnaryExpression($ue.expressionRet, $pp.text); $expressionRet.setLine($pp.line);  $ue.expressionRet.notFirst();
-		} // Postfix increment
+		}
+	// Postfix decrement: expression--
 	| ue2 = expression mm = MinusMinus {$expressionRet = new UnaryExpression($ue2.expressionRet, $mm.text); $expressionRet.setLine($mm.line);   $ue2.expressionRet.notFirst();
-		} // Postfix decrement
+		}
+	// Prefix expressions: ++expr, --expr, sizeof expr, &expr, *expr, +expr, -expr, ~expr, !expr, sizeof(type)
 	| {PrefixExpression pe = new PrefixExpression();} (
 		pp = PlusPlus {pe.addOp($pp.text);}
 		| mm = MinusMinus {pe.addOp($mm.text);}
 		| s = Sizeof {pe.addOp($s.text);}
 	)* (
-		// Prefix operators (zero or more)
+		// Operand of the prefix expression
 		id = Identifier {pe.setIdentifier($id.text);}
 		| c = Constant {pe.setConstant($c.text);}
-		| StringLiteral+
+		| StringLiteral+ // String literals as an operand, raw
 		| LeftParen e = expression RightParen {pe.setExpression($e.expressionRet); $e.expressionRet.notFirst();
 			}
 		| LeftParen t = typeName RightParen LeftBrace i = initializerList {
@@ -98,56 +109,70 @@ expression
             }
 		| Sizeof LeftParen t1 = typeName {pe.setTypeName($t1.typeNameRet); } RightParen
 	) {$expressionRet = pe;}
+	// Cast expression: (type_name) cast_expression
 	| LeftParen t = typeName RightParen ce = castExpression {$expressionRet = new ExpressionCast($t.typeNameRet, $ce.castExpressionRet);
-		} // Cast expression
+		}
+	// Multiplicative operators: *, /, %
 	| e1 = expression op = (Star | Div | Mod) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Multiplicative
+		}
+	// Additive operators: +, -
 	| e1 = expression op = (Plus | Minus) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Additive
+		}
+	// Shift operators: <<, >>
 	| e1 = expression op = (LeftShift | RightShift) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Shift
+		}
+	// Relational operators: <, >, <=, >=
 	| e1 = expression op = (
 		Less
 		| Greater
 		| LessEqual
 		| GreaterEqual
 	) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Relational
+		}
+	// Equality operators: ==, !=
 	| e1 = expression op = (Equal | NotEqual) e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Equality
+		}
+	// Bitwise AND operator: &
 	| e1 = expression op = And e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise AND
+		}
+	// Bitwise XOR operator: ^
 	| e1 = expression op = Xor e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise XOR
+		}
+	// Bitwise OR operator: |
 	| e1 = expression op = Or e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Bitwise OR
+		}
+	// Logical AND operator: &&
 	| e1 = expression op = AndAnd e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
 		}
-	// Logical AND
+	// Logical OR operator: ||
 	| e1 = expression op = OrOr e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $op.text); $expressionRet.setLine($op.line);
-		} // Logical OR
+		}
+	// Conditional operator: expr ? expr : expr
 	| e1 = expression q = Question e2 = expression Colon e3 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst(); $e3.expressionRet.notFirst();
 		} {$expressionRet = new CondExpression($e1.expressionRet, $e2.expressionRet, $e3.expressionRet); $expressionRet.setLine($q.line);
-		} // Conditional operator
+		}
+	// Assignment operators: =, *=, /=, etc.
 	| e1 = expression a = assignmentOperator e2 = expression {$e1.expressionRet.notFirst(); $e2.expressionRet.notFirst();
 		} {$expressionRet = new BinaryExpression($e1.expressionRet, $e2.expressionRet, $a.assignmentOpRet); $expressionRet.setLine($a.assignmentOpRet.getLine());
-		}; // Assignment
+		};
 
+// List of expressions used as arguments in a function call.
 argumentExpressionList
 	returns[ArgExpression argExpressionRet]:
-	e = expression {$argExpressionRet = new ArgExpression($e.expressionRet);} (
-		Comma e1 = expression {$argExpressionRet.addExpression($e1.expressionRet);}
+	firstExpr = expression {$argExpressionRet = new ArgExpression($firstExpr.expressionRet);} (
+		Comma nextExpr = expression {$argExpressionRet.addExpression($nextExpr.expressionRet);}
 	)*;
 
+// Unary operators like &, *, +, -, ~, !
 unaryOperator
 	returns[UnaryOperator unaryOpRet]:
 	t = And {$unaryOpRet = new UnaryOperator($t.text);}
@@ -157,98 +182,118 @@ unaryOperator
 	| t = Tilde {$unaryOpRet = new UnaryOperator($t.text);}
 	| t = Not {$unaryOpRet = new UnaryOperator($t.text);};
 
+// Expression being cast, or part of a cast operation. This rule seems to handle explicit casts like
+// (type)expr, or can be a simple expression or a number.
 castExpression
 	returns[CastExpression castExpressionRet]:
-	{$castExpressionRet = new CastExpression();} LeftParen t = typeName {$castExpressionRet.setTypeName($t.typeNameRet);
-		} RightParen c = castExpression {$castExpressionRet.setCastExpression($c.castExpressionRet);}
-	| {$castExpressionRet = new CastExpression();} e = expression {$castExpressionRet.setExpression($e.expressionRet);
+	{ $castExpressionRet = new CastExpression(); } LeftParen targetType = typeName { $castExpressionRet.setTypeName($targetType.typeNameRet); 
+		} RightParen nestedCastExpr = castExpression { $castExpressionRet.setCastExpression($nestedCastExpr.castExpressionRet); 
 		}
-	| {$castExpressionRet = new CastExpression();} n = DigitSequence {$castExpressionRet.setNum($n.text);
+	| { $castExpressionRet = new CastExpression(); } simpleExpression = expression { $castExpressionRet.setExpression($simpleExpression.expressionRet); 
+		}
+	| { $castExpressionRet = new CastExpression(); } numericLiteral = DigitSequence { $castExpressionRet.setNum($numericLiteral.text); 
 		};
 
+// Various assignment operators.
 assignmentOperator
 	returns[AssignmentOp assignmentOpRet]:
-	t = Assign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);}
-	| t = StarAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	opToken = Assign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = DivAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = StarAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = ModAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = DivAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = PlusAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = ModAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = MinusAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = PlusAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = LeftShiftAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = MinusAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = RightShiftAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = LeftShiftAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = AndAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = RightShiftAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = XorAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = AndAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		}
-	| t = OrAssign {$assignmentOpRet = new AssignmentOp($t.text); $assignmentOpRet.setLine($t.line);
+	| opToken = XorAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
+		}
+	| opToken = OrAssign { $assignmentOpRet = new AssignmentOp($opToken.text); $assignmentOpRet.setLine($opToken.line); 
 		};
 
+// A declaration, consisting of declaration specifiers and an optional list of init-declarators.
 declaration
 	returns[Declaration declarationRet]:
-	d = declarationSpecifiers {$declarationRet = new Declaration($d.declarationSpecifiersRet);} (
-		i = initDeclaratorList {$declarationRet.setInitDecList($i.initDeclaratorListRet);}
+	specs = declarationSpecifiers { $declarationRet = new Declaration($specs.declarationSpecifiersRet); 
+		} (
+		initList = initDeclaratorList { $declarationRet.setInitDecList($initList.initDeclaratorListRet); 
+			}
 	)? Semi;
 
+// A sequence of declaration specifiers (e.g., type specifiers, typedef, const).
 declarationSpecifiers
 	returns[DeclarationSpecifiers declarationSpecifiersRet]:
-	{$declarationSpecifiersRet = new DeclarationSpecifiers();} (
-		d = declarationSpecifier {$declarationSpecifiersRet.addDeclarationSpecifier($d.declarationSpecifierRet);
+	{ $declarationSpecifiersRet = new DeclarationSpecifiers(); } (
+		specifierItem = declarationSpecifier { $declarationSpecifiersRet.addDeclarationSpecifier($specifierItem.declarationSpecifierRet); 
 			}
 	)+;
 
+// Rule for a single declaration specifier: either typedef, a base type specifier, or const.
 declarationSpecifier
 	returns[DeclarationSpecifier declarationSpecifierRet]:
-	{$declarationSpecifierRet = new DeclarationSpecifier();} t = Typedef {$declarationSpecifierRet.setType($t.text);
+	{ $declarationSpecifierRet = new DeclarationSpecifier(); } typedefToken = Typedef { $declarationSpecifierRet.setType($typedefToken.text); 
 		}
-	| {$declarationSpecifierRet = new DeclarationSpecifier();} ts = typeSpecifier {$declarationSpecifierRet.setTypeSpecifier($ts.typeSpecifierRet);
+	| { $declarationSpecifierRet = new DeclarationSpecifier(); } typeSpecNode = typeSpecifier { $declarationSpecifierRet.setTypeSpecifier($typeSpecNode.typeSpecifierRet); 
 		}
-	| {$declarationSpecifierRet = new DeclarationSpecifier();} t = Const {$declarationSpecifierRet.setType($t.text);
+	| { $declarationSpecifierRet = new DeclarationSpecifier(); } constToken = Const { $declarationSpecifierRet.setType($constToken.text); 
 		};
 
+// Rule for a comma-separated list of one or more declarators, each potentially with an initializer.
 initDeclaratorList
 	returns[InitDeclaratorList initDeclaratorListRet]:
-	i = initDeclarator {$initDeclaratorListRet = new InitDeclaratorList($i.initDeclaratorRet);} (
-		Comma i1 = initDeclarator {$initDeclaratorListRet.addInitDeclarator($i1.initDeclaratorRet);}
+	firstInitDeclarator = initDeclarator { $initDeclaratorListRet = new InitDeclaratorList($firstInitDeclarator.initDeclaratorRet); 
+		} (
+		Comma nextInitDeclarator = initDeclarator { $initDeclaratorListRet.addInitDeclarator($nextInitDeclarator.initDeclaratorRet); 
+			}
 	)*;
 
+// Rule for a declarator, optionally followed by an '=' and an initializer.
 initDeclarator
 	returns[InitDeclarator initDeclaratorRet]:
-	d = declarator {$initDeclaratorRet = new InitDeclarator($d.declaratorRet);} (
-		Assign i = initializer {$initDeclaratorRet.setInitializer($i.initializerRet);}
-	)?;
-
-typeSpecifier
-	returns[TypeSpecifier typeSpecifierRet]:
-	t = Void {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Char {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Short {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Int {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Long {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Float {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Double {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Signed {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Unsigned {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Bool {$typeSpecifierRet = new TypeSpecifier($t.text);}
-	| t = Identifier {$typeSpecifierRet = new TypeSpecifier($t.text, true); $typeSpecifierRet.setLine($t.line);
-		};
-
-specifierQualifierList
-	returns[SpecifierQualifierList specifierQualifierListRet]:
-	{$specifierQualifierListRet = new SpecifierQualifierList();} (
-		t = typeSpecifier {$specifierQualifierListRet.setTypeSpecifier($t.typeSpecifierRet);}
-		| Const
-	) (
-		s = specifierQualifierList {$specifierQualifierListRet.setSpecifierQualifierList($s.specifierQualifierListRet);
+	declaratorNode = declarator { $initDeclaratorRet = new InitDeclarator($declaratorNode.declaratorRet); 
+		} (
+		Assign initializerNode = initializer { $initDeclaratorRet.setInitializer($initializerNode.initializerRet); 
 			}
 	)?;
 
+// Rule for basic type specifiers (e.g., int, char, void) or a typedef name (Identifier).
+typeSpecifier
+	returns[TypeSpecifier typeSpecifierRet]:
+	typeKeyword = Void { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Char { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Short { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Int { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Long { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Float { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Double { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Signed { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Unsigned { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typeKeyword = Bool { $typeSpecifierRet = new TypeSpecifier($typeKeyword.text); }
+	| typedefNameToken = Identifier // User-defined type name (from typedef)
+	{ $typeSpecifierRet = new TypeSpecifier($typedefNameToken.text, true); $typeSpecifierRet.setLine($typedefNameToken.line); 
+		};
+
+// Rule for a list of type specifiers (e.g., 'int') and type qualifiers (e.g., 'const').
+specifierQualifierList
+	returns[SpecifierQualifierList specifierQualifierListRet]:
+	{ $specifierQualifierListRet = new SpecifierQualifierList(); } (
+		typeSpecNode = typeSpecifier { $specifierQualifierListRet.setTypeSpecifier($typeSpecNode.typeSpecifierRet); 
+			}
+		| Const // Type qualifier
+	) (
+		recursiveSpecQualList = specifierQualifierList { $specifierQualifierListRet.setSpecifierQualifierList($recursiveSpecQualList.specifierQualifierListRet); 
+			}
+	)?;
+    
 declarator
 	returns[Declarator declaratorRet]:
 	{$declaratorRet = new Declarator();} (
