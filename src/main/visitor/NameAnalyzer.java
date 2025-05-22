@@ -9,11 +9,7 @@ import main.ast.statement_DIR.*;
 import main.symbolTable.SymbolTable;
 import main.visitor.Visitor;
 
-/**
- * Splits the previous NameAnalyzer functionality into two parts:
- * 1) NameAnalyzer.java: The entry point and delegator for visits.
- * 2) NameAnalyzerVisitorUtils.java: Holds the original visit methods, referencing the parent NameAnalyzer’s fields.
- */
+
 public class NameAnalyzer extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean noError = true;

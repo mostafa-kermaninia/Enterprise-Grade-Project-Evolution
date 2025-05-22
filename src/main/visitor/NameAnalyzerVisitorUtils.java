@@ -573,18 +573,12 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(ArrayIndexing arrayIndexing)
-    // --------------------------------------------------------------------------------
     public Void visitArrayIndexing(ArrayIndexing arrayIndexing) {
         arrayIndexing.getExpression1().accept(parent);
         arrayIndexing.getExpression2().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(Identifier identifier)
-    // --------------------------------------------------------------------------------
     public Void visitIdentifier(Identifier identifier) {
         if (!identifier.isFunc() && !identifier.getIdentifier().startsWith("\"")) {
             try {
@@ -597,25 +591,16 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(Constant constant)
-    // --------------------------------------------------------------------------------
     public Void visitConstant(Constant constant) {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(TIExpression tiExpression)
-    // --------------------------------------------------------------------------------
     public Void visitTIExpression(TIExpression tiExpression) {
         tiExpression.getInitializerList().accept(parent);
         tiExpression.getTypeName().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(PrefixExpression prefixExpr)
-    // --------------------------------------------------------------------------------
     public Void visitPrefixExpression(PrefixExpression prefixExpr) {
         if (prefixExpr.getExpression() != null)
             prefixExpr.getExpression().accept(parent);
