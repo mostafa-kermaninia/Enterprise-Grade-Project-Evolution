@@ -11,30 +11,49 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 
+
 public class SimpleLang {
     public static void main(String[] args) throws IOException {
-        CPYtoC finalCode = new CPYtoC(args[0]);
-        CharStream reader = CharStreams.fromString(finalCode.finalCcode);
-        SimpleLangLexer simpleLangLexer = new SimpleLangLexer(reader);
-        CommonTokenStream tokens = new CommonTokenStream(simpleLangLexer);
-        SimpleLangParser flParser = new SimpleLangParser(tokens);
-        Program program = flParser.program().programRet;
+        // Translate CPY file to C code
+        CPYtoC cpyTranslator = new CPYtoC(args[0]);
+
+        // Load translated C code into a CharStream
+        CharStream charStream = CharStreams.fromString(cpyTranslator.finalCcode);
+
+        // Create lexer with the translated code
+        SimpleLangLexer lexer = new SimpleLangLexer(charStream);
+
+        // Tokenize the input for the parser
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Parse tokens to build the AST
+        SimpleLangParser parser = new SimpleLangParser(tokens);
+        Program program = parser.program().programRet;
         System.out.println();
 
-        NameAnalyzer nameAnalyzer = new NameAnalyzer();
-        nameAnalyzer.visit(program);
+        // Create a NameAnalyzer to perform name analysis
+        NameAnalyzer analyzer = new NameAnalyzer();
+        analyzer.visit(program);
 
-        if (nameAnalyzer.isSuccessfulDone()) {
+        // Proceed if no parsing errors
+        if (analyzer.isSuccessfulDone()) {
+            // Optimization loop until no changes remain
             while (true) {
-                Optimizer finalOptimizedCode = new Optimizer(nameAnalyzer.getRootST());
-                finalOptimizedCode.visit(program);
-                nameAnalyzer.visit(program);
-                if (!finalOptimizedCode.changed) {
+                Optimizer optimizer = new Optimizer(analyzer.getRootST());
+                optimizer.visit(program);
+
+                // Re-check name analysis after optimization
+                analyzer.visit(program);
+
+                // Stop if no further optimization changes occur
+                if (!optimizer.changed) {
                     break;
                 }
             }
-            TestVisitor my_visitor = new TestVisitor();
-            my_visitor.visit(program);
+
+            // Final test visiting/printing of the resulting AST
+            TestVisitor testVisitor = new TestVisitor();
+            testVisitor.visit(program);
         }
     }
 }

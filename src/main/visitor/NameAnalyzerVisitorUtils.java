@@ -406,18 +406,14 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(JumpStatement jumpStatement)
-    // --------------------------------------------------------------------------------
     public Void visitJumpStatement(JumpStatement jumpStatement) {
         if (jumpStatement.getCondition() != null)
             jumpStatement.getCondition().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(FuncCall funcCall)
-    // --------------------------------------------------------------------------------
     public Void visitFuncCall(FuncCall funcCall) {
         String funcName = ((Identifier) funcCall.getExpression()).getIdentifier();
         int line = funcCall.getExpression().getLine();
@@ -442,26 +438,23 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
+
     // visit(UnaryExpression unaryExpr)
-    // --------------------------------------------------------------------------------
+
     public Void visitUnaryExpression(UnaryExpression unaryExpr) {
         unaryExpr.getExpression().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ExpressionCast expressionCast)
-    // --------------------------------------------------------------------------------
     public Void visitExpressionCast(ExpressionCast expressionCast) {
         expressionCast.getCastExpression().accept(parent);
         expressionCast.getTypeName().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
+
     // visit(BinaryExpression binaryExpr)
-    // --------------------------------------------------------------------------------
     public Void visitBinaryExpression(BinaryExpression binaryExpr) {
         binaryExpr.getExpression1().accept(parent);
         binaryExpr.getExpression2().accept(parent);
@@ -470,9 +463,8 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
+
     // visit(CondExpression condExpr)
-    // --------------------------------------------------------------------------------
     public Void visitCondExpression(CondExpression condExpr) {
         condExpr.getExpression1().accept(parent);
         condExpr.getExpression2().accept(parent);
@@ -480,9 +472,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(CommaExpression commaExpression)
-    // --------------------------------------------------------------------------------
     public Void visitCommaExpression(CommaExpression commaExpression) {
         for (Expression expression : commaExpression.getExpressions())
             if (expression != null)
