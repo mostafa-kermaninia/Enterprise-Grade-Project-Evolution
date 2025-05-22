@@ -1,7 +1,5 @@
 package main.ast.declaration_DIR;
 
-import main.ast.statement_DIR.DeclarationSpecifiers;
-import main.ast.statement_DIR.InitDeclaratorList;
 import main.visitor.IVisitor;
 import main.ast.baseNodes_DIR.Node;
 

@@ -2,12 +2,10 @@
 package main.grammar;
 
     import main.ast.baseNodes_DIR.*;
-    import main.ast.CPY_DIR.*;
     import main.ast.declaration_DIR.*;
     import main.ast.expression_DIR.*;
     import main.ast.literal_DIR.*;
     import main.ast.statement_DIR.*;
-
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -77,15 +75,15 @@ public interface SimpleLangListener extends ParseTreeListener {
 	 */
 	void exitExpression(SimpleLangParser.ExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleLangParser#argumentexpressionList}.
+	 * Enter a parse tree produced by {@link SimpleLangParser#argumentExpressionList}.
 	 * @param ctx the parse tree
 	 */
-	void enterArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx);
+	void enterArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleLangParser#argumentexpressionList}.
+	 * Exit a parse tree produced by {@link SimpleLangParser#argumentExpressionList}.
 	 * @param ctx the parse tree
 	 */
-	void exitArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx);
+	void exitArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleLangParser#unaryOperator}.
 	 * @param ctx the parse tree
@@ -397,15 +395,15 @@ public interface SimpleLangListener extends ParseTreeListener {
 	 */
 	void exitForDeclaration(SimpleLangParser.ForDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleLangParser#forexpression}.
+	 * Enter a parse tree produced by {@link SimpleLangParser#forExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterForexpression(SimpleLangParser.ForexpressionContext ctx);
+	void enterForExpression(SimpleLangParser.ForExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleLangParser#forexpression}.
+	 * Exit a parse tree produced by {@link SimpleLangParser#forExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitForexpression(SimpleLangParser.ForexpressionContext ctx);
+	void exitForExpression(SimpleLangParser.ForExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleLangParser#jumpStatement}.
 	 * @param ctx the parse tree

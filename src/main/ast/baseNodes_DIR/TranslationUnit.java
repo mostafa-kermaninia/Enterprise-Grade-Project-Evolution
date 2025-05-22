@@ -1,6 +1,6 @@
 package main.ast.baseNodes_DIR;
-import main.ast.declaration_DIR.ExternalDeclaration;
-import main.ast.declaration_DIR.FunctionDefinition;
+import main.ast.literal_DIR.ExternalDeclaration;
+import main.ast.literal_DIR.FunctionDefinition;
 
 import main.visitor.IVisitor;
 
@@ -11,6 +11,16 @@ public class TranslationUnit extends Node {
 
     public TranslationUnit() { this.externalDeclaration = new ArrayList<ExternalDeclaration>(); }
 
+    @Override
+    public <T> T accept(IVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
+    public ArrayList<ExternalDeclaration> getExternalDeclaration() { return externalDeclaration;}
+
+    public void addExternalDeclaration(ExternalDeclaration externalDeclaration) {
+        this.externalDeclaration.add(externalDeclaration);
+    }
 
     public boolean removeFuncDec(FunctionDefinition funcDec) {
         for (int i = 0; i < this.externalDeclaration.size(); i++) {
@@ -29,15 +39,4 @@ public class TranslationUnit extends Node {
         }
         return false;
     }
-    @Override
-    public <T> T accept(IVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    public ArrayList<ExternalDeclaration> getExternalDeclaration() { return externalDeclaration;}
-
-    public void addExternalDeclaration(ExternalDeclaration externalDeclaration) {
-        this.externalDeclaration.add(externalDeclaration);
-    }
-
 }

@@ -11,11 +11,11 @@ public class CPYtoC {
     private static final Pattern ELSE_PATTERN = Pattern.compile("^else\\s*:$");
     private static final Pattern VAR_DECL_PATTERN = Pattern.compile("^\\w+\\s+\\w+\\s*(=\\s*.+)?$");
     private static final Pattern COMMENT_PATTERN = Pattern.compile("^//.*");
-    public String finalC;
+    public String finalCcode;
 
     public CPYtoC(String inputPath) throws IOException {
         String input = Files.readString(Paths.get(inputPath));
-        finalC = convertSimpleLangToC(input);
+        finalCcode = convertSimpleLangToC(input);
 //        System.out.println(converted);
     }
 

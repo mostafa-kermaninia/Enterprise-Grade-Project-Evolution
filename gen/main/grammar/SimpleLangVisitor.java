@@ -2,12 +2,10 @@
 package main.grammar;
 
     import main.ast.baseNodes_DIR.*;
-    import main.ast.CPY_DIR.*;
     import main.ast.declaration_DIR.*;
     import main.ast.expression_DIR.*;
     import main.ast.literal_DIR.*;
     import main.ast.statement_DIR.*;
-
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -56,11 +54,11 @@ public interface SimpleLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(SimpleLangParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimpleLangParser#argumentexpressionList}.
+	 * Visit a parse tree produced by {@link SimpleLangParser#argumentExpressionList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx);
+	T visitArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimpleLangParser#unaryOperator}.
 	 * @param ctx the parse tree
@@ -248,11 +246,11 @@ public interface SimpleLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForDeclaration(SimpleLangParser.ForDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SimpleLangParser#forexpression}.
+	 * Visit a parse tree produced by {@link SimpleLangParser#forExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForexpression(SimpleLangParser.ForexpressionContext ctx);
+	T visitForExpression(SimpleLangParser.ForExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimpleLangParser#jumpStatement}.
 	 * @param ctx the parse tree

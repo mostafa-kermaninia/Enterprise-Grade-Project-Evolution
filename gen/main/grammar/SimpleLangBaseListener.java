@@ -2,12 +2,10 @@
 package main.grammar;
 
     import main.ast.baseNodes_DIR.*;
-    import main.ast.CPY_DIR.*;
     import main.ast.declaration_DIR.*;
     import main.ast.expression_DIR.*;
     import main.ast.literal_DIR.*;
     import main.ast.statement_DIR.*;
-
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -98,13 +96,13 @@ public class SimpleLangBaseListener implements SimpleLangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx) { }
+	@Override public void enterArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx) { }
+	@Override public void exitArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -482,13 +480,13 @@ public class SimpleLangBaseListener implements SimpleLangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForexpression(SimpleLangParser.ForexpressionContext ctx) { }
+	@Override public void enterForExpression(SimpleLangParser.ForExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForexpression(SimpleLangParser.ForexpressionContext ctx) { }
+	@Override public void exitForExpression(SimpleLangParser.ForExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

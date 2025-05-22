@@ -1,9 +1,9 @@
 import main.ast.baseNodes_DIR.Program;
 import main.ast.CPY_DIR.CPYtoC;
-import main.optimization.*;
 import main.grammar.SimpleLangLexer;
 import main.grammar.SimpleLangParser;
 import main.visitor.NameAnalyzer;
+import main.optimization.OptMain;
 import main.visitor.TestVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -13,39 +13,29 @@ import java.io.IOException;
 
 public class SimpleLang {
     public static void main(String[] args) throws IOException {
-
-//        PART 1 : convert to C
-        CPYtoC CPYtoC = new CPYtoC(args[0]);
-//        CPYtoC CPYtoC = new CPYtoC("C:\\Users\\mosta\\github-classroom\\PLC-UT\\phase-2-ce-mostafa-kermaninia\\tests\\NameAnalysis\\2-FunctionUndefined.cpy");
-
-//        System.out.print(CPYtoC.finalC);
-
-//        PART 2 : Lexical analysis
-        CharStream reader = CharStreams.fromString(CPYtoC.finalC);
+        CPYtoC finalCode = new CPYtoC(args[0]);
+//        System.out.print(convertor.converted);
+        CharStream reader = CharStreams.fromString(finalCode.finalCcode);
         SimpleLangLexer simpleLangLexer = new SimpleLangLexer(reader);
         CommonTokenStream tokens = new CommonTokenStream(simpleLangLexer);
-
-//        PART 3 : parser
         SimpleLangParser flParser = new SimpleLangParser(tokens);
         Program program = flParser.program().programRet;
-
-//        PART 4 : Phase 1 output
         System.out.println();
 
-//        PART 5 : Name analysis and with visitors
-        NameAnalyzer nameAnalyzer = new NameAnalyzer();
-        nameAnalyzer.visit(program);
+
+        NameAnalyzer my_name_analyzer = new NameAnalyzer();
+        my_name_analyzer.visit(program);
 
         boolean needChange = true;
-        if (nameAnalyzer.SuccessfullyDone()) {
+        if (my_name_analyzer.noError) {
             while(needChange) {
-                Optimizer OptimizedCode = new Optimizer(nameAnalyzer.getRootTable());
-                OptimizedCode.visit(program);
-                nameAnalyzer.visit(program);
-                needChange = OptimizedCode.changed;
+                OptMain my_opt_main = new OptMain(my_name_analyzer.symbolTableMain);
+                my_opt_main.visit(program);
+                my_name_analyzer.visit(program);
+                needChange = my_opt_main.changed;
             }
-            TestVisitor visitor = new TestVisitor();
-            visitor.visit(program);
+            TestVisitor my_visitor = new TestVisitor();
+            my_visitor.visit(program);
         }
     }
 }

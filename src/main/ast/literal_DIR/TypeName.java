@@ -1,7 +1,7 @@
 package main.ast.literal_DIR;
 
-import main.ast.statement_DIR.AbstractDec;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.declaration_DIR.AbstractDec;
 import main.visitor.IVisitor;
 
 public class TypeName extends Node {

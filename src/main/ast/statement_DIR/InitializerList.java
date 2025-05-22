@@ -1,7 +1,7 @@
 package main.ast.statement_DIR;
 
-import main.ast.literal_DIR.Designation;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.literal_DIR.Designation;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;

@@ -2,12 +2,10 @@
 package main.grammar;
 
     import main.ast.baseNodes_DIR.*;
-    import main.ast.CPY_DIR.*;
     import main.ast.declaration_DIR.*;
     import main.ast.expression_DIR.*;
     import main.ast.literal_DIR.*;
     import main.ast.statement_DIR.*;
-
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -69,7 +67,7 @@ public class SimpleLangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArgumentexpressionList(SimpleLangParser.ArgumentexpressionListContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArgumentExpressionList(SimpleLangParser.ArgumentExpressionListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -293,7 +291,7 @@ public class SimpleLangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitForexpression(SimpleLangParser.ForexpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitForExpression(SimpleLangParser.ForExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

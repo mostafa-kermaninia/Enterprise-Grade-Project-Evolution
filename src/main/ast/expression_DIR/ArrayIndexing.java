@@ -2,13 +2,13 @@ package main.ast.expression_DIR;
 
 import main.visitor.IVisitor;
 
-public class ArrayIndexing extends Expression {
-    private Expression expression1;
-    private Expression expression2;
+public class ArrayIndexing extends Expr{
+    private Expr expr1;
+    private Expr expr2;
 
-    public ArrayIndexing(Expression expression1, Expression expression2){
-        this.expression1 = expression1;
-        this.expression2 = expression2;
+    public ArrayIndexing(Expr expr1, Expr expr2){
+        this.expr1 = expr1;
+        this.expr2 = expr2;
     }
 
     @Override
@@ -16,6 +16,6 @@ public class ArrayIndexing extends Expression {
         return visitor.visit(this);
     }
 
-    public Expression getExpression1(){ return expression1; }
-    public Expression getExpression2(){ return expression2; }
+    public Expr getExpr1(){ return expr1; }
+    public Expr getExpr2(){ return expr2; }
 }

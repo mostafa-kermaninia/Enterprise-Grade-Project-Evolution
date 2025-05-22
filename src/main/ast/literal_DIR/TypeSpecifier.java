@@ -3,7 +3,7 @@ package main.ast.literal_DIR;
 import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class TypeSpecifier extends Node{
+public class TypeSpecifier extends Node {
     private String type;
     private boolean var_dec = false;
     private boolean notUsed = false;

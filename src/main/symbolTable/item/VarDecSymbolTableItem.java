@@ -23,5 +23,4 @@ public class VarDecSymbolTableItem extends SymbolTableItem{
     public String getKey() {
         return START_KEY + this.varDec.getType();
     }
-
 }

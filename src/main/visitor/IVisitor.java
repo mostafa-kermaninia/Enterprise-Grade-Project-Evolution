@@ -1,15 +1,11 @@
 package main.visitor;
 
+import main.ast.declaration_DIR.*;
 import main.ast.literal_DIR.*;
+import main.ast.expression_DIR.*;
+import main.ast.statement_DIR.*;
 import main.ast.baseNodes_DIR.Program;
 import main.ast.baseNodes_DIR.TranslationUnit;
-import main.ast.declaration_DIR.Declaration;
-import main.ast.declaration_DIR.ExternalDeclaration;
-import main.ast.declaration_DIR.FunctionDefinition;
-import main.ast.declaration_DIR.ForDec;
-import main.ast.expression_DIR.ForExpression;
-import main.ast.statement_DIR.*;
-import main.ast.expression_DIR.*;
 
 
 public interface IVisitor<T> {
@@ -21,8 +17,8 @@ public interface IVisitor<T> {
     T visit(Declaration declaration);
 
     T visit(ForDec forDec);
-    T visit(ArgumentExpression argumentExpression);
-    T visit(CastExpression castExpression);
+    T visit(ArgExpr argExpr);
+    T visit(CastExpr castExpr);
     T visit(DecList decList);
     T visit(DeclarationSpecifier declarationSpecifier);
     T visit(DeclarationSpecifiers declarationSpecifiers);
@@ -45,27 +41,27 @@ public interface IVisitor<T> {
     T visit(InitializerList initializerList);
     T visit(Designation designation);
     T visit(Designator designator);
-    T visit(CompoundStatement compoundStmt);
+    T visit(CompoundStmt compoundStmt);
     T visit(BlockItem blockItem);
-    T visit(ExpressionStatement exprStmt);
-    T visit(SelectionStatement selectionStmt);
-    T visit(IterStatement iterStmt);
+    T visit(ExprStmt exprStmt);
+    T visit(SelectionStmt selectionStmt);
+    T visit(IterStmt iterStmt);
     T visit(ForCondition forCondition);
-    T visit(ForExpression forExpression);
-    T visit(JumpStatement jumpStmt);
+    T visit(ForExpr forExpr);
+    T visit(JumpStmt jumpStmt);
 
     // az inja be baad male expr ha
-    T visit(FunctionCall functionCall);
-    T visit(UnaryExpression unaryExpr);
-    T visit(ExpressionCast exprCast);
-    T visit(BinaryExpression binaryExpr);
-    T visit(CondExpression condExpr);
-    T visit(CommaExpression commaExpr);
+    T visit(FuncCall funcCall);
+    T visit(UnaryExpr unaryExpr);
+    T visit(ExprCast exprCast);
+    T visit(BinaryExpr binaryExpr);
+    T visit(CondExpr condExpr);
+    T visit(CommaExpr commaExpr);
     T visit(ArrayIndexing arrayIndexing);
     T visit(Identifier identifier);
     T visit(Constant constant);
-    T visit(TypeInitExpression tiExpr);
-    T visit(PrefixExpression prefixExpr);
+    T visit(TIExpr tiExpr);
+    T visit(PrefixExpr prefixExpr);
 
 
 

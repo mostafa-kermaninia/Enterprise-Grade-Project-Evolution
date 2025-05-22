@@ -7,6 +7,7 @@ import main.symbolTable.item.SymbolTableItem;
 
 import java.util.*;
 
+
 public class SymbolTable {
 
     //Start of static members

@@ -1,6 +1,8 @@
 package main.ast.statement_DIR;
 
 import main.ast.baseNodes_DIR.Node;
+import main.ast.declaration_DIR.DeclarationSpecifiers;
+import main.ast.declaration_DIR.ParameterDec;
 import main.ast.literal_DIR.TypeSpecifier;
 import main.visitor.IVisitor;
 
@@ -14,6 +16,14 @@ public class ParameterList extends Node {
         parameterDecs.add(parameterDec);
     }
 
+    @Override
+    public <T> T accept(IVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
+    public void addParameterDec(ParameterDec parameterDec) { this.parameterDecs.add(parameterDec); }
+    public ArrayList<ParameterDec> getParameterDecs() { return parameterDecs; }
+
     public boolean removeParamDec(TypeSpecifier typeSpecifier) {
         for (ParameterDec parameterDec : parameterDecs) {
             if (parameterDec.getDeclarationSpecifier() instanceof DeclarationSpecifiers
@@ -24,13 +34,4 @@ public class ParameterList extends Node {
         }
         return false;
     }
-
-    @Override
-    public <T> T accept(IVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    public void addParameterDec(ParameterDec parameterDec) { this.parameterDecs.add(parameterDec); }
-    public ArrayList<ParameterDec> getParameterDecs() { return parameterDecs; }
-
 }
