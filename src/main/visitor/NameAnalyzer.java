@@ -10,10 +10,17 @@ import main.symbolTable.SymbolTable;
 
 
 public class NameAnalyzer extends Visitor<Void> {
-    public SymbolTable symbolTableMain;
-    public boolean noError = true;
+    private SymbolTable RootST;
+    private boolean SuccessfulDone = true;
 
     private final NameAnalyzerVisitorUtils visitorUtils;
+
+
+    public SymbolTable getRootST() {return RootST;}
+    public void setRootST(SymbolTable RootST) {this.RootST = RootST;}
+
+    public boolean isSuccessfulDone() {return SuccessfulDone;}
+    public void setSuccessfulDone(boolean SuccessfulDone) {this.SuccessfulDone = SuccessfulDone;}
 
     public NameAnalyzer() {
         this.visitorUtils = new NameAnalyzerVisitorUtils(this);

@@ -32,13 +32,11 @@ public class NameAnalyzerVisitorUtils {
 
         program.setSymbolTable(SymbolTable.top);
         program.getTranslationUnit().accept(parent);
-        parent.symbolTableMain = SymbolTable.top;
+        parent.setRootST(SymbolTable.top);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(TranslationUnit translationUnit)
-    // --------------------------------------------------------------------------------
     public Void visitTranslationUnit(TranslationUnit translationUnit) {
         for (ExternalDeclaration externalDeclaration : translationUnit.getExternalDeclaration()) {
             externalDeclaration.accept(parent);
@@ -46,9 +44,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ExternalDeclaration externalDeclaration)
-    // --------------------------------------------------------------------------------
     public Void visitExternalDeclaration(ExternalDeclaration externalDeclaration) {
         if (externalDeclaration.getDeclaration() != null)
             externalDeclaration.getDeclaration().accept(parent);
@@ -57,9 +53,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(FunctionDefinition functionDefinition)
-    // --------------------------------------------------------------------------------
     public Void visitFunctionDefinition(FunctionDefinition functionDefinition) {
         ParameterList plist = functionDefinition.getDeclarator().getDirectDec().getParameterList();
         if (plist == null)
@@ -74,7 +68,7 @@ public class NameAnalyzerVisitorUtils {
             System.out.println("Redefinition of function \""
                     + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getIdentifier()
                     + "\" in line " + functionDefinition.getDeclarator().getDirectDec().getDirectDec().getLine());
-            parent.noError = false;
+            parent.setSuccessfulDone(false);
         }
 
         SymbolTable func_dec_symbol_table = new SymbolTable(SymbolTable.top);
@@ -92,9 +86,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(CastExpression castExpression)
-    // --------------------------------------------------------------------------------
     public Void visitCastExpression(CastExpression castExpression) {
         if (castExpression.getCastExpression() != null)
             castExpression.getCastExpression().accept(parent);
@@ -105,9 +97,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(Declaration declaration)
-    // --------------------------------------------------------------------------------
     public Void visitDeclaration(Declaration declaration) {
         declaration.getDeclarationSpecifiers().accept(parent);
         if (declaration.getInitDeclaratorList() != null)
@@ -115,18 +105,14 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(DecList decList)
-    // --------------------------------------------------------------------------------
     public Void visitDecList(DecList decList) {
         for (Declaration declaration : decList.getDeclarations())
             declaration.accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(DeclarationSpecifiers declarationSpecifiers)
-    // --------------------------------------------------------------------------------
     public Void visitDeclarationSpecifiers(DeclarationSpecifiers declarationSpecifiers) {
         for (DeclarationSpecifier declarationSpecifier : declarationSpecifiers.getDeclarationSpecifiers())
             declarationSpecifier.accept(parent);
@@ -140,9 +126,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ForDec forDec)
-    // --------------------------------------------------------------------------------
     public Void visitForDec(ForDec forDec) {
         forDec.getDeclarationSpecifiers().accept(parent);
         if (forDec.getInitDecList() != null)
@@ -151,27 +135,21 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(DeclarationSpecifier declarationSpecifier)
-    // --------------------------------------------------------------------------------
     public Void visitDeclarationSpecifier(DeclarationSpecifier declarationSpecifier) {
         if (declarationSpecifier.getTypeSpecifier() != null)
             declarationSpecifier.getTypeSpecifier().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(InitDeclaratorList initDeclaratorList)
-    // --------------------------------------------------------------------------------
     public Void visitInitDeclaratorList(InitDeclaratorList initDeclaratorList) {
         for (InitDeclarator initDeclarator : initDeclaratorList.getInitDeclarators())
             initDeclarator.accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(InitDeclarator initDeclarator)
-    // --------------------------------------------------------------------------------
     public Void visitInitDeclarator(InitDeclarator initDeclarator) {
         DirectDec directDec = initDeclarator.getDeclarator().getDirectDec();
         while (directDec.getIdentifier().isEmpty())
@@ -186,7 +164,7 @@ public class NameAnalyzerVisitorUtils {
             } catch (ItemAlreadyExistsException e) {
                 System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
                         + typeSpecifier.getLine());
-                parent.noError = false;
+                parent.setSuccessfulDone(false);
             }
         }
 
@@ -196,9 +174,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ArgExpression argExpression)
-    // --------------------------------------------------------------------------------
     public Void visitArgExpression(ArgExpression argExpression) {
         for (Expression expression : argExpression.getExpressions())
             if (expression != null)
@@ -206,16 +182,12 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(UnaryOperator unaryOperator)
-    // --------------------------------------------------------------------------------
     public Void visitUnaryOperator() {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(TypeSpecifier typeSpecifier)
-    // --------------------------------------------------------------------------------
     public Void visitTypeSpecifier(TypeSpecifier typeSpecifier) {
         try {
             TypeSpecifier typeSpecifier2 = ((VarDecSymbolTableItem) SymbolTable.top
@@ -235,39 +207,31 @@ public class NameAnalyzerVisitorUtils {
             } catch (ItemAlreadyExistsException e) {
                 System.out.println("Redeclaration of variable \"" + typeSpecifier.getType() + "\" in line "
                         + typeSpecifier.getLine());
-                parent.noError = false;
+                parent.setSuccessfulDone(false) ;
             }
         }
 
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(AssignmentOp assignmentOp)
-    // --------------------------------------------------------------------------------
     public Void visitAssignmentOp() {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(Pointer pointer)
-    // --------------------------------------------------------------------------------
     public Void visitPointer() {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ParameterList parameterList)
-    // --------------------------------------------------------------------------------
     public Void visitParameterList(ParameterList parameterList) {
         for (ParameterDec parameterDec : parameterList.getParameterDecs())
             parameterDec.accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(Declarator declarator)
-    // --------------------------------------------------------------------------------
     public Void visitDeclarator(Declarator declarator) {
         declarator.getDirectDec().accept(parent);
         if (declarator.getPointer() != null)
@@ -275,9 +239,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(DirectDec directDec)
-    // --------------------------------------------------------------------------------
     public Void visitDirectDec(DirectDec directDec) {
         if (directDec.getDeclarator() != null)
             directDec.getDeclarator().accept(parent);
@@ -292,9 +254,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(SpecifierQualifierList specifierQualifierList)
-    // --------------------------------------------------------------------------------
     public Void visitSpecifierQualifierList(SpecifierQualifierList specifierQualifierList) {
         if (specifierQualifierList.getTypeSpecifier() != null)
             specifierQualifierList.getTypeSpecifier().accept(parent);
@@ -303,9 +263,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(ParameterDec parameterDec)
-    // --------------------------------------------------------------------------------
     public Void visitParameterDec(ParameterDec parameterDec) {
         parameterDec.getDeclarationSpecifier().accept(parent);
         if (parameterDec.getAbstractDec() != null)
@@ -315,16 +273,12 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(IdentifierList identifierList)
-    // --------------------------------------------------------------------------------
     public Void visitIdentifierList() {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(TypeName typeName)
-    // --------------------------------------------------------------------------------
     public Void visitTypeName(TypeName typeName) {
         typeName.getSpecifierQualifierList().accept(parent);
         if (typeName.getAbstractDec() != null)
@@ -332,9 +286,8 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
+
     // visit(DirectAbsDec directAbsDec)
-    // --------------------------------------------------------------------------------
     public Void visitDirectAbsDec(DirectAbsDec directAbsDec) {
         if (directAbsDec.getExpression() != null)
             directAbsDec.getExpression().accept(parent);
@@ -347,9 +300,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
     // visit(AbstractDec abstractDec)
-    // --------------------------------------------------------------------------------
     public Void visitAbstractDec(AbstractDec abstractDec) {
         abstractDec.getPointer().accept(parent);
         if (abstractDec.getDirectAbsDec() != null)
@@ -357,9 +308,6 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(Initializer initializer)
-    // --------------------------------------------------------------------------------
     public Void visitInitializer(Initializer initializer) {
         if (initializer.getExpression() != null)
             initializer.getExpression().accept(parent);
@@ -368,9 +316,6 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(InitializerList initializerList)
-    // --------------------------------------------------------------------------------
     public Void visitInitializerList(InitializerList initializerList) {
         for (Initializer initializer : initializerList.getInitializers())
             initializer.accept(parent);
@@ -379,27 +324,18 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(Designation designation)
-    // --------------------------------------------------------------------------------
     public Void visitDesignation(Designation designation) {
         for (Designator designator : designation.getDesignators())
             designator.accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(Designator designator)
-    // --------------------------------------------------------------------------------
     public Void visitDesignator(Designator designator) {
         if (designator.getExpression() != null)
             designator.getExpression().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(CompoundStatement compoundStatement)
-    // --------------------------------------------------------------------------------
     public Void visitCompoundStatement(CompoundStatement compoundStatement) {
         for (BlockItem blockItem : compoundStatement.getBlockItems()) {
             blockItem.accept(parent);
@@ -407,9 +343,6 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(BlockItem blockItem)
-    // --------------------------------------------------------------------------------
     public Void visitBlockItem(BlockItem blockItem) {
         if (blockItem.getStatement() != null)
             blockItem.getStatement().accept(parent);
@@ -418,19 +351,13 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(ExpressionStatement expressionStatement)
-    // --------------------------------------------------------------------------------
     public Void visitExpressionStatement(ExpressionStatement expressionStatement) {
         if (expressionStatement.getExpression() != null)
             expressionStatement.getExpression().accept(parent);
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(SelectionStatement selectionStatement)
-    // --------------------------------------------------------------------------------
-    public Void visitSelectionStatement(SelectionStatement selectionStatement) {
+     public Void visitSelectionStatement(SelectionStatement selectionStatement) {
         SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
         selectionStatement.setSymbolTable(symbolTable);
         SymbolTable.push(symbolTable);
@@ -444,9 +371,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(IterStatement iterStatement)
-    // --------------------------------------------------------------------------------
+
     public Void visitIterStatement(IterStatement iterStatement) {
         SymbolTable symbolTable = new SymbolTable(SymbolTable.top);
         iterStatement.setSymbolTable(symbolTable);
@@ -463,10 +388,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(ForCondition forCondition)
-    // --------------------------------------------------------------------------------
-    public Void visitForCondition(ForCondition forCondition) {
+     public Void visitForCondition(ForCondition forCondition) {
         if (forCondition.getForDec() != null)
             forCondition.getForDec().accept(parent);
         if (forCondition.getExpression() != null)
@@ -478,10 +400,7 @@ public class NameAnalyzerVisitorUtils {
         return null;
     }
 
-    // --------------------------------------------------------------------------------
-    // visit(ForExpression forExpression)
-    // --------------------------------------------------------------------------------
-    public Void visitForExpression(ForExpression forExpression) {
+   public Void visitForExpression(ForExpression forExpression) {
         for (Expression expression : forExpression.getExpressions()) {
             if (expression != null)
                 expression.accept(parent);
@@ -513,7 +432,7 @@ public class NameAnalyzerVisitorUtils {
                 SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
             } catch (ItemNotFoundException e) {
                 System.out.println("Line:" + line + "-> " + funcName + " not declared");
-                parent.noError = false;
+                parent.setSuccessfulDone(false) ;
             }
         }
 
@@ -585,7 +504,7 @@ public class NameAnalyzerVisitorUtils {
                 SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + identifier.getIdentifier());
             } catch (ItemNotFoundException e) {
                 System.out.println("Line:" + identifier.getLine() + "-> " + identifier.getIdentifier() + " not declared");
-                parent.noError = false;
+                parent.setSuccessfulDone(false);
             }
         }
         return null;

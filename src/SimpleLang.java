@@ -26,9 +26,9 @@ public class SimpleLang {
         NameAnalyzer nameAnalyzer = new NameAnalyzer();
         nameAnalyzer.visit(program);
 
-        if (nameAnalyzer.noError) {
+        if (nameAnalyzer.isSuccessfulDone()) {
             while (true) {
-                Optimizer finalOptimizedCode = new Optimizer(nameAnalyzer.symbolTableMain);
+                Optimizer finalOptimizedCode = new Optimizer(nameAnalyzer.getRootST());
                 finalOptimizedCode.visit(program);
                 nameAnalyzer.visit(program);
                 if (!finalOptimizedCode.changed) {

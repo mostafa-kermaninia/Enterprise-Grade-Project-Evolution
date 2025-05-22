@@ -252,15 +252,13 @@ public class TestVisitor extends Visitor<Void> {
         System.out.print("Line ");
         System.out.print(selectionStatement.getLine());
         System.out.print(": Stmt selection = ");
-        if (selectionStatement.getMainStatement() instanceof CompoundStatement) {
-            CompoundStatement compoundStatement = (CompoundStatement) selectionStatement.getMainStatement();
+        if (selectionStatement.getMainStatement() instanceof CompoundStatement compoundStatement) {
             System.out.println(compoundStatement.getBlockItems().size());
         } else
             System.out.println(0);
         selectionStatement.getMainStatement().accept(this);
-        if (selectionStatement.getElseStatement() instanceof CompoundStatement) {
-            CompoundStatement compoundStatement = (CompoundStatement) selectionStatement.getElseStatement();
-            if (compoundStatement.getBlockItems().size() > 0) {
+        if (selectionStatement.getElseStatement() instanceof CompoundStatement compoundStatement) {
+            if (!compoundStatement.getBlockItems().isEmpty()) {
                 System.out.print("Line ");
                 System.out.print(selectionStatement.getElseLine());
                 System.out.print(": Stmt selection = ");
@@ -284,8 +282,7 @@ public class TestVisitor extends Visitor<Void> {
         System.out.print("Line ");
         System.out.print(iterStatement.getLine());
         System.out.print(": Stmt " + iterStatement.getType() + " = ");
-        if (iterStatement.getStatement() instanceof CompoundStatement) {
-            CompoundStatement compoundStatement = (CompoundStatement) iterStatement.getStatement();
+        if (iterStatement.getStatement() instanceof CompoundStatement compoundStatement) {
             System.out.println(compoundStatement.getBlockItems().size());
         } else
             System.out.println(0);
