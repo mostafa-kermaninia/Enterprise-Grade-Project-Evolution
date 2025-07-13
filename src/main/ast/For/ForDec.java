@@ -3,7 +3,7 @@ package main.ast.For;
 import main.ast.DeclarationSpecifiers;
 import main.ast.InitDeclaratorList;
 import main.visitor.IVisitor;
-import main.ast.baseNodes_DIR.Node;
+import main.ast.Node;
 
 
 public class ForDec extends Node{

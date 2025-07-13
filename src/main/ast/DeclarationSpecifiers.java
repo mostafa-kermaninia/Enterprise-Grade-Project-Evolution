@@ -1,12 +1,11 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeclarationSpecifiers extends Node {
+public class DeclarationSpecifiers extends Node{
     private ArrayList<DeclarationSpecifier> declarationSpecifiers;
 
     public DeclarationSpecifiers() {

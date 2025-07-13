@@ -1,10 +1,9 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.ast.expr.Expr;
 import main.visitor.IVisitor;
 
-public class DirectDec extends Node {
+public class DirectDec extends Node{
     private String identifier = "";
     private Declarator declarator;
     private DirectDec directDec;

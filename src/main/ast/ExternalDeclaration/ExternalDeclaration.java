@@ -1,6 +1,6 @@
 package main.ast.ExternalDeclaration;
 
-import main.ast.baseNodes_DIR.Node;
+import main.ast.Node;
 import main.visitor.IVisitor;
 
 public class ExternalDeclaration extends Node {

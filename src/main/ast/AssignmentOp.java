@@ -1,9 +1,8 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class AssignmentOp extends Node {
+public class AssignmentOp extends Node{
     private String OpType;
 
     public AssignmentOp(String OpType) {

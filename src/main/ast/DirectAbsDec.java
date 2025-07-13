@@ -1,10 +1,9 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.ast.expr.Expr;
 import main.visitor.IVisitor;
 
-public class DirectAbsDec extends Node {
+public class DirectAbsDec extends Node{
     private Expr expr;
     private AbstractDec abstractDec;
     private ParameterList parameterList;

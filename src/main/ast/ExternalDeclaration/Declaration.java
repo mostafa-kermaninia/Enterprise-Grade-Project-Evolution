@@ -2,7 +2,7 @@ package main.ast.ExternalDeclaration;
 
 import main.ast.DeclarationSpecifiers;
 import main.ast.InitDeclaratorList;
-import main.ast.baseNodes_DIR.Node;
+import main.ast.Node;
 import main.visitor.IVisitor;
 
 public class Declaration extends Node {

@@ -1,9 +1,8 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class AbstractDec extends Node {
+public class AbstractDec extends Node{
     private Pointer pointer;
     private DirectAbsDec directAbsDec;
 

@@ -1,11 +1,10 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;
 
-public class Designation extends Node {
+public class Designation extends Node{
     private ArrayList<Designator> designators;
 
     public Designation() { designators = new ArrayList<Designator>(); }

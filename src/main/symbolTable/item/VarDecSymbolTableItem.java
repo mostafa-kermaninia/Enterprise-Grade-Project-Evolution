@@ -1,15 +1,14 @@
 package main.symbolTable.item;
 
-import main.ast.literal_DIR.TypeSpecifier;
+import main.ast.TypeSpecifier;
 
-public class VarDecSymbolTableItem extends SymbolTableItem {
+public class VarDecSymbolTableItem extends SymbolTableItem{
     public static final String START_KEY = "VarDec_";
-
-    private TypeSpecifier varDec;
-
-    public VarDecSymbolTableItem(TypeSpecifier varDec) {
-        this.varDec = varDec;
-    }
+    public boolean isPtr = false;
+    public boolean isFree = true;
+    public boolean isInit = false;
+    public boolean fromUser = false;
+    public String type = "";
 
     public TypeSpecifier getVarDec() {
         return varDec;
@@ -19,20 +18,10 @@ public class VarDecSymbolTableItem extends SymbolTableItem {
         this.varDec = varDec;
     }
 
-    public String getVarTypeName() {
-        return varDec.getType();
-    }
+    private TypeSpecifier varDec;
 
-    public void setVarTypeName(String newTypeName) {
-        this.varDec.setType(newTypeName);
-    }
-
-    @Override
-    public String toString() {
-        return "VarDecSymbolTableItem{" +
-                "key='" + getKey() + '\'' +
-                ", varDec=" + (varDec != null ? varDec.toString() : "null") +
-                '}';
+    public VarDecSymbolTableItem(TypeSpecifier varDec) {
+        this.varDec = varDec;
     }
 
     @Override

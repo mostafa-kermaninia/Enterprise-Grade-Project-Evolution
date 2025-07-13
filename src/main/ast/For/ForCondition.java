@@ -2,7 +2,7 @@ package main.ast.For;
 
 import main.ast.expr.Expr;
 import main.visitor.IVisitor;
-import main.ast.baseNodes_DIR.Node;
+import main.ast.Node;
 
 public class ForCondition extends Node{
     private Expr expr;

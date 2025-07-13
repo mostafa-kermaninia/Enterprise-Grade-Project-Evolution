@@ -1,10 +1,9 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.ast.expr.Expr;
 import main.visitor.IVisitor;
 
-public class Designator extends Node {
+public class Designator extends Node{
     private Expr expr;
 
     public Designator() { expr = null; }

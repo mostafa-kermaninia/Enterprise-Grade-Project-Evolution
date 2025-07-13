@@ -1,7 +1,7 @@
 package main.ast.expr;
 
 import main.ast.ArgExpr;
-import main.ast.baseNodes_DIR.Node;
+import main.ast.Node;
 
 public abstract class Expr extends Node {
     private boolean isFirst = true;

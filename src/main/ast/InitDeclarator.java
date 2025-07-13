@@ -1,9 +1,8 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class InitDeclarator extends Node {
+public class InitDeclarator extends Node{
     private Declarator declarator;
     private Initializer initializer;
 

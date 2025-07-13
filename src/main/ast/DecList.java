@@ -2,7 +2,6 @@ package main.ast;
 
 
 import main.ast.ExternalDeclaration.Declaration;
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;

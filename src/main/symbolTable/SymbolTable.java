@@ -1,11 +1,16 @@
 package main.symbolTable;
 
-import java.util.*;
+
 import main.symbolTable.exceptions.ItemAlreadyExistsException;
 import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.SymbolTableItem;
 
+import java.util.*;
+
+
 public class SymbolTable {
+
+    //Start of static members
 
     public static SymbolTable top;
     public static SymbolTable root;
@@ -45,9 +50,9 @@ public class SymbolTable {
 
     public SymbolTableItem getItem(String key) throws ItemNotFoundException {
         SymbolTable currentSymbolTable = this;
-        while (currentSymbolTable != null) {
+        while(currentSymbolTable != null) {
             SymbolTableItem symbolTableItem = currentSymbolTable.items.get(key);
-            if (symbolTableItem != null) {
+            if( symbolTableItem != null ) {
                 symbolTableItem.setUsed();
                 return symbolTableItem;
             }
@@ -58,26 +63,5 @@ public class SymbolTable {
 
     public int getItemsSize() {
         return this.items.size();
-    }
-
-    public SymbolTable getPre() {
-        return pre;
-    }
-
-    public void setPre(SymbolTable pre) {
-        this.pre = pre;
-    }
-
-    public Map<String, SymbolTableItem> getItems() {
-        return this.items;
-    }
-
-    public void setItems(Map<String, SymbolTableItem> items) {
-        this.items = items;
-    }
-
-    @Override
-    public String toString() {
-        return "SymbolTable{itemsSize=" + items.size() + ", hasPre=" + (pre != null) + "}";
     }
 }

@@ -1,11 +1,10 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;
 
-public class InitDeclaratorList extends Node {
+public class InitDeclaratorList extends Node{
     private ArrayList<InitDeclarator> initDeclarators;
 
     public InitDeclaratorList(InitDeclarator initDeclarator) {
