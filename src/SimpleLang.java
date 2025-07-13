@@ -1,4 +1,5 @@
-import main.ast.baseNodes_DIR.Program;
+import main.ast.Program;
+import main.convertor.Convertor;
 import main.grammar.SimpleLangLexer;
 import main.grammar.SimpleLangParser;
 import main.visitor.*;
@@ -10,22 +11,24 @@ import java.io.IOException;
 
 public class SimpleLang {
     public static void main(String[] args) throws IOException {
-        CharStream reader = CharStreams.fromFileName(args[0]);
+        Convertor convertor = new Convertor(args[0]);
+
+        CharStream reader = CharStreams.fromString(convertor.converted);
         SimpleLangLexer simpleLangLexer = new SimpleLangLexer(reader);
         CommonTokenStream tokens = new CommonTokenStream(simpleLangLexer);
         SimpleLangParser flParser = new SimpleLangParser(tokens);
         Program program = flParser.program().programRet;
         System.out.println();
+ 
 
-//        TestVisitor my_visitor = new TestVisitor();
-//        my_visitor.visit(program);
-        NameAnalyzer my_name_analyzer = new NameAnalyzer();
-        my_name_analyzer.visit(program);
+        VulnVisitor my_vulnVisitor = new VulnVisitor();
+        my_vulnVisitor.visit(program);
 
-//        OptimizerVisitor the_optimizer = new OptimizerVisitor();
-//        the_optimizer.visit(program);
+        VulnChecker my_vulnChecker = new VulnChecker(my_vulnVisitor.symbolTableMain);
+        my_vulnChecker.visit(program);
 
-        TypeChcker my_type_checker = new TypeChcker();
-        my_type_checker.visit(program);
+        TypeChecker my_typeChecker = new TypeChecker(my_vulnVisitor.symbolTableMain);
+        my_typeChecker.visit(program);
+
     }
 }

@@ -1,6 +1,8 @@
-package main.ast.baseNodes_DIR;
+package main.ast;
 
 import main.visitor.IVisitor;
+
+import java.util.ArrayList;
 
 public abstract class Node {
     private int line;

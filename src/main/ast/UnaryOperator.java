@@ -1,9 +1,8 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
-public class UnaryOperator extends Node {
+public class UnaryOperator extends Node{
     private String OpType;
 
     public UnaryOperator(String OpType) {

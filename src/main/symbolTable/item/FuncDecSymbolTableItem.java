@@ -1,15 +1,10 @@
 package main.symbolTable.item;
 
-import main.ast.literal_DIR.FunctionDefinition;
+import main.ast.ExternalDeclaration.FunctionDefinition;
 
 public class FuncDecSymbolTableItem extends SymbolTableItem {
     public static final String START_KEY = "FuncDec_";
-
-    private FunctionDefinition funcDec;
-
-    public FuncDecSymbolTableItem(FunctionDefinition funcDec) {
-        this.funcDec = funcDec;
-    }
+    public String type;
 
     public FunctionDefinition getFuncDec() {
         return funcDec;
@@ -19,16 +14,10 @@ public class FuncDecSymbolTableItem extends SymbolTableItem {
         this.funcDec = funcDec;
     }
 
-    public int getFunctionArgumentCount() {
-        return this.funcDec.getNumArgs();
-    }
+    private FunctionDefinition funcDec;
 
-    @Override
-    public String toString() {
-        return "FuncDecSymbolTableItem{" +
-                "key='" + getKey() + '\'' +
-                ", funcDec=" + (funcDec != null ? funcDec.toString() : "null") +
-                '}';
+    public FuncDecSymbolTableItem(FunctionDefinition funcDec) {
+        this.funcDec = funcDec;
     }
 
     @Override

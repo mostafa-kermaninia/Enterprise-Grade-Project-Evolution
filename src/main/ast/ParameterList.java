@@ -1,11 +1,10 @@
 package main.ast;
 
-import main.ast.baseNodes_DIR.Node;
 import main.visitor.IVisitor;
 
 import java.util.ArrayList;
 
-public class ParameterList extends Node {
+public class ParameterList extends Node{
     private ArrayList<ParameterDec> parameterDecs;
 
     public ParameterList(ParameterDec parameterDec) {
