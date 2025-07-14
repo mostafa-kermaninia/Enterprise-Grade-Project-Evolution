@@ -2,23 +2,59 @@ package main.visitor;
 
 import main.ast.baseNodes_DIR.Program;
 import main.ast.baseNodes_DIR.TranslationUnit;
-import main.ast.declaration_DIR.*;
-import main.ast.expression_DIR.*;
+import main.ast.declaration_DIR.AbstractDec;
+import main.ast.declaration_DIR.DecList;
+import main.ast.declaration_DIR.DeclarationSpecifier;
+import main.ast.declaration_DIR.DeclarationSpecifiers;
+import main.ast.declaration_DIR.Declarator;
+import main.ast.declaration_DIR.DirectAbsDec;
+import main.ast.declaration_DIR.DirectDec;
+import main.ast.declaration_DIR.ForDec;
+import main.ast.declaration_DIR.InitDeclarator;
+import main.ast.declaration_DIR.InitDeclaratorList;
+import main.ast.declaration_DIR.ParameterDec;
+import main.ast.expression_DIR.ArgExpr;
+import main.ast.expression_DIR.ArrayIndexing;
+import main.ast.expression_DIR.BinaryExpr;
 import main.ast.expression_DIR.CastExpr;
+import main.ast.expression_DIR.CommaExpr;
+import main.ast.expression_DIR.CondExpr;
+import main.ast.expression_DIR.Constant;
+import main.ast.expression_DIR.ExprCast;
+import main.ast.expression_DIR.ForExpr;
+import main.ast.expression_DIR.FuncCall;
+import main.ast.expression_DIR.Identifier;
 import main.ast.expression_DIR.IdentifierList;
-import main.ast.literal_DIR.*;
-import main.ast.mainNodes_DIR.*;
+import main.ast.expression_DIR.PrefixExpr;
+import main.ast.expression_DIR.TIExpr;
+import main.ast.expression_DIR.UnaryExpr;
+import main.ast.literal_DIR.AssignmentOp;
+import main.ast.literal_DIR.Designation;
+import main.ast.literal_DIR.Designator;
+import main.ast.literal_DIR.ExternalDeclaration;
+import main.ast.literal_DIR.ForCondition;
+import main.ast.literal_DIR.FunctionDefinition;
+import main.ast.literal_DIR.SpecifierQualifierList;
+import main.ast.literal_DIR.TypeName;
+import main.ast.literal_DIR.TypeSpecifier;
+import main.ast.literal_DIR.UnaryOperator;
+import main.ast.mainNodes_DIR.Declaration;
+import main.ast.mainNodes_DIR.Expr;
 import main.ast.mainNodes_DIR.Pointer;
-import main.ast.statement_DIR.*;
+import main.ast.statement_DIR.BlockItem;
+import main.ast.statement_DIR.CompoundStmt;
+import main.ast.statement_DIR.ExprStmt;
+import main.ast.statement_DIR.Initializer;
 import main.ast.statement_DIR.InitializerList;
+import main.ast.statement_DIR.IterStmt;
+import main.ast.statement_DIR.JumpStmt;
 import main.ast.statement_DIR.ParameterList;
+import main.ast.statement_DIR.SelectionStmt;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.FuncDecSymbolTableItem;
 import main.symbolTable.item.SymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
-
-
 
 /*GOALs:
  *   1. print out scope changes each time a new scope starts
@@ -29,12 +65,11 @@ import main.symbolTable.item.VarDecSymbolTableItem;
  *
  * */
 
-
-public class OptMain extends Visitor<Void>{
+public class OptMain extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean changed = false;
 
-    public OptMain(SymbolTable symbolTableMain){
+    public OptMain(SymbolTable symbolTableMain) {
         this.symbolTableMain = symbolTableMain;
     }
 
@@ -47,16 +82,18 @@ public class OptMain extends Visitor<Void>{
     public Void visit(TranslationUnit translationUnit) {
         for (int i = 0; i < translationUnit.getExternalDeclaration().size(); i++) {
             ExternalDeclaration externalDeclaration = translationUnit.getExternalDeclaration().get(i);
-            if (externalDeclaration.getFunctionDefinition() != null){
-                String funcName = externalDeclaration.getFunctionDefinition().getDeclarator().getDirectDec().getDirectDec().getIdentifier();
-                if (funcName.equals("main")){
+            if (externalDeclaration.getFunctionDefinition() != null) {
+                String funcName = externalDeclaration.getFunctionDefinition().getDeclarator().getDirectDec()
+                        .getDirectDec().getIdentifier();
+                if (funcName.equals("main")) {
                     SymbolTable symbolTable = externalDeclaration.getFunctionDefinition().getSymbolTable();
                     symbolTableMain.push(symbolTable);
                     symbolTable = symbolTableMain.top;
                     while (symbolTable != null) {
                         for (SymbolTableItem si : symbolTable.items.values()) {
                             if (si instanceof FuncDecSymbolTableItem && !si.isUsed()) {
-                                changed = changed | translationUnit.removeFuncDec(((FuncDecSymbolTableItem) si).getFuncDec());
+                                changed = changed
+                                        | translationUnit.removeFuncDec(((FuncDecSymbolTableItem) si).getFuncDec());
                             }
                         }
                         symbolTable = symbolTable.pre;
@@ -106,7 +143,6 @@ public class OptMain extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(Declaration declaration) {
         declaration.getDeclarationSpecifiers().accept(this);
         if (declaration.getInitDeclaratorList() != null)
@@ -133,7 +169,6 @@ public class OptMain extends Visitor<Void>{
 
         return null;
     }
-
 
     public Void visit(DeclarationSpecifier declarationSpecifier) {
         if (declarationSpecifier.getTypeSpecifier() != null && declarationSpecifier.getTypeSpecifier().Used())
@@ -166,7 +201,6 @@ public class OptMain extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(TypeSpecifier typeSpecifier) {
         return null;
     }
@@ -182,12 +216,12 @@ public class OptMain extends Visitor<Void>{
     public Void visit(ParameterList parameterList) {
         for (SymbolTableItem si : symbolTableMain.top.items.values()) {
             if (si instanceof VarDecSymbolTableItem && !si.isUsed()) {
-                changed = changed | parameterList.removeParamDec((TypeSpecifier)((VarDecSymbolTableItem) si).getVarDec());
+                changed = changed
+                        | parameterList.removeParamDec((TypeSpecifier) ((VarDecSymbolTableItem) si).getVarDec());
             }
         }
         return null;
     }
-
 
     public Void visit(Declarator declarator) {
         declarator.getDirectDec().accept(this);
@@ -238,7 +272,6 @@ public class OptMain extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(DirectAbsDec directAbsDec) {
         if (directAbsDec.getExpr() != null)
             directAbsDec.getExpr().accept(this);
@@ -287,17 +320,17 @@ public class OptMain extends Visitor<Void>{
     }
 
     public Void visit(CompoundStmt compoundStmt) {
-        for (int i = 0; i < compoundStmt.getBlockItems().size(); i++){
+        for (int i = 0; i < compoundStmt.getBlockItems().size(); i++) {
             BlockItem blockItem = compoundStmt.getBlockItems().get(i);
             blockItem.accept(this);
             if ((blockItem.getStmt() != null && blockItem.getStmt() instanceof JumpStmt) ||
                     (blockItem.getStmt() != null && blockItem.getStmt() instanceof SelectionStmt &&
-                            ((SelectionStmt)blockItem.getStmt()).allReturn()))
+                            ((SelectionStmt) blockItem.getStmt()).allReturn()))
                 changed = changed | compoundStmt.removeNextBIs(blockItem);
             if (blockItem.getStmt() != null && blockItem.getStmt() instanceof ExprStmt) {
                 ExprStmt exprStmt = (ExprStmt) blockItem.getStmt();
                 if (exprStmt.getExpr() != null && ((exprStmt.getExpr() instanceof BinaryExpr
-                        && ((BinaryExpr)exprStmt.getExpr()).getAssignmentOp() == null) ||
+                        && ((BinaryExpr) exprStmt.getExpr()).getAssignmentOp() == null) ||
                         exprStmt.getExpr() instanceof Constant || exprStmt.getExpr() instanceof Identifier ||
                         exprStmt.getExpr() instanceof ArrayIndexing || exprStmt.getExpr() instanceof CondExpr ||
                         exprStmt.getExpr() instanceof CommaExpr)) {
@@ -309,10 +342,15 @@ public class OptMain extends Visitor<Void>{
             }
             if (blockItem.getDeclaration() != null)
                 for (SymbolTableItem si : symbolTableMain.top.items.values())
-                    if (si instanceof VarDecSymbolTableItem && !si.isUsed()){
-                        if (blockItem.getDeclaration().getDeclarationSpecifiers().getDeclarationSpecifiers().get(blockItem.getDeclaration().getDeclarationSpecifiers().getDeclarationSpecifiers().size() - 1).getTypeSpecifier().equals(((VarDecSymbolTableItem)si).getVarDec()) ||
+                    if (si instanceof VarDecSymbolTableItem && !si.isUsed()) {
+                        if (blockItem.getDeclaration().getDeclarationSpecifiers().getDeclarationSpecifiers()
+                                .get(blockItem.getDeclaration().getDeclarationSpecifiers().getDeclarationSpecifiers()
+                                        .size() - 1)
+                                .getTypeSpecifier().equals(((VarDecSymbolTableItem) si).getVarDec()) ||
                                 (blockItem.getDeclaration().getInitDeclaratorList() != null &&
-                                        !blockItem.getDeclaration().getInitDeclaratorList().getInitDeclarators().get(0).getDeclarator().getDirectDec().getIdentifier().equals(((VarDecSymbolTableItem)si).getVarDec().getType()))) {
+                                        !blockItem.getDeclaration().getInitDeclaratorList().getInitDeclarators().get(0)
+                                                .getDeclarator().getDirectDec().getIdentifier()
+                                                .equals(((VarDecSymbolTableItem) si).getVarDec().getType()))) {
                             boolean temp = compoundStmt.removeBI(blockItem);
                             if (temp)
                                 i--;
@@ -346,7 +384,6 @@ public class OptMain extends Visitor<Void>{
         SymbolTable.pop();
         return null;
     }
-
 
     public Void visit(IterStmt iterStmt) {
         SymbolTable.push(iterStmt.getSymbolTable());
@@ -391,10 +428,11 @@ public class OptMain extends Visitor<Void>{
         String funcName = ((Identifier) funcCall.getExpr()).getIdentifier();
         int line = ((Identifier) funcCall.getExpr()).getLine();
         FuncDecSymbolTableItem funcDec = null;
-        if (funcName.equals("scanf") || funcName.equals("printf")){}
-        else {
+        if (funcName.equals("scanf") || funcName.equals("printf")) {
+        } else {
             try {
-                funcDec = (FuncDecSymbolTableItem) SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY  + funcCall.getNumArgs() + funcName );
+                funcDec = (FuncDecSymbolTableItem) SymbolTable.top
+                        .getItem(FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
             } catch (ItemNotFoundException e) {
                 System.out.println("Line:" + line + "-> " + funcName + " not declared");
             }
@@ -403,8 +441,6 @@ public class OptMain extends Visitor<Void>{
                 changed = true;
             }
         }
-
-
 
         funcCall.getExpr().accept(this);
         if (funcCall.getArgExpr() != null)
@@ -465,7 +501,6 @@ public class OptMain extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(PrefixExpr prefixExpr) {
         if (prefixExpr.getExpr() != null)
             prefixExpr.getExpr().accept(this);
@@ -480,7 +515,4 @@ public class OptMain extends Visitor<Void>{
         return null;
     }
 
-
 }
-
-

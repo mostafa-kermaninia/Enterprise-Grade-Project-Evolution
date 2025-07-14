@@ -1,31 +1,68 @@
 package main.visitor;
 
-import main.ast.baseNodes_DIR.*;
+import java.util.ArrayList;
+
+import main.ast.baseNodes_DIR.Program;
 import main.ast.baseNodes_DIR.TranslationUnit;
-import main.ast.declaration_DIR.*;
-import main.ast.expression_DIR.*;
+import main.ast.declaration_DIR.AbstractDec;
+import main.ast.declaration_DIR.DecList;
+import main.ast.declaration_DIR.DeclarationSpecifier;
+import main.ast.declaration_DIR.DeclarationSpecifiers;
+import main.ast.declaration_DIR.Declarator;
+import main.ast.declaration_DIR.DirectAbsDec;
+import main.ast.declaration_DIR.DirectDec;
+import main.ast.declaration_DIR.ForDec;
+import main.ast.declaration_DIR.InitDeclarator;
+import main.ast.declaration_DIR.InitDeclaratorList;
+import main.ast.declaration_DIR.ParameterDec;
+import main.ast.expression_DIR.ArgExpr;
+import main.ast.expression_DIR.ArrayIndexing;
+import main.ast.expression_DIR.BinaryExpr;
 import main.ast.expression_DIR.CastExpr;
+import main.ast.expression_DIR.CommaExpr;
+import main.ast.expression_DIR.CondExpr;
+import main.ast.expression_DIR.Constant;
+import main.ast.expression_DIR.ExprCast;
+import main.ast.expression_DIR.ForExpr;
+import main.ast.expression_DIR.FuncCall;
+import main.ast.expression_DIR.Identifier;
 import main.ast.expression_DIR.IdentifierList;
-import main.ast.literal_DIR.*;
-import main.ast.mainNodes_DIR.*;
+import main.ast.expression_DIR.PrefixExpr;
+import main.ast.expression_DIR.TIExpr;
+import main.ast.expression_DIR.UnaryExpr;
+import main.ast.literal_DIR.AssignmentOp;
+import main.ast.literal_DIR.Designation;
+import main.ast.literal_DIR.Designator;
+import main.ast.literal_DIR.ExternalDeclaration;
+import main.ast.literal_DIR.ForCondition;
+import main.ast.literal_DIR.FunctionDefinition;
+import main.ast.literal_DIR.SpecifierQualifierList;
+import main.ast.literal_DIR.TypeName;
+import main.ast.literal_DIR.TypeSpecifier;
+import main.ast.literal_DIR.UnaryOperator;
+import main.ast.mainNodes_DIR.Declaration;
+import main.ast.mainNodes_DIR.Expr;
 import main.ast.mainNodes_DIR.Pointer;
+import main.ast.statement_DIR.BlockItem;
+import main.ast.statement_DIR.CompoundStmt;
+import main.ast.statement_DIR.ExprStmt;
 import main.ast.statement_DIR.Initializer;
-import main.ast.statement_DIR.*;
+import main.ast.statement_DIR.InitializerList;
+import main.ast.statement_DIR.IterStmt;
+import main.ast.statement_DIR.JumpStmt;
 import main.ast.statement_DIR.ParameterList;
+import main.ast.statement_DIR.SelectionStmt;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.FuncDecSymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 import main.utils.ExpressionTypeEvaluator;
 
-import java.util.ArrayList;
-
-
-public class TypeChecker extends Visitor<Void>{
+public class TypeChecker extends Visitor<Void> {
     public SymbolTable symbolTableMain;
     public boolean changed = false;
 
-    public TypeChecker(SymbolTable symbolTableMain){
+    public TypeChecker(SymbolTable symbolTableMain) {
         this.symbolTableMain = symbolTableMain;
     }
 
@@ -51,6 +88,7 @@ public class TypeChecker extends Visitor<Void>{
 
     public String funcType = "void";
     public boolean inFuncDecl = false;
+
     public Void visit(FunctionDefinition functionDefinition) {
         inFuncDecl = true;
         symbolTableMain.push(functionDefinition.getSymbolTable());
@@ -84,11 +122,13 @@ public class TypeChecker extends Visitor<Void>{
 
     private boolean initDastan = false;
     private String varType = "void";
+
     public Void visit(Declaration declaration) {
         declaration.getDeclarationSpecifiers().accept(this);
         if (declaration.getInitDeclaratorList() != null) {
             initDastan = true;
-            varType = declaration.getDeclarationSpecifiers().getDeclarationSpecifiers().get(0).getTypeSpecifier().getType();
+            varType = declaration.getDeclarationSpecifiers().getDeclarationSpecifiers().get(0).getTypeSpecifier()
+                    .getType();
             declaration.getInitDeclaratorList().accept(this);
             initDastan = false;
         }
@@ -114,7 +154,6 @@ public class TypeChecker extends Visitor<Void>{
 
         return null;
     }
-
 
     public Void visit(DeclarationSpecifier declarationSpecifier) {
         if (declarationSpecifier.getTypeSpecifier() != null && declarationSpecifier.getTypeSpecifier().Used())
@@ -147,7 +186,6 @@ public class TypeChecker extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(TypeSpecifier typeSpecifier) {
         return null;
     }
@@ -165,7 +203,6 @@ public class TypeChecker extends Visitor<Void>{
             parameterDec.accept(this);
         return null;
     }
-
 
     public Void visit(Declarator declarator) {
         declarator.getDirectDec().accept(this);
@@ -217,7 +254,6 @@ public class TypeChecker extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(DirectAbsDec directAbsDec) {
         if (directAbsDec.getExpr() != null)
             directAbsDec.getExpr().accept(this);
@@ -239,7 +275,7 @@ public class TypeChecker extends Visitor<Void>{
 
     public Void visit(Initializer initializer) {
         if (initializer.getExpr() != null) {
-            if (initDastan){
+            if (initDastan) {
                 ExpressionTypeEvaluator my_TEval = new ExpressionTypeEvaluator(SymbolTable.top);
                 boolean typeCheckError = !my_TEval.checkType(varType, my_TEval.getType(initializer.getExpr()));
                 if (typeCheckError) {
@@ -248,8 +284,7 @@ public class TypeChecker extends Visitor<Void>{
                 }
             }
             initializer.getExpr().accept(this);
-        }
-        else
+        } else
             initializer.getInitList().accept(this);
         return null;
     }
@@ -275,7 +310,7 @@ public class TypeChecker extends Visitor<Void>{
     }
 
     public Void visit(CompoundStmt compoundStmt) {
-        for (int i = 0; i < compoundStmt.getBlockItems().size(); i++){
+        for (int i = 0; i < compoundStmt.getBlockItems().size(); i++) {
             BlockItem blockItem = compoundStmt.getBlockItems().get(i);
             blockItem.accept(this);
         }
@@ -305,7 +340,6 @@ public class TypeChecker extends Visitor<Void>{
         SymbolTable.pop();
         return null;
     }
-
 
     public Void visit(IterStmt iterStmt) {
         SymbolTable.push(iterStmt.getSymbolTable());
@@ -344,12 +378,13 @@ public class TypeChecker extends Visitor<Void>{
         if (jumpStmt.getCondition() != null) {
             jumpStmt.getCondition().accept(this);
             if (jumpStmt.isReturn() && inFuncDecl &&
-                    !my_TEval.checkType(funcType, my_TEval.getType(jumpStmt.getCondition()))) //type check she ba assignment
-                System.out.println( "Line:" + jumpStmt.getLine() + " -> " + "return type mismatch");
-//            System.out.println(funcType + "................." + my_TEval.getType(jumpStmt.getCondition()));
-        }
-        else if (jumpStmt.isReturn() && inFuncDecl && !(funcType.equals("void")))
-            System.out.println( "Line:" + jumpStmt.getLine() + " -> " + "return type mismatch");
+                    !my_TEval.checkType(funcType, my_TEval.getType(jumpStmt.getCondition()))) // type check she ba
+                                                                                              // assignment
+                System.out.println("Line:" + jumpStmt.getLine() + " -> " + "return type mismatch");
+            // System.out.println(funcType + "................." +
+            // my_TEval.getType(jumpStmt.getCondition()));
+        } else if (jumpStmt.isReturn() && inFuncDecl && !(funcType.equals("void")))
+            System.out.println("Line:" + jumpStmt.getLine() + " -> " + "return type mismatch");
 
         return null;
     }
@@ -361,13 +396,17 @@ public class TypeChecker extends Visitor<Void>{
         ArrayList<String> type1 = new ArrayList<>(), type2 = new ArrayList<>();
         if (funcDef.getDeclarator().getDirectDec().getParameterList() == null)
             return null;
-        for (ParameterDec pd : funcDef.getDeclarator().getDirectDec().getParameterList().getParameterDecs()){
-            String identifier = pd.getDeclarator() != null ? pd.getDeclarator().getDirectDec().getIdentifier() :
-                    pd.getDeclarationSpecifier().getDeclarationSpecifiers().get(pd.getDeclarationSpecifier().getDeclarationSpecifiers().size() - 1).getTypeSpecifier().getType();
+        for (ParameterDec pd : funcDef.getDeclarator().getDirectDec().getParameterList().getParameterDecs()) {
+            String identifier = pd.getDeclarator() != null ? pd.getDeclarator().getDirectDec().getIdentifier()
+                    : pd.getDeclarationSpecifier().getDeclarationSpecifiers()
+                            .get(pd.getDeclarationSpecifier().getDeclarationSpecifiers().size() - 1).getTypeSpecifier()
+                            .getType();
             try {
-                type1.add(((VarDecSymbolTableItem) SymbolTable.top.getItem(VarDecSymbolTableItem.START_KEY + identifier)).type);
+                type1.add(((VarDecSymbolTableItem) SymbolTable.top
+                        .getItem(VarDecSymbolTableItem.START_KEY + identifier)).type);
             } catch (ItemNotFoundException e) {
-                System.out.println("Line: amoooo" + ((Identifier) funcCall.getExpr()).getLine() + "-> " + " not declared");
+                System.out.println(
+                        "Line: amoooo" + ((Identifier) funcCall.getExpr()).getLine() + "-> " + " not declared");
             }
         }
         SymbolTable.pop();
@@ -377,9 +416,10 @@ public class TypeChecker extends Visitor<Void>{
             type2.add(my_TEval.getType(expr));
         }
         for (int i = 0; i < type1.size(); i++) {
-            if (!my_TEval.checkType(type1.get(i), type2.get(i))){
+            if (!my_TEval.checkType(type1.get(i), type2.get(i))) {
                 int line = ((Identifier) funcCall.getExpr()).getLine();
-//                System.out.println("Line: " + line + " -> " + type1.get(i) + " ..... " + type2.get(i));
+                // System.out.println("Line: " + line + " -> " + type1.get(i) + " ..... " +
+                // type2.get(i));
                 System.out.println("Line:" + line + " -> argument type mismatch");
                 return null;
             }
@@ -394,10 +434,11 @@ public class TypeChecker extends Visitor<Void>{
         int line = ((Identifier) funcCall.getExpr()).getLine();
         FuncDecSymbolTableItem funcDec = null;
         if (funcName.equals("scanf") || funcName.equals("printf") || funcName.equals("malloc") ||
-                funcName.equals("free")){}
-        else {
+                funcName.equals("free")) {
+        } else {
             try {
-                funcDec = (FuncDecSymbolTableItem) SymbolTable.top.getItem(FuncDecSymbolTableItem.START_KEY  + funcCall.getNumArgs() + funcName );
+                funcDec = (FuncDecSymbolTableItem) SymbolTable.top
+                        .getItem(FuncDecSymbolTableItem.START_KEY + funcCall.getNumArgs() + funcName);
             } catch (ItemNotFoundException e) {
                 System.out.println("Line:" + line + "-> " + funcName + " not declared");
             }
@@ -483,7 +524,6 @@ public class TypeChecker extends Visitor<Void>{
         return null;
     }
 
-
     public Void visit(PrefixExpr prefixExpr) {
         ExpressionTypeEvaluator my_TEval = new ExpressionTypeEvaluator(SymbolTable.top);
         boolean typeCheckError = !my_TEval.checkType(prefixExpr);
@@ -504,7 +544,4 @@ public class TypeChecker extends Visitor<Void>{
         return null;
     }
 
-
 }
-
-
