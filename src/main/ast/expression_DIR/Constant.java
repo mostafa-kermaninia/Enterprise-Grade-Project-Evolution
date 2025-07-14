@@ -10,7 +10,7 @@ public class Constant extends Expr {
     public Constant(String constant, boolean isString) {
         this.constant = constant;
         this.isString = isString;
-//        System.out.println(constant);
+        // System.out.println(constant);
     }
 
     @Override
@@ -18,8 +18,15 @@ public class Constant extends Expr {
         return visitor.visit(this);
     }
 
-    public String getConstant(){ return constant; }
+    public String getConstant() {
+        return constant;
+    }
 
-    public boolean isString(){ return isString; }
-    public void setString(){ this.isString = true; }
+    public boolean isString() {
+        return isString;
+    }
+
+    public void setString() {
+        this.isString = true;
+    }
 }

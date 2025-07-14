@@ -1,12 +1,12 @@
 package main.ast.statement_DIR;
 
-import main.ast.mainNodes_DIR.Stmt;
 import main.ast.literal_DIR.ForCondition;
 import main.ast.mainNodes_DIR.Expr;
-import main.visitor.IVisitor;
+import main.ast.mainNodes_DIR.Stmt;
 import main.symbolTable.SymbolTable;
+import main.visitor.IVisitor;
 
-public class IterStmt  extends Stmt {
+public class IterStmt extends Stmt {
     private Stmt stmt;
     private Expr expr;
     private ForCondition forCondition;
@@ -24,23 +24,43 @@ public class IterStmt  extends Stmt {
         return visitor.visit(this);
     }
 
-
     public Expr getExpr() {
         return expr;
     }
+
     public void setExpr(Expr expr) {
         this.expr = expr;
     }
 
-    public Stmt getStmt() { return stmt; }
-    public void setStmt(Stmt stmt) { this.stmt = stmt; }
+    public Stmt getStmt() {
+        return stmt;
+    }
 
-    public ForCondition getForCondition() { return forCondition; }
-    public void setForCondition(ForCondition forCondition) { this.forCondition = forCondition; }
+    public void setStmt(Stmt stmt) {
+        this.stmt = stmt;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public ForCondition getForCondition() {
+        return forCondition;
+    }
 
-    public SymbolTable getSymbolTable() { return symbolTable; }
-    public void setSymbolTable(SymbolTable symbolTable) { this.symbolTable = symbolTable; }
+    public void setForCondition(ForCondition forCondition) {
+        this.forCondition = forCondition;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    public void setSymbolTable(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
 }

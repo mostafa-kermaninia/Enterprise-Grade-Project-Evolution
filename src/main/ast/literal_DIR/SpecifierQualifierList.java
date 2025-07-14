@@ -17,12 +17,19 @@ public class SpecifierQualifierList extends Node {
         return visitor.visit(this);
     }
 
-
     public SpecifierQualifierList getSpecifierQualifierList() {
         return specifierQualifierList;
     }
-    public void setSpecifierQualifierList(SpecifierQualifierList specifierQualifierList) { this.specifierQualifierList = specifierQualifierList; }
 
-    public TypeSpecifier getTypeSpecifier() { return typeSpecifier; }
-    public void setTypeSpecifier(TypeSpecifier typeSpecifier) { this.typeSpecifier = typeSpecifier; }
+    public void setSpecifierQualifierList(SpecifierQualifierList specifierQualifierList) {
+        this.specifierQualifierList = specifierQualifierList;
+    }
+
+    public TypeSpecifier getTypeSpecifier() {
+        return typeSpecifier;
+    }
+
+    public void setTypeSpecifier(TypeSpecifier typeSpecifier) {
+        this.typeSpecifier = typeSpecifier;
+    }
 }

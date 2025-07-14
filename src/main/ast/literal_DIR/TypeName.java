@@ -18,11 +18,15 @@ public class TypeName extends Node {
         return visitor.visit(this);
     }
 
-
     public SpecifierQualifierList getSpecifierQualifierList() {
         return specifierQualifierList;
     }
 
-    public AbstractDec getAbstractDec() { return abstractDec; }
-    public void setAbstractDec(AbstractDec abstractDec) { this.abstractDec = abstractDec; }
+    public AbstractDec getAbstractDec() {
+        return abstractDec;
+    }
+
+    public void setAbstractDec(AbstractDec abstractDec) {
+        this.abstractDec = abstractDec;
+    }
 }

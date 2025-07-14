@@ -24,18 +24,40 @@ public class TypeSpecifier extends Node {
         return visitor.visit(this);
     }
 
-    public String getType() { return type; }
-    public boolean isVar_dec() { return var_dec; }
+    public String getType() {
+        return type;
+    }
 
-    public void setNotUsed() {notUsed = true;}
-    public boolean Used() { return !notUsed; }
+    public boolean isVar_dec() {
+        return var_dec;
+    }
 
-    public boolean isTypeDef() { return typeDef; }
-    public void setTypeDef(String typeDefName) { typeDef = true; this.typeDefName = typeDefName; }
+    public void setNotUsed() {
+        notUsed = true;
+    }
 
-    public void setType (String type) { this.type = type; }
+    public boolean Used() {
+        return !notUsed;
+    }
 
-    public void setNotVarDec() { var_dec = false; }
+    public boolean isTypeDef() {
+        return typeDef;
+    }
 
-    public String getTypeDefName() { return typeDefName; }
+    public void setTypeDef(String typeDefName) {
+        typeDef = true;
+        this.typeDefName = typeDefName;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setNotVarDec() {
+        var_dec = false;
+    }
+
+    public String getTypeDefName() {
+        return typeDefName;
+    }
 }

@@ -1,7 +1,7 @@
 package main.ast.literal_DIR;
 
-import main.ast.mainNodes_DIR.Declaration;
 import main.ast.baseNodes_DIR.Node;
+import main.ast.mainNodes_DIR.Declaration;
 import main.visitor.IVisitor;
 
 public class ExternalDeclaration extends Node {
@@ -18,12 +18,19 @@ public class ExternalDeclaration extends Node {
         return visitor.visit(this);
     }
 
-    public FunctionDefinition getFunctionDefinition() { return functionDefinition;}
+    public FunctionDefinition getFunctionDefinition() {
+        return functionDefinition;
+    }
 
     public void setFunctionDefinition(FunctionDefinition functionDefinition) {
         this.functionDefinition = functionDefinition;
     }
 
-    public Declaration getDeclaration() { return declaration;}
-    public void setDeclaration(Declaration declaration) { this.declaration = declaration; }
+    public Declaration getDeclaration() {
+        return declaration;
+    }
+
+    public void setDeclaration(Declaration declaration) {
+        this.declaration = declaration;
+    }
 }

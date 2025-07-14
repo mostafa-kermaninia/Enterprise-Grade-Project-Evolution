@@ -20,14 +20,19 @@ public class InitializerList extends Node {
         return visitor.visit(this);
     }
 
-
     public ArrayList<Designation> getDesignations() {
         return designations;
     }
+
     public void addDesignation(Designation designation) {
         this.designations.add(designation);
     }
 
-    public ArrayList<Initializer> getInitializers() { return initializers; }
-    public void addInitializer(Initializer initializer) { this.initializers.add(initializer); }
+    public ArrayList<Initializer> getInitializers() {
+        return initializers;
+    }
+
+    public void addInitializer(Initializer initializer) {
+        this.initializers.add(initializer);
+    }
 }

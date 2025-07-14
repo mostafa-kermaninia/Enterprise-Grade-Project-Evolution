@@ -7,7 +7,7 @@ public class Identifier extends Expr {
     private String identifier;
     private boolean func = false;
 
-    public Identifier(String identifier){
+    public Identifier(String identifier) {
         this.identifier = identifier;
     }
 
@@ -16,8 +16,15 @@ public class Identifier extends Expr {
         return visitor.visit(this);
     }
 
-    public String getIdentifier(){ return identifier; }
+    public String getIdentifier() {
+        return identifier;
+    }
 
-    public boolean isFunc(){ return func; }
-    public void setFunc(){ func = true; }
+    public boolean isFunc() {
+        return func;
+    }
+
+    public void setFunc() {
+        func = true;
+    }
 }

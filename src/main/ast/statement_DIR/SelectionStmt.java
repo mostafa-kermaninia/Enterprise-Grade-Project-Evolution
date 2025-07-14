@@ -1,13 +1,11 @@
 package main.ast.statement_DIR;
 
-import main.ast.mainNodes_DIR.Stmt;
 import main.ast.mainNodes_DIR.Expr;
-
+import main.ast.mainNodes_DIR.Stmt;
+import main.symbolTable.SymbolTable;
 import main.visitor.IVisitor;
 
-import main.symbolTable.SymbolTable;
-
-public class SelectionStmt  extends Stmt {
+public class SelectionStmt extends Stmt {
     private final Stmt mainStmt;
     private Stmt elseStmt;
     private final Expr expr;
@@ -25,32 +23,46 @@ public class SelectionStmt  extends Stmt {
         return visitor.visit(this);
     }
 
-
     public Expr getExpr() {
         return expr;
     }
 
-    public Stmt getMainStmt() { return mainStmt; }
+    public Stmt getMainStmt() {
+        return mainStmt;
+    }
 
-    public Stmt getElseStmt() { return elseStmt; }
-    public void setElseStmt(Stmt stmt) { this.elseStmt = stmt; }
+    public Stmt getElseStmt() {
+        return elseStmt;
+    }
 
-    public int getElseLine() { return elseLine; }
-    public void setElseLine(int line) { this.elseLine = line; }
+    public void setElseStmt(Stmt stmt) {
+        this.elseStmt = stmt;
+    }
 
-    public SymbolTable getSymbolTable() { return symbolTable; }
-    public void setSymbolTable(SymbolTable symbolTable) { this.symbolTable = symbolTable; }
+    public int getElseLine() {
+        return elseLine;
+    }
+
+    public void setElseLine(int line) {
+        this.elseLine = line;
+    }
+
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    public void setSymbolTable(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
 
     public boolean allReturn() {
         boolean ans = true;
         if (elseStmt == null) {
             return false;
-        }
-        else if (elseStmt instanceof SelectionStmt) {
+        } else if (elseStmt instanceof SelectionStmt) {
             SelectionStmt selStmt = (SelectionStmt) elseStmt;
             ans = ans && selStmt.allReturn();
-        }
-        else if (elseStmt instanceof CompoundStmt) {
+        } else if (elseStmt instanceof CompoundStmt) {
             CompoundStmt compStmt = (CompoundStmt) elseStmt;
             ans = ans && compStmt.hasJumpStmt();
         }

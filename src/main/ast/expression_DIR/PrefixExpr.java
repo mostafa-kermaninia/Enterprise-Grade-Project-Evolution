@@ -1,12 +1,13 @@
 package main.ast.expression_DIR;
 
-import main.ast.mainNodes_DIR.Expr;
-import main.visitor.IVisitor;
-import main.ast.literal_DIR.TypeName;
-import main.ast.literal_DIR.UnaryOperator;
 import java.util.ArrayList;
 
-public class PrefixExpr extends Expr{
+import main.ast.literal_DIR.TypeName;
+import main.ast.literal_DIR.UnaryOperator;
+import main.ast.mainNodes_DIR.Expr;
+import main.visitor.IVisitor;
+
+public class PrefixExpr extends Expr {
     private ArrayList<String> Ops = new ArrayList<>();
     private String identifier;
     private Constant constant;
@@ -16,7 +17,7 @@ public class PrefixExpr extends Expr{
     private UnaryOperator unaryOp;
     private TypeName typeName;
 
-    public PrefixExpr(){
+    public PrefixExpr() {
         expr = null;
         tiExpr = null;
         castExpr = null;
@@ -29,29 +30,68 @@ public class PrefixExpr extends Expr{
         return visitor.visit(this);
     }
 
+    public void addOp(String op) {
+        Ops.add(op);
+    }
 
-    public void addOp(String op){ Ops.add(op); }
-    public ArrayList<String> getOps(){ return Ops; }
+    public ArrayList<String> getOps() {
+        return Ops;
+    }
 
-    public String getIdentifier(){ return identifier; }
-    public void setIdentifier(String identifier){ this.identifier = identifier; }
+    public String getIdentifier() {
+        return identifier;
+    }
 
-    public Constant getConstant(){ return constant; }
-    public void setConstant(String constant){ this.constant = new Constant(constant, false); }
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-    public Expr getExpr(){ return expr; }
-    public void setExpr(Expr expr){ this.expr = expr; }
+    public Constant getConstant() {
+        return constant;
+    }
 
-    public TIExpr getTIExpr(){ return tiExpr; }
-    public void setTIExpr(TIExpr tiExpr){ this.tiExpr = tiExpr; }
+    public void setConstant(String constant) {
+        this.constant = new Constant(constant, false);
+    }
 
-    public CastExpr getCastExpr(){ return castExpr; }
-    public void setCastExpr(CastExpr castExpr){ this.castExpr = castExpr; }
+    public Expr getExpr() {
+        return expr;
+    }
 
-    public UnaryOperator getUnaryOp(){ return unaryOp; }
-    public void setUnaryOp(UnaryOperator unaryOp){ this.unaryOp = unaryOp; }
+    public void setExpr(Expr expr) {
+        this.expr = expr;
+    }
 
-    public TypeName getTypeName(){ return typeName; }
-    public void setTypeName(TypeName typeName){ this.typeName = typeName; }
+    public TIExpr getTIExpr() {
+        return tiExpr;
+    }
+
+    public void setTIExpr(TIExpr tiExpr) {
+        this.tiExpr = tiExpr;
+    }
+
+    public CastExpr getCastExpr() {
+        return castExpr;
+    }
+
+    public void setCastExpr(CastExpr castExpr) {
+        this.castExpr = castExpr;
+    }
+
+    public UnaryOperator getUnaryOp() {
+        return unaryOp;
+    }
+
+    public void setUnaryOp(UnaryOperator unaryOp) {
+        this.unaryOp = unaryOp;
+    }
+
+    public TypeName getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(TypeName typeName) {
+        this.typeName = typeName;
+    }
 
 }

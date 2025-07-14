@@ -8,16 +8,17 @@ import main.ast.baseNodes_DIR.Node;
 
 import java.util.ArrayList;
 
-public class ForExpr extends Node{
+public class ForExpr extends Node {
     private ArrayList<Expr> exprs;
 
-    public ForExpr(Expr expr) { exprs = new ArrayList<Expr>(); }
+    public ForExpr(Expr expr) {
+        exprs = new ArrayList<Expr>();
+    }
 
     @Override
     public <T> T accept(IVisitor<T> visitor) {
         return visitor.visit(this);
     }
-
 
     public ArrayList<Expr> getExprs() {
         return exprs;
