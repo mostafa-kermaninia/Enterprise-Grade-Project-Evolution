@@ -48,7 +48,7 @@ import main.ast.mainNodes_DIR.*;
 
 public class ExpressionTypeEvaluator{
     SymbolTable symbolTable;
-    ExpressionTypeEvaluator(SymbolTable symbolTable){
+    public ExpressionTypeEvaluator(SymbolTable symbolTable){
         this.symbolTable = symbolTable;
     }
 
