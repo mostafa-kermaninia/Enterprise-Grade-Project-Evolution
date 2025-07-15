@@ -123,7 +123,7 @@ public class ProactiveCodeOptimizer extends Visitor<Void> {
         return false;
     }
 
-    
+
     private void logHeuristic(String message) {
         System.out.println("[Optimizer Engine]: " + message);
     }
