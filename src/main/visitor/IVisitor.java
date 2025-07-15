@@ -129,7 +129,7 @@ public interface IVisitor<T> {
 
     T visit(JumpStmt jumpStmt);
 
-    // az inja be baad male expr ha
+    // Expr
     T visit(FuncCall funcCall);
 
     T visit(UnaryExpr unaryExpr);
