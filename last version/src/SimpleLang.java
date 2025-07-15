@@ -2,7 +2,6 @@ import main.ast.baseNodes_DIR.Program;
 import main.ast.CPY_DIR.CPYtoC;
 import main.grammar.SimpleLangLexer;
 import main.grammar.SimpleLangParser;
-import main.visitor.NameAnalyzer;
 import main.optimization.Optimizer;
 import main.visitor.TestVisitor;
 import org.antlr.v4.runtime.CharStream;
