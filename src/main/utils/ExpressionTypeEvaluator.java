@@ -7,16 +7,11 @@ import main.symbolTable.exceptions.ItemNotFoundException;
 import main.symbolTable.item.FuncDecSymbolTableItem;
 import main.symbolTable.item.VarDecSymbolTableItem;
 
-/**
- * این کلاس مسئول ارزیابی و بررسی انواع داده در عبارات برنامه است.
- * در این نسخه نهایی، از Enum به صورت داخلی برای خوانایی استفاده شده،
- * اما تمام متدهای عمومی برای حفظ سازگاری، با String کار می‌کنند و منطق اصلی کاربر ۱۰۰٪ حفظ شده است.
- */
+
 public class ExpressionTypeEvaluator {
 
     SymbolTable symbolTable;
 
-    // تعریف Enum به صورت داخلی تا نیازی به فایل جداگانه نباشد.
     private enum DataType {
         INT, DOUBLE, FLOAT, CHAR, BOOL, STRING, VOID, UNDEFINED, LONG, SHORT
     }
@@ -25,11 +20,7 @@ public class ExpressionTypeEvaluator {
         this.symbolTable = symbolTable;
     }
 
-    //<editor-fold desc="Public String-Based Methods (100% Backward Compatible)">
 
-    /**
-     * متد عمومی که با رشته کار می‌کند و منطق اصلی کاربر را حفظ کرده است.
-     */
     public boolean checkType(String targetType, String valueType) {
         if (targetType.equals(valueType)) {
             return true;
@@ -50,7 +41,6 @@ public class ExpressionTypeEvaluator {
     }
 
     public boolean checkType(BinaryExpr binaryExpr) {
-        // این متد عمومی، متدهای کمکی که منطق اصلی را کلمه به کلمه پیاده‌سازی کرده‌اند، فراخوانی می‌کند.
         if (isSimpleAssignment(binaryExpr)) return checkType(getType(binaryExpr.getExpr1()), getType(binaryExpr.getExpr2()));
         if (isRelationalOperation(binaryExpr)) return isRelationalCompatible(binaryExpr);
         if (isAdditionOperation(binaryExpr)) return isAdditionCompatible(binaryExpr);
@@ -79,22 +69,13 @@ public class ExpressionTypeEvaluator {
         return (type1.equals("bool") && (checkType(type2, type3) || checkType(type3, type2)));
     }
 
-    /**
-     * متد عمومی که نوع داده را به صورت String برمی‌گرداند تا سازگاری حفظ شود.
-     * این متد یک پوشش (wrapper) برای متد داخلی است که با Enum کار می‌کند.
-     */
+
     public String getType(Expr expr) {
         DataType type = getTypeAsEnum(expr);
         return fromEnum(type); // تبدیل Enum به String قبل از بازگشت
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Core Enum-Based Logic (Private)">
 
-    /**
-     * متد اصلی و داخلی که نوع داده را به صورت Enum برمی‌گرداند.
-     * منطق اصلی کاربر در اینجا با Enum پیاده‌سازی شده است.
-     */
     private DataType getTypeAsEnum(Expr expr) {
         if (expr instanceof BinaryExpr) {
             String type1_str = getType(((BinaryExpr) expr).getExpr1());
@@ -127,7 +108,6 @@ public class ExpressionTypeEvaluator {
         }
         if (expr instanceof UnaryExpr) return getTypeAsEnum(((UnaryExpr) expr).getExpr());
         if (expr instanceof PrefixExpr) {
-            // منطق پیچیده PrefixExpr حفظ شده است
             if (((PrefixExpr) expr).getExpr() != null) return getTypeAsEnum(((PrefixExpr) expr).getExpr());
             if (((PrefixExpr) expr).getConstant() != null) return getTypeAsEnum(((PrefixExpr) expr).getConstant());
             if (((PrefixExpr) expr).getIdentifier() != null) {
@@ -171,13 +151,7 @@ public class ExpressionTypeEvaluator {
         }
         return DataType.VOID;
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Private Enum<->String Converters">
-
-    /**
-     * متد کمکی برای تبدیل رشته به مقدار متناظر در Enum.
-     */
     private DataType fromString(String text) {
         if (text != null) {
             for (DataType dt : DataType.values()) {
@@ -189,19 +163,14 @@ public class ExpressionTypeEvaluator {
         return DataType.UNDEFINED;
     }
 
-    /**
-     * متد کمکی برای تبدیل Enum به رشته برای حفظ سازگاری با خارج از کلاس.
-     */
+/
     private String fromEnum(DataType type) {
         if (type == null || type == DataType.UNDEFINED) {
             return "undefined";
         }
         return type.name().toLowerCase();
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Private Helpers with UNCHANGED original boolean logic">
-    // این متدها فقط برای خوانایی کد checkType(BinaryExpr) ایجاد شده‌اند و حاوی منطق دست‌نخورده اصلی شما هستند.
     private boolean isSimpleAssignment(BinaryExpr expr) { return expr.getAssignmentOp() != null && expr.getAssignmentOp().getOpType().equals("="); }
     private boolean isRelationalOperation(BinaryExpr expr) { String op = expr.getOperator(); return op.equals("<") || op.equals("<=") || op.equals(">") || op.equals(">=") || op.equals("==") || op.equals("!="); }
     private boolean isAdditionOperation(BinaryExpr expr) { return expr.getOperator().equals("+") || (expr.getAssignmentOp() != null && expr.getAssignmentOp().getOpType().equals("+=")); }
@@ -237,5 +206,4 @@ public class ExpressionTypeEvaluator {
     private boolean isModuloCompatible(BinaryExpr b) {
         return checkType("int", getType(b.getExpr1())) && checkType("int", getType(b.getExpr2()));
     }
-    //</editor-fold>
 }
