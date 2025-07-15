@@ -72,7 +72,7 @@ public class ExpressionTypeEvaluator {
 
     public String getType(Expr expr) {
         DataType type = getTypeAsEnum(expr);
-        return fromEnum(type); // تبدیل Enum به String قبل از بازگشت
+        return fromEnum(type);
     }
 
 
@@ -102,7 +102,6 @@ public class ExpressionTypeEvaluator {
                 if (type1_str.equals("int") && type2_str.equals("int")) return DataType.INT;
             }
             if (operator.equals("/")) {
-                // حفظ منطق اصلی کاربر که هر تقسیمی را double برمی‌گرداند.
                 return DataType.DOUBLE;
             }
         }
