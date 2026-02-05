@@ -1,0 +1,21 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Build Outputs
+out/
+build/
+bin/
+target/
+
+# Generated ANTLR files (if you want to keep source only)
+gen/
+generated/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Other logs
+*.log
