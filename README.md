@@ -14,24 +14,24 @@ This project demonstrates the full pipeline of compiler design: from Lexical Ana
 
 ## Key Features
 
-### 🚀 1. C-to-CPY Transpiler (Source-to-Source)
+###  1. C-to-CPY Transpiler (Source-to-Source)
 Converts brace-based C code into indentation-based CPY syntax (Python-style), improving readability.
 - **Scope Handling:** Replaces `{}` with indentation.
 - **Syntax Modernization:** Removes semicolons `;` and introduces keywords like `end`.
 
-### 🛡️ 2. Security & Vulnerability Analysis
+###  2. Security & Vulnerability Analysis
 Includes a custom-built static analyzer to catch critical runtime errors during compilation:
 - **Memory Leak Detection:** Tracks `malloc` calls without corresponding `free`.
 - **User-Controlled Malloc:** Detects security risks where memory size is dictated by unchecked user input.
 - **Uninitialized Variables:** Prevents undefined behaviors.
 
-### ⚡ 3. Advanced Optimization
+###  3. Advanced Optimization
 implements compiler optimization techniques to reduce code size and improve execution flow:
 - **Dead Code Elimination:** Removes unreachable statements (e.g., code after `return`).
 - **Unused Entity Removal:** Detects and strips unused variables and functions.
 - **Side-Effect Analysis:** Removes statements that do not impact the program state.
 
-### 🔍 4. Semantic & Type Checking
+###  4. Semantic & Type Checking
 - **Type Safety:** Ensures operand compatibility (e.g., preventing `int + string`).
 - **Function Signature Verification:** Validates argument types and return values.
 - **Scope Management:** Robust symbol table implementation for nested scopes.
