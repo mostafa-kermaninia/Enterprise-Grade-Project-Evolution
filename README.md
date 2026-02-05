@@ -1,4 +1,3 @@
-# Final Project 
 # CPY Compiler Toolkit & Static Analyzer
 
 ![Java](https://img.shields.io/badge/Language-Java-orange)
